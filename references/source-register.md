@@ -23,6 +23,25 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-NIST-CSF | NIST | https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20 | CSF 2.0, 2024-02-26 | A | Enterprise cybersecurity risk outcomes |
 | SRC-PCI-SSC | PCI Security Standards Council | https://www.pcisecuritystandards.org/document_library/ | PCI DSS v4.0.1 listing | A | Payment-card security where applicable |
 
+
+## Identity, authentication and federation
+
+| ID | Publisher | Source | Edition / status captured | Grade | Main use |
+|---|---|---|---|---|---|
+| SRC-NIST-800-63-4 | NIST | https://csrc.nist.gov/pubs/sp/800/63/4/final | SP 800-63-4, final July 2025 | A | Digital identity risk, proofing, authentication and federation |
+| SRC-NIST-800-63A-4 | NIST | https://csrc.nist.gov/pubs/sp/800/63/A/4/final | SP 800-63A-4, final July 2025 | A | Identity proofing and enrollment |
+| SRC-NIST-800-63B-4 | NIST | https://csrc.nist.gov/pubs/sp/800/63/B/4/final | SP 800-63B-4, final July 2025 | A | Authentication and authenticator management |
+| SRC-NIST-800-63C-4 | NIST | https://csrc.nist.gov/pubs/sp/800/63/C/4/final | SP 800-63C-4, final July 2025 | A | Federation and assertions |
+| SRC-NIST-800-207 | NIST | https://csrc.nist.gov/pubs/sp/800/207/final | SP 800-207, final August 2020 | A | Zero Trust Architecture |
+| SRC-IETF-RFC9700 | IETF | https://www.rfc-editor.org/rfc/rfc9700.html | RFC 9700, OAuth 2.0 Security BCP, January 2025 | A | OAuth 2.0 security best current practice |
+| SRC-OIDC-CORE | OpenID Foundation | https://openid.net/specs/openid-connect-core-1_0.html | OpenID Connect Core 1.0, errata set 2 | A | OIDC authentication and ID Token profile |
+| SRC-IETF-RFC9449 | IETF | https://www.rfc-editor.org/rfc/rfc9449.html | RFC 9449, September 2023 | A | OAuth DPoP sender-constrained tokens |
+| SRC-IETF-RFC7644 | IETF | https://www.rfc-editor.org/rfc/rfc7644.html | RFC 7644, September 2015 | A | SCIM provisioning protocol |
+| SRC-W3C-WEBAUTHN3 | W3C | https://www.w3.org/TR/webauthn-3/ | Web Authentication Level 3 Recommendation, 2026-08-25 | A | Web public-key credential API and passkey implementation context |
+| SRC-OWASP-AUTH | OWASP | https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html | Cheat Sheet Series, live guidance | A | Authentication engineering practices |
+| SRC-OWASP-AUTHZ | OWASP | https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html | Cheat Sheet Series, live guidance | A | Authorization engineering practices |
+| SRC-OWASP-SESSION | OWASP | https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html | Cheat Sheet Series, live guidance | A | Session lifecycle and browser session controls |
+
 ## India
 
 | ID | Publisher | Source | Edition / status captured | Grade | Main use |
