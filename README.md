@@ -99,6 +99,8 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 - [06. API and Service Security Lab Pack](docs/06-api-service-security/API-AND-SERVICE-SECURITY-LAB-PACK.md)
 - [08. Data Security and Privacy Engineering](docs/08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-ENGINEERING.md)
 - [08. Data Security and Privacy Lab Pack](docs/08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-LAB-PACK.md)
+- [09. Mobile Application Security Engineering](docs/09-mobile-application-security/MOBILE-APPLICATION-SECURITY-ENGINEERING.md)
+- [09. Mobile Application Security Lab Pack](docs/09-mobile-application-security/MOBILE-APPLICATION-SECURITY-LAB-PACK.md)
 - [07. Identity and Access Security](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [07. Identity and Access Security Lab Pack](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [04. Secure Coding Lab Pack](docs/04-secure-coding/SECURE-CODING-LAB-PACK.md)
