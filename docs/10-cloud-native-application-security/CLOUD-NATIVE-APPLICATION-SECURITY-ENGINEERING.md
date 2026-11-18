@@ -1198,7 +1198,276 @@ A cloud-native security assessment pack should include:
 12. NIST Cybersecurity Framework 2.0: https://www.nist.gov/cyberframework
 13. Cloud Security Alliance Cloud Controls Matrix: https://cloudsecurityalliance.org/research/cloud-controls-matrix
 
-## 32. Revision history
+
+
+## 32. Concrete implementation reference patterns
+
+The following snippets are reference patterns for controlled engineering review. They are not drop-in production configurations. Pin provider/API versions, validate against the deployed Kubernetes version and CNI, review workload compatibility and run policy tests before enforcement.
+
+### 32.1 Multi-stage container build
+
+~~~dockerfile
+# Replace the illustrative image reference with an approved immutable digest.
+FROM node:22-alpine@sha256:REPLACE_WITH_APPROVED_DIGEST AS build
+WORKDIR /src
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:22-alpine@sha256:REPLACE_WITH_APPROVED_DIGEST AS runtime
+ENV NODE_ENV=production
+WORKDIR /app
+RUN addgroup -S app && adduser -S app -G app
+COPY --from=build --chown=app:app /src/dist ./dist
+COPY --from=build --chown=app:app /src/package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+USER app
+EXPOSE 8080
+CMD ["node", "dist/server.js"]
+~~~
+
+Review notes:
+- Replace the placeholder digest with a verified digest from an approved registry.
+- Ensure build dependencies are not copied into the runtime image.
+- Confirm the runtime actually needs npm at startup; a production build may copy only required runtime files.
+- Add a health check appropriate to the application and orchestrator.
+- Scan the final image, generate an SBOM and record provenance.
+- Do not pass secrets through build arguments or bake them into layers.
+
+### 32.2 Kubernetes restricted pod baseline
+
+~~~yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-example
+  namespace: app-namespace
+  labels:
+    app.kubernetes.io/name: app-example
+spec:
+  serviceAccountName: app-example
+  automountServiceAccountToken: false
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      image: registry.example.invalid/team/app@sha256:REPLACE_WITH_APPROVED_DIGEST
+      ports:
+        - name: http
+          containerPort: 8080
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      readinessProbe:
+        httpGet:
+          path: /health/ready
+          port: http
+      livenessProbe:
+        httpGet:
+          path: /health/live
+          port: http
+  volumes:
+    - name: tmp
+      emptyDir:
+        sizeLimit: 64Mi
+~~~
+
+Review notes:
+- Replace the example namespace, registry and digest.
+- Verify the chosen UID/GID is supported by the image and mounted volumes.
+- Do not add a service account token unless the workload requires Kubernetes API access.
+- Probes must not expose sensitive diagnostics or become an unauthenticated expensive endpoint.
+- Requests and limits require workload-specific performance testing.
+- This pod specification does not establish cluster-wide admission, network or identity security.
+
+### 32.3 Kubernetes namespace default-deny network policy
+
+~~~yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: app-namespace
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+~~~
+
+Add explicit allow policies for required ingress, DNS and service-to-service traffic. Do not copy a broad allow-all egress rule into a supposedly restricted namespace. Verify that the installed CNI enforces NetworkPolicy and test actual traffic paths.
+
+### 32.4 Kubernetes workload-specific RBAC
+
+~~~yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: app-example
+  namespace: app-namespace
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: app-example-config-reader
+  namespace: app-namespace
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["app-example-config"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: app-example-config-reader
+  namespace: app-namespace
+subjects:
+  - kind: ServiceAccount
+    name: app-example
+    namespace: app-namespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: app-example-config-reader
+~~~
+
+This is a narrow example for a workload that must read one named ConfigMap. It does not grant access to Secrets and does not require automatic token mounting. If the application does not call the Kubernetes API, omit the Role and RoleBinding entirely.
+
+### 32.5 Terraform AWS storage baseline example
+
+~~~hcl
+resource "aws_s3_bucket" "app_data" {
+  bucket = var.unique_bucket_name
+}
+
+resource "aws_s3_bucket_public_access_block" "app_data" {
+  bucket                  = aws_s3_bucket.app_data.id
+  block_public_acls       = true
+  ignore_public_acls      = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "app_data" {
+  bucket = aws_s3_bucket.app_data.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = var.approved_kms_key_arn
+    }
+    bucket_key_enabled = true
+  }
+}
+~~~
+
+Review notes:
+- Pin the AWS provider version and test the configuration against the provider documentation for that version.
+- Apply organization-level and resource-level controls; resource configuration alone is not a complete public-access guarantee.
+- Define KMS key policy, rotation, recovery, cross-account use and deletion protection separately.
+- Do not put credentials in Terraform variables, source, plan output or state. Terraform state is sensitive even when remote and encrypted.
+- Add lifecycle, versioning, logging, backup and retention requirements according to the data classification and service design.
+
+### 32.6 CI workflow permission minimization
+
+~~~yaml
+name: validate
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run tests
+        run: npm ci && npm test
+~~~
+
+This validation-only example intentionally has no cloud deployment permission and no identity-token permission. Production deployment must be a separate protected workflow/environment with narrowly scoped OIDC trust, pinned third-party actions, approval and a distinct deployment role. Pin actions to reviewed immutable commit SHAs in a production workflow; a major-version tag is shown here only to keep the example readable.
+
+### 32.7 Workload identity design record
+
+For each cloud workload identity, record:
+
+| Field | Required value |
+|---|---|
+| Workload name | Unique service/function/pod identity |
+| Identity issuer | Provider or external identity issuer |
+| Subject binding | Exact account, repository, namespace, service account or runtime subject |
+| Audience | Expected token audience |
+| Permissions | Exact actions and resource scope |
+| Credential lifetime | Shortest compatible duration |
+| Deployment identity | Separate from runtime identity |
+| Secret fallback | Explicit exception, owner and expiry if static secret is unavoidable |
+| Audit source | Token issuance and resource access event source |
+| Revocation | Tested disable/revoke procedure |
+| Owner | Named team and escalation contact |
+
+### 32.8 Policy rollout decision sequence
+
+~~~mermaid
+flowchart TD
+    A[Write policy and threat rationale] --> B[Unit test policy with compliant and non-compliant fixtures]
+    B --> C[Run in audit or warn mode]
+    C --> D[Measure violations and false positives]
+    D --> E{Exceptions understood and approved?}
+    E -- No --> F[Fix workload or refine policy]
+    F --> C
+    E -- Yes --> G[Stage enforcement in non-production]
+    G --> H[Validate rollback and emergency path]
+    H --> I[Enforce in production with monitoring]
+    I --> J[Review drift, exceptions and policy changes]
+~~~
+
+### 32.9 Production readiness questions
+
+Before accepting a cloud-native workload, reviewers should be able to answer:
+1. Which identity deploys the workload and which identity does it run as?
+2. What exact resources can the runtime identity access?
+3. Can a compromised application reach metadata, control-plane or unrelated internal services?
+4. Which image digest is deployed and where is its provenance?
+5. What prevents an untrusted image or privileged pod from entering the cluster?
+6. Which network flows are necessary and actually enforced?
+7. Where are secrets stored, how are they retrieved and how are they revoked?
+8. Which logs remain available if the workload or account administrator is compromised?
+9. How is tenant identity enforced in every API, data and event path?
+10. Can the service be rebuilt and restored from trusted source, artifacts and backups?
+11. Which legal, contractual and sector obligations apply to the data and service?
+12. Which exceptions remain open, who owns them and when do they expire?
+
+
+## 33. Revision history
 
 | Version | Date | Change |
 |---|---|---|
