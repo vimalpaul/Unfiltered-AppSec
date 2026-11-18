@@ -20,7 +20,7 @@
 - Starting state: empty repository, no files and no commits
 - GitHub access: read/write/admin permission confirmed through the connected account
 - Existing content preserved: not applicable; initial repository was empty
-- Current milestone: Milestone 1 foundation, first three technical chapters and initial standards/regulatory research
+- Current milestone: Milestone 2 secure coding playbook and isolated lab specifications
 
 ## 2. Current work state
 
@@ -36,7 +36,7 @@
 | Source catalogue | Authoritative source inventory and evidence grades | Initial baseline created | `references/source-register.md`; verify source currency at each chapter review |\n| Standards baseline | Versioned source and mapping method | Initial baseline created | `docs/18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md`; build detailed clause/control mappings chapter by chapter |
 | Global regulatory register | Initial India, Qatar, Saudi Arabia, UAE and EU records | Initial research baseline | `docs/19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md`; expand by country and sector; validate amendments and applicability |
 | Secure SDLC | Operating model and lifecycle control implementation | Draft baseline created | `docs/03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md`; expand with implementation-specific pipeline patterns and assurance procedures |
-| Secure coding | Language patterns and code review | Pending | Depends on Secure SDLC and fundamentals |
+| Secure coding | Language patterns and code review | Draft baseline created | `docs/04-secure-coding/SECURE-CODING-AND-CODE-REVIEW.md`; deepen version-specific framework examples and exact ASVS traceability |\n| Secure coding labs | Isolated reproducible exercises and assessment rubric | Draft lab specifications created | `docs/04-secure-coding/SECURE-CODING-LAB-PACK.md`; implement and reproduce containers before marking validated |
 | Web application security | Technical controls and test procedures | Pending | Next technical workstream after secure coding and identity foundations |
 | API security | Protocol and authorization testing | Pending | Start with OWASP API Security Top 10 and object/property authorization |
 | Identity and access security | Authentication, federation, session and authorization | Pending | Core dependency for web and API chapters |
@@ -61,14 +61,14 @@
 
 ## 4. Next work sequence
 
-1. Build secure coding and code review playbooks, starting with language-agnostic principles and representative Java, .NET, Node.js/TypeScript and Python patterns.
-2. Build Identity and Access Security, including authentication, sessions, OAuth/OIDC, authorization and privileged access.
-3. Develop Web Application Security around browser/server controls, business logic and reproducible verification procedures.
-4. Develop API Security with detailed object-level, property-level and function-level authorization tests.
-5. Expand the standards crosswalk into chapter-specific requirement-to-test mappings.
+1. Build Identity and Access Security, including authentication, sessions, OAuth/OIDC, SAML, MFA, authorization, service identities and privileged access.
+2. Build Web Application Security around browser/server controls, business logic and reproducible verification procedures.
+3. Build API and Service Security with detailed object-, property- and function-level authorization tests.
+4. Expand Chapter 04 with framework-version-specific secure implementation examples and exact ASVS 5.0.0 requirement traceability.
+5. Implement and reproduce the secure coding labs in pinned, isolated environments.
 6. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
 7. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
-8. Build isolated labs tied to requirements and verification cases.
+8. Continue the standards crosswalk into chapter-specific requirement-to-test mappings.
 
 ## 5. Continuity rules
 
@@ -93,7 +93,7 @@ Scores use the 0–5 scale defined in the Research and Quality Method. Vectors a
 |---|---|---|
 | 01 AppSec Fundamentals | 4, 3, 3, 3, 2, 3, 2, 3, 2, 3, N/A (foundational chapter), 4, 2, 3 | Useful baseline; deeper implementation and testing are delegated to specialist chapters |
 | 02 Architecture and Trust Boundaries | 4, 4, 3, 2, 2, 3, 4, 3, 3, 3, N/A (AI architecture is a later chapter), 4, 2, 3 | Strong initial design and threat-model foundation; add more patterns, validated labs and exact framework mappings |
-| 03 Secure SDLC and Product Security | 4, 4, 3, 3, 3, 3, 3, 4, 4, 4, N/A (agent governance is a later chapter), 4, 2, 3 | Substantive operating model; add concrete pipeline examples, implementation templates and sampled assurance evidence |
+| 03 Secure SDLC and Product Security | 4, 4, 3, 3, 3, 3, 3, 4, 4, 4, N/A (agent governance is a later chapter), 4, 2, 3 | Substantive operating model; add concrete pipeline examples, implementation templates and sampled assurance evidence |\n| 04 Secure Coding and Code Review | 4, 4, 3, 3, 2, 4, 3, 4, 4, 3, N/A (agent governance is a later chapter), 4, 2, 3 | Broad initial playbook and lab specifications; framework-specific executable examples and ASVS IDs remain to be validated |
 
 ### Open quality actions
 
