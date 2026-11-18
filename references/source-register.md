@@ -115,3 +115,19 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-GRPC-AUTHZ | gRPC project | https://grpc.io/docs/guides/authorization/ | Current gRPC authorization guide | A | Service/method authorization guidance |
 | SRC-GRPC-SECURITY | gRPC project | https://grpc.io/docs/guides/security/ | Current gRPC security guide | A | Transport and service security |
 
+
+
+## Data security and privacy engineering
+
+| ID | Publisher | Source | Edition / status captured | Grade | Main use |
+|---|---|---|---|---|---|
+| SRC-NIST-PRIVACY-FRAMEWORK | NIST | https://www.nist.gov/privacy-framework | Privacy Framework 1.0 | A | Privacy risk management and engineering objectives |
+| SRC-NIST-PRIVACY-DPDP-CROSSWALK | NIST | https://www.nist.gov/privacy-framework/nist-privacy-framework-10-digital-personal-data-protection-act-2023-and-rules-2025 | Published 2026-02-09 | A | NIST Privacy Framework to India DPDP Act/Rules crosswalk |
+| SRC-NIST-800-57-PT1-R5 | NIST | https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final | SP 800-57 Part 1 Rev. 5 | A | Cryptographic key management lifecycle |
+| SRC-NIST-800-88-R2 | NIST | https://csrc.nist.gov/pubs/sp/800/88/r2/final | SP 800-88 Rev. 2 final, 2025-09-26 | A | Media sanitization and cryptographic erase |
+| SRC-OWASP-CRYPTO-STORAGE | OWASP | https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html | Living Cheat Sheet | A | Application data encryption architecture |
+| SRC-OWASP-KEY-MANAGEMENT | OWASP | https://cheatsheetseries.owasp.org/cheatsheets/Key_Management_Cheat_Sheet.html | Living Cheat Sheet | A | Key lifecycle, storage, rotation and destruction |
+| SRC-OWASP-SECRETS | OWASP | https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html | Living Cheat Sheet | A | Application secret lifecycle and handling |
+| SRC-INDIA-DPDP-RULES-2025 | Government of India / MeitY | https://www.pib.gov.in/PressReleasePage.aspx?PRID=2190655 | DPDP Rules 2025 notified November 2025; phased commencement | A | India personal data protection implementation context |
+| SRC-EU-GDPR | European Union | https://eur-lex.europa.eu/eli/reg/2016/679/oj | Regulation (EU) 2016/679 | A | EU personal data processing requirements |
+
