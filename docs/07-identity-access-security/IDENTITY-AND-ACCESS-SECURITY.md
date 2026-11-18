@@ -1235,6 +1235,7 @@ A support agent can retrieve a ticket and propose a refund, but cannot approve o
 - Exact ASVS requirement identifiers and complete regulator clause-level mappings remain to be added in a dedicated traceability artifact.
 
 ## 28. Related chapters
+- [11. Distributed Systems and Integration Security](../11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-ENGINEERING.md)
 
 - [01. Application Security Fundamentals](../01-fundamentals/APPSEC-FUNDAMENTALS.md)
 - [02. Application Architecture and Trust Boundaries](../02-architecture-threat-modeling/APP-ARCHITECTURE-AND-TRUST-BOUNDARIES.md)
