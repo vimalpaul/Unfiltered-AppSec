@@ -1244,6 +1244,8 @@ A support agent can retrieve a ticket and propose a refund, but cannot approve o
 - [05. Web Application Security Lab Pack](../05-web-application-security/WEB-APPLICATION-SECURITY-LAB-PACK.md)
 - [06. API and Service Security Engineering](../06-api-service-security/API-AND-SERVICE-SECURITY-ENGINEERING.md)
 - [06. API and Service Security Lab Pack](../06-api-service-security/API-AND-SERVICE-SECURITY-LAB-PACK.md)
+- [08. Data Security and Privacy Engineering](../08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-ENGINEERING.md)
+- [08. Data Security and Privacy Lab Pack](../08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-LAB-PACK.md)
 - [Identity and Access Security Lab Pack](IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [Standards Baseline and Mapping Method](../18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
 - [Global Regulatory Register](../19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md)
