@@ -1242,11 +1242,13 @@ A support agent can retrieve a ticket and propose a refund, but cannot approve o
 - [04. Secure Coding and Code Review](../04-secure-coding/SECURE-CODING-AND-CODE-REVIEW.md)
 - [05. Web Application Security Engineering](../05-web-application-security/WEB-APPLICATION-SECURITY-ENGINEERING.md)
 - [05. Web Application Security Lab Pack](../05-web-application-security/WEB-APPLICATION-SECURITY-LAB-PACK.md)
+- [06. API and Service Security Engineering](../06-api-service-security/API-AND-SERVICE-SECURITY-ENGINEERING.md)
+- [06. API and Service Security Lab Pack](../06-api-service-security/API-AND-SERVICE-SECURITY-LAB-PACK.md)
 - [Identity and Access Security Lab Pack](IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [Standards Baseline and Mapping Method](../18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
 - [Global Regulatory Register](../19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md)
-- Web Application Security (Chapter 05, planned)
-- API and Service Security (Chapter 06, planned)
+- Web Application Security (Chapter 05, draft baseline and lab specifications)
+- API and Service Security (Chapter 06, draft baseline and lab specifications)
 - Identity and Access Security (Chapter 07, this chapter)
 
 ## 29. References
