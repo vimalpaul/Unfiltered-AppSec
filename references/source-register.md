@@ -149,3 +149,23 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-APPLE-ATS | Apple Developer | https://developer.apple.com/documentation/bundleresources/information_property_list/nsapptransportsecurity | Current platform documentation | A | App Transport Security policy |
 | SRC-OWASP-MASTG-DEVELOPER-GUIDE | OWASP | https://devguide.owasp.org/en/06-verification/01-guides/02-mastg/ | Current developer guide | A | MASTG testing processes and techniques |
 
+
+
+## Cloud-native application security
+
+| ID | Publisher | Source | Edition / status captured | Grade | Main use |
+|---|---|---|---|---|---|
+| SRC-AWS-WELL-ARCH-SECURITY | Amazon Web Services | https://docs.aws.amazon.com/wellarchitected/latest/framework/security.html | Current Security Pillar; framework release notes checked 2026-11-18 | A | AWS security architecture, identity, data, application and operations |
+| SRC-AWS-WELL-ARCH-RELEASES | Amazon Web Services | https://docs.aws.amazon.com/wellarchitected/latest/framework/ | Release notes current through 2026-11-16 | A | Version and change tracking for AWS Well-Architected guidance |
+| SRC-MICROSOFT-CLOUD-SECURITY-BENCHMARK | Microsoft | https://learn.microsoft.com/en-us/security/benchmark/azure/ | MCSB v2 preview as captured 2026-11-18; v1 documentation also listed | A | Azure cloud security control baseline; preview must not be treated as final |
+| SRC-GOOGLE-CLOUD-WELL-ARCH-SECURITY | Google Cloud | https://docs.cloud.google.com/architecture/framework/security | Security, Privacy and Compliance pillar reviewed 2026-10-28 | A | Google Cloud workload security and operations |
+| SRC-GOOGLE-CLOUD-FOUNDATIONS | Google Cloud | https://docs.cloud.google.com/architecture/blueprints/security-foundations | Enterprise Foundations Blueprint reviewed 2025-05-15 | A | Enterprise landing-zone and cloud foundation architecture |
+| SRC-KUBERNETES-SECURITY | Kubernetes Project | https://kubernetes.io/docs/concepts/security/ | Living official documentation | A | Kubernetes security architecture and controls |
+| SRC-KUBERNETES-APPSEC-CHECKLIST | Kubernetes Project | https://kubernetes.io/docs/concepts/security/application-security-checklist/ | Living official checklist | A | Workload service accounts, pod security and network policy |
+| SRC-KUBERNETES-SECURITY-CHECKLIST | Kubernetes Project | https://kubernetes.io/docs/concepts/security/security-checklist/ | Living official checklist | A | Cluster, RBAC, Pod Security Standards, seccomp and audit |
+| SRC-CIS-KUBERNETES | Center for Internet Security | https://www.cisecurity.org/benchmark/kubernetes | Kubernetes Benchmark 2.1.0; managed profiles must be pinned separately | A | Kubernetes secure configuration benchmark |
+| SRC-NIST-800-190 | NIST | https://csrc.nist.gov/pubs/sp/800/190/final | SP 800-190 final, 2017-09-25 | A | Container image, registry, orchestrator, container and host risks |
+| SRC-NIST-800-218 | NIST | https://csrc.nist.gov/pubs/sp/800/218/final | SP 800-218 SSDF v1.1 final | A | Secure software delivery and build lifecycle |
+| SRC-NIST-CSF-2 | NIST | https://www.nist.gov/cyberframework | CSF 2.0 | A | Cloud cybersecurity governance and outcomes |
+| SRC-CSA-CCM | Cloud Security Alliance | https://cloudsecurityalliance.org/research/cloud-controls-matrix | Current release to be pinned at assessment time | A | Cloud control and shared-responsibility mapping |
+
