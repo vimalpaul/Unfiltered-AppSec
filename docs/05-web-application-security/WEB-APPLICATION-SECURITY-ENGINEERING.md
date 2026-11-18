@@ -1166,6 +1166,8 @@ Web controls may support obligations under privacy, cybersecurity, financial, pa
 - [03. Secure SDLC and Product Security](../03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md)
 - [04. Secure Coding and Code Review](../04-secure-coding/SECURE-CODING-AND-CODE-REVIEW.md)
 - [05. Web Application Security Lab Pack](WEB-APPLICATION-SECURITY-LAB-PACK.md)
+- [06. API and Service Security Engineering](../06-api-service-security/API-AND-SERVICE-SECURITY-ENGINEERING.md)
+- [06. API and Service Security Lab Pack](../06-api-service-security/API-AND-SERVICE-SECURITY-LAB-PACK.md)
 - [07. Identity and Access Security](../07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [18. Standards Baseline and Mapping Method](../18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
 - [19. Global Regulatory Register](../19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md)
