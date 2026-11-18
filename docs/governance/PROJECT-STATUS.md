@@ -34,10 +34,10 @@
 | AppSec fundamentals | Security objectives, lifecycle, risk and core concepts | Draft baseline created | Expand with detailed secure SDLC and secure coding chapters |
 | Architecture and trust boundaries | Reference system, DFD, threat modeling and design review | Draft baseline created | Add deeper architecture patterns and case studies |
 | Standards baseline | Version-aware source and mapping method | Initial baseline created | Build detailed clause/control mappings chapter by chapter |
-| Global regulatory register | Initial India, Qatar, Saudi Arabia, UAE and EU records | Initial research baseline | Expand by country and sector; validate amendments and applicability |
-| Secure SDLC | Operating model and lifecycle control implementation | Pending | Next major technical chapter |
+| Global regulatory register | Initial India, Qatar, Saudi Arabia, UAE and EU records | Initial research baseline | `docs/19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md`; expand by country and sector; validate amendments and applicability |
+| Secure SDLC | Operating model and lifecycle control implementation | Draft baseline created | `docs/03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md`; expand with implementation-specific pipeline patterns and assurance procedures |
 | Secure coding | Language patterns and code review | Pending | Depends on Secure SDLC and fundamentals |
-| Web application security | Technical controls and test procedures | Pending | Depends on architecture, identity, data security |
+| Web application security | Technical controls and test procedures | Pending | Next technical workstream after secure coding and identity foundations |
 | API security | Protocol and authorization testing | Pending | Start with OWASP API Security Top 10 and object/property authorization |
 | Identity and access security | Authentication, federation, session and authorization | Pending | Core dependency for web and API chapters |
 | Labs and templates | Safe reproducible labs and professional templates | Pending | Build alongside technical chapters |
