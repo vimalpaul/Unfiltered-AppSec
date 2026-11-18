@@ -58,7 +58,7 @@ Geographic scope is global. Dedicated workstreams will cover India and Middle Ea
 | 03 | Secure SDLC and Product Security | Security governance in delivery, security gates, requirements, roles and maturity | Draft baseline created |
 | 04 | Secure Coding and Code Review | Language-specific secure coding, patterns, anti-patterns, review methods | Draft baseline and lab pack created |
 | 05 | Web Application Security | Browser, HTTP, server-side, client-side, business logic and web control engineering | Draft baseline and lab pack created |
-| 06 | API and Service Security | REST, GraphQL, gRPC, webhooks, API lifecycle and service authorization | Planned |
+| 06 | API and Service Security | REST, GraphQL, gRPC, webhooks, API lifecycle and service authorization | Draft baseline and lab pack created |
 | 07 | Identity and Access Security | Authentication, authorization, sessions, OAuth, OIDC, SAML, MFA and IAM | Draft baseline and lab pack created |
 | 08 | Data Security and Privacy Engineering | Classification, minimization, cryptography, key management, retention and privacy | Planned |
 | 09 | Mobile Application Security | Android, iOS, local storage, IPC, platform controls and backend integration | Planned |
@@ -95,6 +95,8 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 - [04. Secure Coding and Code Review](docs/04-secure-coding/SECURE-CODING-AND-CODE-REVIEW.md)
 - [05. Web Application Security Engineering](docs/05-web-application-security/WEB-APPLICATION-SECURITY-ENGINEERING.md)
 - [05. Web Application Security Lab Pack](docs/05-web-application-security/WEB-APPLICATION-SECURITY-LAB-PACK.md)
+- [06. API and Service Security Engineering](docs/06-api-service-security/API-AND-SERVICE-SECURITY-ENGINEERING.md)
+- [06. API and Service Security Lab Pack](docs/06-api-service-security/API-AND-SERVICE-SECURITY-LAB-PACK.md)
 - [07. Identity and Access Security](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [07. Identity and Access Security Lab Pack](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [04. Secure Coding Lab Pack](docs/04-secure-coding/SECURE-CODING-LAB-PACK.md)
