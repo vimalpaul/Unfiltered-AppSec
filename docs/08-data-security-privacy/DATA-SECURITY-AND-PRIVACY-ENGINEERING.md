@@ -1043,6 +1043,8 @@ This roadmap is a planning model; prioritize based on risk and legal deadlines.
 - [06. API and Service Security Engineering](../06-api-service-security/API-AND-SERVICE-SECURITY-ENGINEERING.md)
 - [07. Identity and Access Security](../07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [08. Data Security and Privacy Lab Pack](DATA-SECURITY-AND-PRIVACY-LAB-PACK.md)
+- [09. Mobile Application Security Engineering](../09-mobile-application-security/MOBILE-APPLICATION-SECURITY-ENGINEERING.md)
+- [09. Mobile Application Security Lab Pack](../09-mobile-application-security/MOBILE-APPLICATION-SECURITY-LAB-PACK.md)
 - [18. Standards Baseline and Mapping Method](../18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
 - [19. Global Regulatory Register](../19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md)
 
