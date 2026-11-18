@@ -20,7 +20,7 @@
 - Starting state: empty repository, no files and no commits
 - GitHub access: read/write/admin permission confirmed through the connected account
 - Existing content preserved: not applicable; initial repository was empty
-- Current milestone: Milestone 0 foundation and first technical chapters
+- Current milestone: Milestone 1 foundation, first three technical chapters and initial standards/regulatory research
 
 ## 2. Current work state
 
@@ -33,7 +33,7 @@
 | Continuity register | Completed and pending work tracking | Active | Update after each committed milestone |
 | AppSec fundamentals | Security objectives, lifecycle, risk and core concepts | Draft baseline created | Expand with detailed secure SDLC and secure coding chapters |
 | Architecture and trust boundaries | Reference system, DFD, threat modeling and design review | Draft baseline created | Add deeper architecture patterns and case studies |
-| Standards baseline | Version-aware source and mapping method | Initial baseline created | Build detailed clause/control mappings chapter by chapter |
+| Source catalogue | Authoritative source inventory and evidence grades | Initial baseline created | `references/source-register.md`; verify source currency at each chapter review |\n| Standards baseline | Versioned source and mapping method | Initial baseline created | `docs/18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md`; build detailed clause/control mappings chapter by chapter |
 | Global regulatory register | Initial India, Qatar, Saudi Arabia, UAE and EU records | Initial research baseline | `docs/19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md`; expand by country and sector; validate amendments and applicability |
 | Secure SDLC | Operating model and lifecycle control implementation | Draft baseline created | `docs/03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md`; expand with implementation-specific pipeline patterns and assurance procedures |
 | Secure coding | Language patterns and code review | Pending | Depends on Secure SDLC and fundamentals |
@@ -61,13 +61,13 @@
 
 ## 4. Next work sequence
 
-1. Complete the Secure SDLC and Product Security operating model.
-2. Build secure coding and code review playbooks, starting with common web stacks and language-specific patterns.
-3. Develop the Web Application Security chapter, organized by control objectives and testable abuse cases rather than only vulnerability names.
-4. Develop API Security, with detailed object-level, property-level and function-level authorization procedures.
-5. Expand the standards crosswalk using exact ASVS and framework identifiers.
-6. Expand India and GCC regulatory chapters into country- and sector-specific records with applicability decision logic.
-7. Establish common test-case, evidence, finding and remediation templates.
+1. Build secure coding and code review playbooks, starting with language-agnostic principles and representative Java, .NET, Node.js/TypeScript and Python patterns.
+2. Build Identity and Access Security, including authentication, sessions, OAuth/OIDC, authorization and privileged access.
+3. Develop Web Application Security around browser/server controls, business logic and reproducible verification procedures.
+4. Develop API Security with detailed object-level, property-level and function-level authorization tests.
+5. Expand the standards crosswalk into chapter-specific requirement-to-test mappings.
+6. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
+7. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
 8. Build isolated labs tied to requirements and verification cases.
 
 ## 5. Continuity rules
@@ -83,4 +83,25 @@ When continuing this project:
 
 ## 6. Quality status
 
-The initial architecture and documents are foundation drafts. Their existence demonstrates repository initialization, not final approval or independent technical review. The first two technical chapters are substantive starting baselines and remain open for expansion, cross-chapter verification and practitioner review.
+The initial architecture and documents are foundation drafts. Their existence demonstrates repository initialization, not final approval or independent technical review.
+
+### Preliminary chapter scorecard
+
+Scores use the 0–5 scale defined in the Research and Quality Method. Vectors are ordered as: scope, technical depth, evidence, standards mapping, regulatory mapping, use cases, diagrams, implementation, verification, operations, AI governance, navigation, QA and maintenance.
+
+| Chapter | Scores | Current judgement |
+|---|---|---|
+| 01 AppSec Fundamentals | 4, 3, 3, 3, 2, 3, 2, 3, 2, 3, N/A (foundational chapter), 4, 2, 3 | Useful baseline; deeper implementation and testing are delegated to specialist chapters |
+| 02 Architecture and Trust Boundaries | 4, 4, 3, 2, 2, 3, 4, 3, 3, 3, N/A (AI architecture is a later chapter), 4, 2, 3 | Strong initial design and threat-model foundation; add more patterns, validated labs and exact framework mappings |
+| 03 Secure SDLC and Product Security | 4, 4, 3, 3, 3, 3, 3, 4, 4, 4, N/A (agent governance is a later chapter), 4, 2, 3 | Substantive operating model; add concrete pipeline examples, implementation templates and sampled assurance evidence |
+
+### Open quality actions
+
+- Independent practitioner review has not yet been performed.
+- Mermaid source has been committed but rendering has not been independently validated in a documentation renderer.
+- External links are sourced from official publisher or regulator pages, but automated link checking has not yet been performed.
+- Jurisdiction applicability requires entity- and sector-specific legal review.
+- Technical procedures and labs must be implemented and reproduced in isolated environments before being marked validated.
+
+
+The initial architecture and documents are foundation drafts. Their existence demonstrates repository initialization, not final approval or independent technical review. The first three technical chapters are substantive starting baselines and remain open for expansion, cross-chapter verification and practitioner review. The scores below are preliminary internal self-assessments, not independent reviews or evidence of compliance.
