@@ -59,7 +59,7 @@ Geographic scope is global. Dedicated workstreams will cover India and Middle Ea
 | 04 | Secure Coding and Code Review | Language-specific secure coding, patterns, anti-patterns, review methods | Draft baseline and lab pack created |
 | 05 | Web Application Security | Browser, HTTP, server-side, client-side, business logic and web control engineering | Planned |
 | 06 | API and Service Security | REST, GraphQL, gRPC, webhooks, API lifecycle and service authorization | Planned |
-| 07 | Identity and Access Security | Authentication, authorization, sessions, OAuth, OIDC, SAML, MFA and IAM | Planned |
+| 07 | Identity and Access Security | Authentication, authorization, sessions, OAuth, OIDC, SAML, MFA and IAM | Draft baseline and lab pack created |
 | 08 | Data Security and Privacy Engineering | Classification, minimization, cryptography, key management, retention and privacy | Planned |
 | 09 | Mobile Application Security | Android, iOS, local storage, IPC, platform controls and backend integration | Planned |
 | 10 | Cloud-Native Application Security | Containers, Kubernetes, serverless, workloads, runtime and platform boundaries | Planned |
@@ -93,6 +93,8 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 - [02. Application Architecture and Trust Boundaries](docs/02-architecture-threat-modeling/APP-ARCHITECTURE-AND-TRUST-BOUNDARIES.md)
 - [03. Secure SDLC and Product Security](docs/03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md)
 - [04. Secure Coding and Code Review](docs/04-secure-coding/SECURE-CODING-AND-CODE-REVIEW.md)
+- [07. Identity and Access Security](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
+- [07. Identity and Access Security Lab Pack](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [04. Secure Coding Lab Pack](docs/04-secure-coding/SECURE-CODING-LAB-PACK.md)
 - [Standards Baseline and Mapping Method](docs/18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
 - [Global Regulatory Register](docs/19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md)
