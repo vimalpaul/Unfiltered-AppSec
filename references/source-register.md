@@ -131,3 +131,21 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-INDIA-DPDP-RULES-2025 | Government of India / MeitY | https://www.pib.gov.in/PressReleasePage.aspx?PRID=2190655 | DPDP Rules 2025 notified November 2025; phased commencement | A | India personal data protection implementation context |
 | SRC-EU-GDPR | European Union | https://eur-lex.europa.eu/eli/reg/2016/679/oj | Regulation (EU) 2016/679 | A | EU personal data processing requirements |
 
+
+
+## Mobile application security
+
+| ID | Publisher | Source | Edition / status captured | Grade | Main use |
+|---|---|---|---|---|---|
+| SRC-OWASP-MAS-PROJECT | OWASP | https://owasp.org/projects/mobile-application-security | Current project portal | A | Canonical mobile security project and resources |
+| SRC-OWASP-MASVS | OWASP | https://github.com/OWASP/masvs | Current release/checklist must be pinned per assessment | A | Mobile application security verification requirements |
+| SRC-OWASP-MASTG-V2 | OWASP | https://github.com/OWASP/MASTG/releases | v2.0.0 stable, 2026-06-30 | A | Atomic mobile tests, techniques and demos |
+| SRC-OWASP-MASWE | OWASP | https://mas.owasp.org/MASWE/ | v1.0.0 stable, 2026-08-17 | A | Mobile security weakness taxonomy |
+| SRC-ANDROID-SECURITY-BEST-PRACTICES | Android Developers | https://developer.android.com/privacy-and-security/security-best-practices | Living official guidance | A | Android app security implementation |
+| SRC-ANDROID-SECURITY-TIPS | Android Developers | https://developer.android.com/privacy-and-security/security-tips | Living official guidance | A | Android key storage, permissions and secure development |
+| SRC-AOSP-APP-SECURITY | Android Open Source Project | https://source.android.com/docs/security/best-practices/app | Living platform guidance | A | Android sandbox, code review, native code and app isolation |
+| SRC-APPLE-PLATFORM-SECURITY | Apple | https://support.apple.com/guide/security/welcome/web | Current platform security guide | A | iOS platform security architecture |
+| SRC-APPLE-KEYCHAIN | Apple Developer | https://developer.apple.com/documentation/security/keychain_services | Current API documentation | A | Keychain credential and key storage |
+| SRC-APPLE-ATS | Apple Developer | https://developer.apple.com/documentation/bundleresources/information_property_list/nsapptransportsecurity | Current platform documentation | A | App Transport Security policy |
+| SRC-OWASP-MASTG-DEVELOPER-GUIDE | OWASP | https://devguide.owasp.org/en/06-verification/01-guides/02-mastg/ | Current developer guide | A | MASTG testing processes and techniques |
+
