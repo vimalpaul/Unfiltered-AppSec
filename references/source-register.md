@@ -80,3 +80,21 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 - Some standards are licensed or copyrighted. This repository links to official sources and summarizes in original wording.
 - A regulatory summary can become stale when amendments, implementation rules, regulator guidance or court decisions change.
 - A claim that a source applies to a specific customer or organization requires facts not contained in this general repository.
+
+
+## Web application security
+
+| ID | Publisher | Source | Edition / status captured | Grade | Main use |
+|---|---|---|---|---|---|
+| SRC-OWASP-TOP10-2025 | OWASP | https://owasp.org/Top10/2025/ | Top 10:2025 | A | Web application risk awareness taxonomy |
+| SRC-OWASP-ASVS-5 | OWASP | https://asvs.owasp.org/ | ASVS 5.0.0 stable, published 2025-05-30 | A | Application security requirements and verification |
+| SRC-OWASP-ASVS-DOWNLOADS | OWASP | https://asvs.owasp.org/downloads/ | Official stable release downloads and machine-readable formats | A | Exact requirement IDs and versioned traceability |
+| SRC-OWASP-WSTG | OWASP | https://owasp.org/www-project-web-security-testing-guide/ | v4.2 latest stable; v5.0 development | A | Web application security testing methodology |
+| SRC-OWASP-WSTG-STABLE | OWASP | https://wstg.owasp.org/ | Stable guide | A | Practical web security test procedures |
+| SRC-IETF-RFC9110 | IETF | https://www.rfc-editor.org/rfc/rfc9110.html | RFC 9110, HTTP Semantics, June 2022 | A | HTTP method, status, header and representation semantics |
+| SRC-IETF-RFC9112 | IETF | https://www.rfc-editor.org/rfc/rfc9112.html | RFC 9112, HTTP/1.1, June 2022 | A | HTTP/1.1 message syntax and parsing |
+| SRC-IETF-RFC9113 | IETF | https://www.rfc-editor.org/rfc/rfc9113.html | RFC 9113, HTTP/2, June 2022 | A | HTTP/2 framing and protocol behavior |
+| SRC-IETF-RFC9114 | IETF | https://www.rfc-editor.org/rfc/rfc9114.html | RFC 9114, HTTP/3, June 2022 | A | HTTP/3 protocol behavior |
+| SRC-W3C-CSP3 | W3C | https://www.w3.org/TR/CSP3/ | Content Security Policy Level 3 | A | Browser resource and script execution policy |
+| SRC-WHATWG-FETCH | WHATWG | https://fetch.spec.whatwg.org/ | Living Fetch Standard | A | Browser fetch, CORS and request processing behavior |
+| SRC-MDN-WEB-SECURITY | MDN / Mozilla | https://developer.mozilla.org/en-US/docs/Web/Security | Living web platform documentation | B | Browser security model and implementation guidance |
