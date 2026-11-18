@@ -60,9 +60,9 @@ Geographic scope is global. Dedicated workstreams will cover India and Middle Ea
 | 05 | Web Application Security | Browser, HTTP, server-side, client-side, business logic and web control engineering | Draft baseline and lab pack created |
 | 06 | API and Service Security | REST, GraphQL, gRPC, webhooks, API lifecycle and service authorization | Draft baseline and lab pack created |
 | 07 | Identity and Access Security | Authentication, authorization, sessions, OAuth, OIDC, SAML, MFA and IAM | Draft baseline and lab pack created |
-| 08 | Data Security and Privacy Engineering | Classification, minimization, cryptography, key management, retention and privacy | Planned |
-| 09 | Mobile Application Security | Android, iOS, local storage, IPC, platform controls and backend integration | Planned |
-| 10 | Cloud-Native Application Security | Containers, Kubernetes, serverless, workloads, runtime and platform boundaries | Planned |
+| 08 | Data Security and Privacy Engineering | Classification, minimization, cryptography, key management, retention and privacy | Draft baseline and lab pack created |
+| 09 | Mobile Application Security | Android, iOS, local storage, IPC, platform controls and backend integration | Draft baseline and lab pack created |
+| 10 | Cloud-Native Application Security | Cloud IAM, workload identity, containers, Kubernetes, serverless, IaC, CI/CD and runtime | Draft baseline and lab pack created |
 | 11 | Distributed Systems and Integration Security | Microservices, events, queues, service mesh, webhooks and third-party integrations | Planned |
 | 12 | AI and LLM Application Security | Prompt injection, model interfaces, RAG, tool use, agent identity and AI supply chain | Planned |
 | 13 | Software Supply Chain Security | Dependencies, SBOM, provenance, signing, build security and supplier assurance | Planned |
@@ -101,6 +101,8 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 - [08. Data Security and Privacy Lab Pack](docs/08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-LAB-PACK.md)
 - [09. Mobile Application Security Engineering](docs/09-mobile-application-security/MOBILE-APPLICATION-SECURITY-ENGINEERING.md)
 - [09. Mobile Application Security Lab Pack](docs/09-mobile-application-security/MOBILE-APPLICATION-SECURITY-LAB-PACK.md)
+- [10. Cloud-Native Application Security Engineering](docs/10-cloud-native-application-security/CLOUD-NATIVE-APPLICATION-SECURITY-ENGINEERING.md)
+- [10. Cloud-Native Application Security Lab Pack](docs/10-cloud-native-application-security/CLOUD-NATIVE-APPLICATION-SECURITY-LAB-PACK.md)
 - [07. Identity and Access Security](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [07. Identity and Access Security Lab Pack](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [04. Secure Coding Lab Pack](docs/04-secure-coding/SECURE-CODING-LAB-PACK.md)
