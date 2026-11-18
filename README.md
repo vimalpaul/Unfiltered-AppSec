@@ -97,6 +97,8 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 
 ## Source and evidence discipline
 
+The master [Authoritative Source Register](references/source-register.md) records the initial primary sources, editions and evidence grades.
+
 Important claims must be traceable to primary sources where possible. Sources are graded A through D based on authority and evidentiary strength. Each mapping identifies the exact edition or legal instrument, its scope, applicability conditions, relationship to the target control and limitations.
 
 The baseline source catalogue includes the stable OWASP ASVS 5.0.0 release, OWASP Top 10:2025, OWASP API Security Top 10:2023, NIST SP 800-218 SSDF 1.1 and its later draft revision, NIST CSF 2.0, PCI DSS 4.0.1, and jurisdiction-specific primary sources. Drafts and final publications are never silently conflated.
