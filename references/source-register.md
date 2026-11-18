@@ -169,3 +169,29 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-NIST-CSF-2 | NIST | https://www.nist.gov/cyberframework | CSF 2.0 | A | Cloud cybersecurity governance and outcomes |
 | SRC-CSA-CCM | Cloud Security Alliance | https://cloudsecurityalliance.org/research/cloud-controls-matrix | Current release to be pinned at assessment time | A | Cloud control and shared-responsibility mapping |
 
+
+
+## Distributed systems and integration security
+
+| ID | Publisher | Source | Edition / status captured | Grade | Main use |
+|---|---|---|---|---|---|
+| SRC-NIST-800-204 | NIST | https://csrc.nist.gov/pubs/sp/800/204/final | SP 800-204 final, 2019-08-07 | A | Microservices authentication, access management, discovery, secure communications, monitoring and resilience |
+| SRC-NIST-800-204A | NIST | https://csrc.nist.gov/pubs/sp/800/204/a/final | SP 800-204A final, 2020-05-27 | A | Service-mesh security architecture |
+| SRC-NIST-800-204B | NIST | https://csrc.nist.gov/pubs/sp/800/204/b/final | SP 800-204B final, 2021-08-06 | A | ABAC and mutual authentication for service mesh |
+| SRC-NIST-800-204C | NIST | https://csrc.nist.gov/pubs/sp/800/204/c/final | SP 800-204C final, 2022-03 | A | DevSecOps and code types for microservices/service mesh |
+| SRC-NIST-800-204D | NIST | https://csrc.nist.gov/pubs/sp/800/204/d/final | SP 800-204D final, 2024-02-12 | A | Software supply-chain security in CI/CD |
+| SRC-OWASP-MICROSERVICES | OWASP | https://cheatsheetseries.owasp.org/cheatsheets/Microservices_Security_Cheat_Sheet.html | Live Cheat Sheet Series guidance | A | Service-to-service authentication, authorization, identity propagation and logging |
+| SRC-IETF-RFC8693 | IETF | https://www.rfc-editor.org/rfc/rfc8693.html | RFC 8693, January 2020 | A | OAuth token exchange, delegation and impersonation semantics |
+| SRC-IETF-RFC8705 | IETF | https://www.rfc-editor.org/rfc/rfc8705.html | RFC 8705, February 2020 | A | OAuth mTLS client authentication and certificate-bound tokens |
+| SRC-IETF-RFC9421 | IETF | https://www.rfc-editor.org/rfc/rfc9421.html | RFC 9421, February 2024 | A | HTTP message signatures |
+| SRC-IETF-RFC9530 | IETF | https://www.rfc-editor.org/rfc/rfc9530.html | RFC 9530, February 2024 | A | HTTP digest fields and message content integrity metadata |
+| SRC-ASYNCAPI-3 | AsyncAPI Initiative | https://www.asyncapi.com/docs/reference/specification/v3.0.0 | AsyncAPI 3.0.0 | A | Machine-readable message-driven API contracts |
+| SRC-CLOUDEVENTS | Cloud Native Computing Foundation / CloudEvents | https://github.com/cloudevents/spec | CloudEvents 1.0.2 release | A | Common event envelope and protocol bindings |
+| SRC-SPIFFE-STANDARDS | SPIFFE Project | https://github.com/spiffe/spiffe/tree/main/standards | Living specifications; pin commit/release for implementation | A | Workload identity, SPIFFE IDs, SVIDs and Workload API |
+| SRC-SPIFFE-CONCEPTS | SPIFFE Project | https://spiffe.io/docs/latest/spiffe-about/spiffe-concepts/ | Living official documentation | A | Trust domains and SVID concepts |
+| SRC-GRPC-AUTH | gRPC Project | https://grpc.io/docs/guides/auth/ | Living official documentation | A | gRPC channel and call authentication |
+| SRC-KAFKA-SECURITY | Apache Kafka | https://kafka.apache.org/documentation/#security | Documentation for release 4.4 captured 2026-11-18; pin deployed broker version | A | TLS, SASL, authentication, authorization and ACLs |
+| SRC-RABBITMQ-ACCESS | RabbitMQ | https://www.rabbitmq.com/docs/access-control | Living official documentation; pin deployed release | A | Virtual hosts, authentication and resource permissions |
+| SRC-W3C-TRACE-CONTEXT | W3C | https://www.w3.org/TR/trace-context/ | W3C Trace Context Recommendation | A | Trace propagation and security/privacy considerations |
+| SRC-OTEL-SENSITIVE-DATA | OpenTelemetry | https://opentelemetry.io/docs/security/handling-sensitive-data/ | Living official guidance | A | Telemetry data minimization and sensitive attribute handling |
+
