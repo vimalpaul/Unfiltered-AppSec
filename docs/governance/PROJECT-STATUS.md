@@ -20,7 +20,7 @@
 - Starting state: empty repository, no files and no commits
 - GitHub access: read/write/admin permission confirmed through the connected account
 - Existing content preserved: not applicable; initial repository was empty
-- Current milestone: Milestone 3 identity and access security playbook and lab specifications
+- Current milestone: Milestone 4 web application security playbook and lab specifications
 
 ## 2. Current work state
 
@@ -39,7 +39,7 @@
 | Secure SDLC | Operating model and lifecycle control implementation | Draft baseline created | `docs/03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md`; expand with implementation-specific pipeline patterns and assurance procedures |
 | Secure coding | Language patterns and code review | Draft baseline created | `docs/04-secure-coding/SECURE-CODING-AND-CODE-REVIEW.md`; deepen version-specific framework examples and exact ASVS traceability |
 | Secure coding labs | Isolated reproducible exercises and assessment rubric | Draft lab specifications created | `docs/04-secure-coding/SECURE-CODING-LAB-PACK.md`; implement and reproduce containers before marking validated |
-| Web application security | Technical controls and test procedures | Pending | Next technical workstream after secure coding and identity foundations |
+| Web application security | Browser, HTTP, server-side, client-side and business logic controls | Draft baseline created | `docs/05-web-application-security/WEB-APPLICATION-SECURITY-ENGINEERING.md`; expand exact ASVS/WSTG mappings and version-specific examples |\n| Web application security labs | Isolated reproducible web security exercises | Draft lab specifications created | `docs/05-web-application-security/WEB-APPLICATION-SECURITY-LAB-PACK.md`; implement and validate lab environments before marking complete |
 | API security | Protocol and authorization testing | Pending | Start with OWASP API Security Top 10 and object/property authorization |
 | Identity and access security | Authentication, federation, session and authorization | Draft baseline created | `docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md`; expand exact ASVS and regulator mappings and version-specific executable examples |
 | Identity and access labs | Reproducible identity, federation, authorization and PAM exercises | Draft lab specifications created | `docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md`; implement and validate isolated environments before marking complete |
@@ -64,10 +64,10 @@
 
 ## 4. Next work sequence
 
-1. Build Web Application Security around browser/server controls, business logic and reproducible verification procedures.
-2. Build API and Service Security with detailed object-, property- and function-level authorization tests.
+1. Build Chapter 06 API and Service Security with detailed REST, GraphQL, gRPC, webhook, object-, property- and function-level authorization tests.
+2. Expand Chapter 05 with exact ASVS 5.0.0 and versioned WSTG v4.2 requirement/test mappings.
 3. Expand Chapter 07 with exact ASVS 5.0.0 requirement IDs, detailed SAML/OIDC implementation profiles and framework-version-specific executable examples.
-4. Implement and reproduce the identity and secure coding labs in pinned, isolated environments.
+4. Implement and reproduce the web, identity and secure coding labs in pinned, isolated environments.
 5. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
 6. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
 7. Continue the standards crosswalk into chapter-specific requirement-to-test mappings.
@@ -97,7 +97,7 @@ Scores use the 0–5 scale defined in the Research and Quality Method. Vectors a
 | 02 Architecture and Trust Boundaries | 4, 4, 3, 2, 2, 3, 4, 3, 3, 3, N/A (AI architecture is a later chapter), 4, 2, 3 | Strong initial design and threat-model foundation; add more patterns, validated labs and exact framework mappings |
 | 03 Secure SDLC and Product Security | 4, 4, 3, 3, 3, 3, 3, 4, 4, 4, N/A (agent governance is a later chapter), 4, 2, 3 | Substantive operating model; add concrete pipeline examples, implementation templates and sampled assurance evidence |
 | 04 Secure Coding and Code Review | 4, 4, 3, 3, 2, 4, 3, 4, 4, 3, N/A (agent governance is a later chapter), 4, 2, 3 | Broad initial playbook and lab specifications; framework-specific executable examples and ASVS IDs remain to be validated |
-| 07 Identity and Access Security | 4, 4, 4, 3, 2, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Substantive identity engineering baseline; detailed protocol profiles, exact ASVS IDs and reproducible labs remain open |
+| 05 Web Application Security | 4, 4, 3, 3, 2, 4, 4, 4, 4, 4, N/A (agent security is covered in dedicated chapters), 4, 2, 3 | Broad web engineering baseline and lab specifications; exact ASVS/WSTG traceability and executable lab validation remain open |\n| 07 Identity and Access Security | 4, 4, 4, 3, 2, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Substantive identity engineering baseline; detailed protocol profiles, exact ASVS IDs and reproducible labs remain open |
 
 ### Open quality actions
 
