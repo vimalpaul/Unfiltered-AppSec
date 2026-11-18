@@ -1178,6 +1178,7 @@ A professional mobile assessment pack should include:
 - [07. Identity and Access Security](../07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [08. Data Security and Privacy Engineering](../08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-ENGINEERING.md)
 - [09. Mobile Application Security Lab Pack](MOBILE-APPLICATION-SECURITY-LAB-PACK.md)
+- [10. Cloud-Native Application Security Engineering](../10-cloud-native-application-security/CLOUD-NATIVE-APPLICATION-SECURITY-ENGINEERING.md)
 - [13. Software Supply Chain Security](../13-software-supply-chain/SOFTWARE-SUPPLY-CHAIN-SECURITY.md)
 - [14. Security Verification and Assessment](../14-security-verification-assessment/SECURITY-VERIFICATION-AND-ASSESSMENT.md)
 - [18. Standards Baseline and Mapping Method](../18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
