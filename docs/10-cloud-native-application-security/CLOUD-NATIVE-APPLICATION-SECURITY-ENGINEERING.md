@@ -1176,9 +1176,6 @@ A cloud-native security assessment pack should include:
 - [08. Data Security and Privacy Engineering](../08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-ENGINEERING.md)
 - [09. Mobile Application Security](../09-mobile-application-security/MOBILE-APPLICATION-SECURITY-ENGINEERING.md)
 - [10. Cloud-Native Application Security Lab Pack](CLOUD-NATIVE-APPLICATION-SECURITY-LAB-PACK.md)
-- [13. Software Supply Chain Security](../13-software-supply-chain/SOFTWARE-SUPPLY-CHAIN-SECURITY.md)
-- [14. Security Verification and Assessment](../14-security-verification-assessment/SECURITY-VERIFICATION-AND-ASSESSMENT.md)
-- [17. DevSecOps and Security Tooling](../17-devsecops-tooling/DEVSECOPS-AND-SECURITY-TOOLING.md)
 - [18. Standards Baseline and Mapping Method](../18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
 - [19. Global Regulatory Register](../19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md)
 
