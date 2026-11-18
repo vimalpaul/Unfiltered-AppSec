@@ -98,3 +98,20 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-W3C-CSP3 | W3C | https://www.w3.org/TR/CSP3/ | Content Security Policy Level 3 | A | Browser resource and script execution policy |
 | SRC-WHATWG-FETCH | WHATWG | https://fetch.spec.whatwg.org/ | Living Fetch Standard | A | Browser fetch, CORS and request processing behavior |
 | SRC-MDN-WEB-SECURITY | MDN / Mozilla | https://developer.mozilla.org/en-US/docs/Web/Security | Living web platform documentation | B | Browser security model and implementation guidance |
+
+
+## API and service security
+
+| ID | Publisher | Source | Edition / status captured | Grade | Main use |
+|---|---|---|---|---|---|
+| SRC-OWASP-API-2023 | OWASP | https://owasp.org/API-Security/editions/2023/en/0x11-t10/ | API Security Top 10:2023 | A | API risk taxonomy including BOLA, BFLA, BOPLA, resource consumption and unsafe API consumption |
+| SRC-OWASP-API-PROJECT | OWASP | https://owasp.org/projects/api-security-project/ | Current project portal | A | API security guidance and project status |
+| SRC-OPENAPI-3.2.1 | OpenAPI Initiative | https://spec.openapis.org/oas/v3.2.1.html | OpenAPI Specification 3.2.1, 2026-09-10 | A | API contract and interface description |
+| SRC-OPENAPI-VERSIONS | OpenAPI Initiative | https://spec.openapis.org/oas/ | Version catalogue | A | Verify current OpenAPI version and schemas |
+| SRC-IETF-RFC9700 | IETF | https://www.rfc-editor.org/rfc/rfc9700.html | RFC 9700 / BCP 240, January 2025 | A | OAuth 2.0 Security Best Current Practice |
+| SRC-GRAPHQL-SECURITY | GraphQL Foundation | https://graphql.org/learn/security/ | Living security guidance | A | Query depth, breadth, batching, rate and complexity controls |
+| SRC-GRAPHQL-AUTHZ | GraphQL Foundation | https://graphql.org/learn/authorization/ | Living authorization guidance | A | Domain-layer authorization for GraphQL |
+| SRC-GRPC-AUTH | gRPC project | https://grpc.io/docs/guides/auth/ | Current gRPC authentication guide | A | TLS and gRPC authentication integration |
+| SRC-GRPC-AUTHZ | gRPC project | https://grpc.io/docs/guides/authorization/ | Current gRPC authorization guide | A | Service/method authorization guidance |
+| SRC-GRPC-SECURITY | gRPC project | https://grpc.io/docs/guides/security/ | Current gRPC security guide | A | Transport and service security |
+
