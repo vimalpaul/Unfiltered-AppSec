@@ -20,7 +20,7 @@
 - Starting state: empty repository, no files and no commits
 - GitHub access: read/write/admin permission confirmed through the connected account
 - Existing content preserved: not applicable; initial repository was empty
-- Current milestone: Milestone 6 data security and privacy engineering playbook and lab specifications
+- Current milestone: Milestone 7 mobile application security playbook and lab specifications
 
 ## 2. Current work state
 
@@ -47,7 +47,7 @@
 | Data security and privacy labs | Isolated data lifecycle, encryption, privacy and deletion exercises | Draft lab specifications created | `docs/08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-LAB-PACK.md`; implement and validate environments before marking complete |
 | Identity and access security | Authentication, federation, session and authorization | Draft baseline created | `docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md`; expand exact ASVS and regulator mappings and version-specific executable examples |
 | Identity and access labs | Reproducible identity, federation, authorization and PAM exercises | Draft lab specifications created | `docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md`; implement and validate isolated environments before marking complete |
-| Labs and templates | Safe reproducible labs and professional templates | Pending | Build alongside technical chapters |
+| Mobile application security | Android, iOS, hybrid apps, mobile identity, platform storage, IPC, deep links, WebViews, release assurance and backend integration | Draft baseline created | `docs/09-mobile-application-security/MOBILE-APPLICATION-SECURITY-ENGINEERING.md`; align exact control/test IDs to pinned MASVS/MASTG releases and add implementation-specific examples |\n| Mobile application security labs | Isolated Android, iOS, cross-platform, backend and release exercises | Draft lab specifications created | `docs/09-mobile-application-security/MOBILE-APPLICATION-SECURITY-LAB-PACK.md`; implement and validate device/emulator environments before marking complete |\n| Labs and templates | Safe reproducible labs and professional templates | Pending | Build alongside technical chapters |
 | AI agent workflows | Governed automation design and assessment | Pending | Build after core architecture and agent-security content |
 
 ## 3. Version and research watchlist
@@ -68,14 +68,15 @@
 
 ## 4. Next work sequence
 
-1. Expand Chapter 08 with exact ASVS 5.0.0 requirement mappings, privacy-by-design controls and version-specific cloud KMS/key lifecycle implementation examples.
-2. Expand Chapter 06 with exact ASVS 5.0.0 requirement mappings, API contract test automation and version-specific GraphQL/gRPC profiles.
-3. Expand Chapter 05 with exact ASVS 5.0.0 and versioned WSTG v4.2 requirement/test mappings.
-4. Expand Chapter 07 with exact ASVS 5.0.0 requirement IDs, detailed SAML/OIDC implementation profiles and framework-version-specific executable examples.
-5. Implement and reproduce the web, API, identity, data security and secure coding labs in pinned, isolated environments.
-6. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
-7. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
-8. Continue the standards crosswalk into chapter-specific requirement-to-test mappings.
+1. Expand Chapter 09 with exact MASVS control-to-MASWE-to-MASTG v2 test traceability, pinned checklist versions and platform-specific implementation examples.
+2. Expand Chapter 08 with exact ASVS 5.0.0 requirement mappings, privacy-by-design controls and version-specific cloud KMS/key lifecycle implementation examples.
+3. Expand Chapter 06 with exact ASVS 5.0.0 requirement mappings, API contract test automation and version-specific GraphQL/gRPC profiles.
+4. Expand Chapter 05 with exact ASVS 5.0.0 and versioned WSTG v4.2 requirement/test mappings.
+5. Expand Chapter 07 with exact ASVS 5.0.0 requirement IDs, detailed SAML/OIDC implementation profiles and framework-version-specific executable examples.
+6. Implement and reproduce the web, API, identity, data security, mobile and secure coding labs in pinned, isolated environments.
+7. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
+8. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
+9. Continue the standards crosswalk into chapter-specific requirement-to-test mappings.
 
 ## 5. Continuity rules
 
@@ -104,7 +105,7 @@ Scores use the 0–5 scale defined in the Research and Quality Method. Vectors a
 | 04 Secure Coding and Code Review | 4, 4, 3, 3, 2, 4, 3, 4, 4, 3, N/A (agent governance is a later chapter), 4, 2, 3 | Broad initial playbook and lab specifications; framework-specific executable examples and ASVS IDs remain to be validated |
 | 05 Web Application Security | 4, 4, 3, 3, 2, 4, 4, 4, 4, 4, N/A (agent security is covered in dedicated chapters), 4, 2, 3 | Broad web engineering baseline and lab specifications; exact ASVS/WSTG traceability and executable lab validation remain open |
 | 06 API and Service Security | 4, 4, 4, 3, 2, 4, 4, 4, 4, 4, N/A (agent security is covered in dedicated chapters), 4, 2, 3 | Broad protocol and authorization engineering baseline with lab specifications; exact ASVS traceability and executable lab validation remain open |
-| 08 Data Security and Privacy Engineering | 4, 4, 4, 3, 3, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Broad lifecycle, cryptographic and privacy engineering baseline with lab specifications; exact ASVS traceability and executable lab validation remain open |
+| 09 Mobile Application Security | 4, 4, 4, 3, 3, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Broad Android/iOS and hybrid mobile engineering baseline with lab specifications; exact pinned MASVS/MASTG traceability and executable lab validation remain open |\n| 08 Data Security and Privacy Engineering | 4, 4, 4, 3, 3, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Broad lifecycle, cryptographic and privacy engineering baseline with lab specifications; exact ASVS traceability and executable lab validation remain open |
 | 07 Identity and Access Security | 4, 4, 4, 3, 2, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Substantive identity engineering baseline; detailed protocol profiles, exact ASVS IDs and reproducible labs remain open |
 
 ### Open quality actions
