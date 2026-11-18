@@ -99,9 +99,9 @@ Scores use the 0–5 scale defined in the Research and Quality Method. Vectors a
 
 - Independent practitioner review has not yet been performed.
 - Mermaid source has been committed but rendering has not been independently validated in a documentation renderer.
-- External links are sourced from official publisher or regulator pages, but automated link checking has not yet been performed.
+- A repository-relative Markdown link check was run across all 12 committed Markdown files on 2026-11-18: 22 relative references were found and none were broken. Mermaid code fences are balanced. External-link availability and rendered diagram validation have not been independently automated.
 - Jurisdiction applicability requires entity- and sector-specific legal review.
 - Technical procedures and labs must be implemented and reproduced in isolated environments before being marked validated.
 
 
-The initial architecture and documents are foundation drafts. Their existence demonstrates repository initialization, not final approval or independent technical review. The first three technical chapters are substantive starting baselines and remain open for expansion, cross-chapter verification and practitioner review. The scores below are preliminary internal self-assessments, not independent reviews or evidence of compliance.
+The initial architecture and documents are foundation drafts. Their existence demonstrates repository initialization, not final approval or independent technical review. The first three technical chapters are substantive starting baselines and remain open for expansion, cross-chapter verification and practitioner review. Current verified main-branch HEAD at this checkpoint: `dd0d1286bdaf6a6421374ca026acba953f8f4615`. The scores below are preliminary internal self-assessments, not independent reviews or evidence of compliance.
