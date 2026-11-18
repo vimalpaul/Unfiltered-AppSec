@@ -97,7 +97,7 @@ Directories will be created when the first meaningful file is ready. A directory
 | 07 Identity and Access Security | Identity lifecycle, authentication, authorization, sessions, tokens and federation | 02, 05, 06 |
 | 08 Data Security and Privacy Engineering | Data lifecycle, classification, minimization, cryptography, privacy controls and deletion | 01, 02 |
 | 09 Mobile Application Security | Platform architecture, local data, application components, inter-process communication and mobile testing | 02, 07, 08 |
-| 10 Cloud-Native Application Security | Cloud identity, container and orchestration boundaries, workloads, serverless and runtime controls | 02, 07, 08, 13, 17 |
+| 10 Cloud-Native Application Security | Cloud organization and landing zones, human/workload IAM, provider control planes, container images/runtime, Kubernetes, serverless, managed services, IaC, CI/CD, observability and recovery | 02, 07, 08, 13, 17 |
 | 11 Distributed Systems and Integration Security | Microservices, events, queues, service-to-service auth, webhooks and trust delegation | 02, 06, 07, 10 |
 | 12 AI and LLM Application Security | AI-specific threat models, model/data/tool boundaries, RAG, agent execution and model supply chain | 02, 08, 11, 13, 23 |
 | 13 Software Supply Chain Security | Dependency governance, SBOM, provenance, build integrity, signing and supplier risk | 03, 10, 17 |
