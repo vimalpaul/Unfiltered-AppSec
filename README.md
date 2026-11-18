@@ -63,7 +63,7 @@ Geographic scope is global. Dedicated workstreams will cover India and Middle Ea
 | 08 | Data Security and Privacy Engineering | Classification, minimization, cryptography, key management, retention and privacy | Draft baseline and lab pack created |
 | 09 | Mobile Application Security | Android, iOS, local storage, IPC, platform controls and backend integration | Draft baseline and lab pack created |
 | 10 | Cloud-Native Application Security | Cloud IAM, workload identity, containers, Kubernetes, serverless, IaC, CI/CD and runtime | Draft baseline and lab pack created |
-| 11 | Distributed Systems and Integration Security | Microservices, events, queues, service mesh, webhooks and third-party integrations | Planned |
+| 11 | Distributed Systems and Integration Security | Workload identity, service authorization, service mesh, Kafka/RabbitMQ, events, replay, idempotency, sagas, webhooks and partner integrations | Draft baseline and lab pack created |
 | 12 | AI and LLM Application Security | Prompt injection, model interfaces, RAG, tool use, agent identity and AI supply chain | Planned |
 | 13 | Software Supply Chain Security | Dependencies, SBOM, provenance, signing, build security and supplier assurance | Planned |
 | 14 | Security Verification and Assessment | SAST, DAST, IAST, SCA, manual testing, penetration tests and assurance | Planned |
@@ -103,6 +103,8 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 - [09. Mobile Application Security Lab Pack](docs/09-mobile-application-security/MOBILE-APPLICATION-SECURITY-LAB-PACK.md)
 - [10. Cloud-Native Application Security Engineering](docs/10-cloud-native-application-security/CLOUD-NATIVE-APPLICATION-SECURITY-ENGINEERING.md)
 - [10. Cloud-Native Application Security Lab Pack](docs/10-cloud-native-application-security/CLOUD-NATIVE-APPLICATION-SECURITY-LAB-PACK.md)
+- [11. Distributed Systems and Integration Security Engineering](docs/11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-ENGINEERING.md)
+- [11. Distributed Systems and Integration Security Lab Pack](docs/11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-LAB-PACK.md)
 - [07. Identity and Access Security](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [07. Identity and Access Security Lab Pack](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [04. Secure Coding Lab Pack](docs/04-secure-coding/SECURE-CODING-LAB-PACK.md)
