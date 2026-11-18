@@ -56,7 +56,7 @@ Geographic scope is global. Dedicated workstreams will cover India and Middle Ea
 | 01 | AppSec Fundamentals | Core concepts, risk model, security objectives, lifecycle and terminology | Foundation chapter drafted |
 | 02 | Architecture and Threat Modeling | Reference architecture, trust boundaries, data flows, STRIDE, abuse cases and design review | Foundation chapter drafted |
 | 03 | Secure SDLC and Product Security | Security governance in delivery, security gates, requirements, roles and maturity | Draft baseline created |
-| 04 | Secure Coding and Code Review | Language-specific secure coding, patterns, anti-patterns, review methods | Planned |
+| 04 | Secure Coding and Code Review | Language-specific secure coding, patterns, anti-patterns, review methods | Draft baseline and lab pack created |
 | 05 | Web Application Security | Browser, HTTP, server-side, client-side, business logic and web control engineering | Planned |
 | 06 | API and Service Security | REST, GraphQL, gRPC, webhooks, API lifecycle and service authorization | Planned |
 | 07 | Identity and Access Security | Authentication, authorization, sessions, OAuth, OIDC, SAML, MFA and IAM | Planned |
@@ -92,6 +92,8 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 - [01. Application Security Fundamentals](docs/01-fundamentals/APPSEC-FUNDAMENTALS.md)
 - [02. Application Architecture and Trust Boundaries](docs/02-architecture-threat-modeling/APP-ARCHITECTURE-AND-TRUST-BOUNDARIES.md)
 - [03. Secure SDLC and Product Security](docs/03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md)
+- [04. Secure Coding and Code Review](docs/04-secure-coding/SECURE-CODING-AND-CODE-REVIEW.md)
+- [04. Secure Coding Lab Pack](docs/04-secure-coding/SECURE-CODING-LAB-PACK.md)
 - [Standards Baseline and Mapping Method](docs/18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
 - [Global Regulatory Register](docs/19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md)
 
