@@ -1240,6 +1240,8 @@ A support agent can retrieve a ticket and propose a refund, but cannot approve o
 - [02. Application Architecture and Trust Boundaries](../02-architecture-threat-modeling/APP-ARCHITECTURE-AND-TRUST-BOUNDARIES.md)
 - [03. Secure SDLC and Product Security](../03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md)
 - [04. Secure Coding and Code Review](../04-secure-coding/SECURE-CODING-AND-CODE-REVIEW.md)
+- [05. Web Application Security Engineering](../05-web-application-security/WEB-APPLICATION-SECURITY-ENGINEERING.md)
+- [05. Web Application Security Lab Pack](../05-web-application-security/WEB-APPLICATION-SECURITY-LAB-PACK.md)
 - [Identity and Access Security Lab Pack](IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [Standards Baseline and Mapping Method](../18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
 - [Global Regulatory Register](../19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md)
