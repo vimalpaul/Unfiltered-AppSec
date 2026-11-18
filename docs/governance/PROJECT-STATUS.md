@@ -20,7 +20,7 @@
 - Starting state: empty repository, no files and no commits
 - GitHub access: read/write/admin permission confirmed through the connected account
 - Existing content preserved: not applicable; initial repository was empty
-- Current milestone: Milestone 5 API and service security playbook and lab specifications
+- Current milestone: Milestone 6 data security and privacy engineering playbook and lab specifications
 
 ## 2. Current work state
 
@@ -43,7 +43,7 @@
 | Web application security labs | Isolated reproducible web security exercises | Draft lab specifications created | `docs/05-web-application-security/WEB-APPLICATION-SECURITY-LAB-PACK.md`; implement and validate lab environments before marking complete |
 | API and service security | REST, GraphQL, gRPC, webhooks, API authorization and service trust | Draft baseline created | `docs/06-api-service-security/API-AND-SERVICE-SECURITY-ENGINEERING.md`; add exact ASVS IDs and protocol-version-specific implementation profiles |
 | API and service security labs | Isolated API protocol, authorization and integration exercises | Draft lab specifications created | `docs/06-api-service-security/API-AND-SERVICE-SECURITY-LAB-PACK.md`; implement and validate lab environments before marking complete |
-| Identity and access security | Authentication, federation, session and authorization | Draft baseline created | `docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md`; expand exact ASVS and regulator mappings and version-specific executable examples |
+| Data security and privacy engineering | Data lifecycle, classification, cryptography, key management, privacy, retention and deletion | Draft baseline created | `docs/08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-ENGINEERING.md`; add exact ASVS IDs and jurisdiction-specific legal review |\n| Data security and privacy labs | Isolated data lifecycle, encryption, privacy and deletion exercises | Draft lab specifications created | `docs/08-data-security-privacy/DATA-SECURITY-AND-PRIVACY-LAB-PACK.md`; implement and validate environments before marking complete |\n| Identity and access security | Authentication, federation, session and authorization | Draft baseline created | `docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md`; expand exact ASVS and regulator mappings and version-specific executable examples |
 | Identity and access labs | Reproducible identity, federation, authorization and PAM exercises | Draft lab specifications created | `docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md`; implement and validate isolated environments before marking complete |
 | Labs and templates | Safe reproducible labs and professional templates | Pending | Build alongside technical chapters |
 | AI agent workflows | Governed automation design and assessment | Pending | Build after core architecture and agent-security content |
@@ -66,13 +66,14 @@
 
 ## 4. Next work sequence
 
-1. Expand Chapter 06 with exact ASVS 5.0.0 requirement mappings, API contract test automation and version-specific GraphQL/gRPC profiles.
-2. Expand Chapter 05 with exact ASVS 5.0.0 and versioned WSTG v4.2 requirement/test mappings.
-3. Expand Chapter 07 with exact ASVS 5.0.0 requirement IDs, detailed SAML/OIDC implementation profiles and framework-version-specific executable examples.
-4. Implement and reproduce the web, API, identity and secure coding labs in pinned, isolated environments.
-5. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
-6. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
-7. Continue the standards crosswalk into chapter-specific requirement-to-test mappings.
+1. Expand Chapter 08 with exact ASVS 5.0.0 requirement mappings, privacy-by-design controls and version-specific cloud KMS/key lifecycle implementation examples.
+2. Expand Chapter 06 with exact ASVS 5.0.0 requirement mappings, API contract test automation and version-specific GraphQL/gRPC profiles.
+3. Expand Chapter 05 with exact ASVS 5.0.0 and versioned WSTG v4.2 requirement/test mappings.
+4. Expand Chapter 07 with exact ASVS 5.0.0 requirement IDs, detailed SAML/OIDC implementation profiles and framework-version-specific executable examples.
+5. Implement and reproduce the web, API, identity, data security and secure coding labs in pinned, isolated environments.
+6. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
+7. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
+8. Continue the standards crosswalk into chapter-specific requirement-to-test mappings.
 
 ## 5. Continuity rules
 
@@ -101,7 +102,7 @@ Scores use the 0–5 scale defined in the Research and Quality Method. Vectors a
 | 04 Secure Coding and Code Review | 4, 4, 3, 3, 2, 4, 3, 4, 4, 3, N/A (agent governance is a later chapter), 4, 2, 3 | Broad initial playbook and lab specifications; framework-specific executable examples and ASVS IDs remain to be validated |
 | 05 Web Application Security | 4, 4, 3, 3, 2, 4, 4, 4, 4, 4, N/A (agent security is covered in dedicated chapters), 4, 2, 3 | Broad web engineering baseline and lab specifications; exact ASVS/WSTG traceability and executable lab validation remain open |
 | 06 API and Service Security | 4, 4, 4, 3, 2, 4, 4, 4, 4, 4, N/A (agent security is covered in dedicated chapters), 4, 2, 3 | Broad protocol and authorization engineering baseline with lab specifications; exact ASVS traceability and executable lab validation remain open |
-| 07 Identity and Access Security | 4, 4, 4, 3, 2, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Substantive identity engineering baseline; detailed protocol profiles, exact ASVS IDs and reproducible labs remain open |
+| 08 Data Security and Privacy Engineering | 4, 4, 4, 3, 3, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Broad lifecycle, cryptographic and privacy engineering baseline with lab specifications; exact ASVS traceability and executable lab validation remain open |\n| 07 Identity and Access Security | 4, 4, 4, 3, 2, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Substantive identity engineering baseline; detailed protocol profiles, exact ASVS IDs and reproducible labs remain open |
 
 ### Open quality actions
 
