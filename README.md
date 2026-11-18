@@ -55,7 +55,7 @@ Geographic scope is global. Dedicated workstreams will cover India and Middle Ea
 | 00 | Governance and Methodology | Charter, scope, architecture, quality gates, research method, status, contribution and safety | Foundation created |
 | 01 | AppSec Fundamentals | Core concepts, risk model, security objectives, lifecycle and terminology | Foundation chapter drafted |
 | 02 | Architecture and Threat Modeling | Reference architecture, trust boundaries, data flows, STRIDE, abuse cases and design review | Foundation chapter drafted |
-| 03 | Secure SDLC and Product Security | Security governance in delivery, security gates, requirements, roles and maturity | Planned |
+| 03 | Secure SDLC and Product Security | Security governance in delivery, security gates, requirements, roles and maturity | Draft baseline created |
 | 04 | Secure Coding and Code Review | Language-specific secure coding, patterns, anti-patterns, review methods | Planned |
 | 05 | Web Application Security | Browser, HTTP, server-side, client-side, business logic and web control engineering | Planned |
 | 06 | API and Service Security | REST, GraphQL, gRPC, webhooks, API lifecycle and service authorization | Planned |
@@ -91,8 +91,9 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 
 - [01. Application Security Fundamentals](docs/01-fundamentals/APPSEC-FUNDAMENTALS.md)
 - [02. Application Architecture and Trust Boundaries](docs/02-architecture-threat-modeling/APP-ARCHITECTURE-AND-TRUST-BOUNDARIES.md)
+- [03. Secure SDLC and Product Security](docs/03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md)
 - [Standards Baseline and Mapping Method](docs/18-standards-frameworks/STANDARDS-BASELINE-AND-MAPPING-METHOD.md)
-- [Global Regulatory Register](docs/19-global-regulatory/ GLOBAL-REGULATORY-REGISTER.md)
+- [Global Regulatory Register](docs/19-global-regulatory/GLOBAL-REGULATORY-REGISTER.md)
 
 ## Source and evidence discipline
 
