@@ -714,7 +714,61 @@ For each lab capture:
 
 **Teardown:** Revoke all test identities, delete mock registry and runners, remove artifacts and confirm no test secrets remain.
 
-## 30. Assessment rubric
+## 30. Lab 26 — SLSA v1.2 Source track evidence
+
+**Objective:** Assess whether a test repository can demonstrate source-track requirements for revision identity, history, technical controls and two-party review.
+
+**Prerequisites:** Dedicated test repository with protected branch rules, code-owner policy and audit logs.
+
+### Procedure
+
+1. Pin SLSA v1.2 and identify the Source track requirements for L1 through L4.
+2. Record the repository's stable identifier and an immutable source revision.
+3. Verify that source revisions are uniquely identifiable and the change history is retained.
+4. Configure protected branch rules, restricted administrative access and immutable release tags where supported.
+5. Generate or collect source provenance evidence for a new test revision.
+6. Verify that the evidence identifies the revision, contributors, parent revision and relevant change-management controls.
+7. Configure a technical control such as mandatory status checks and code-owner approval.
+8. Attempt a protected-branch update that does not satisfy the technical control.
+9. Configure two independent trusted reviewers for the protected branch.
+10. Attempt a change with only one approval and verify the source control system blocks it.
+11. Inspect administrative bypass paths and record how they are controlled and audited.
+12. Map evidence to each SLSA Source level separately; record the highest level fully evidenced and all gaps.
+
+**Expected result:** Source revision identity, history, provenance, technical enforcement and two-party review are evidenced without conflating the Source and Build tracks.
+
+**Evidence:** Repository policy, revision identifiers, source provenance, review records, bypass logs and level assessment.
+
+**Teardown:** Restore baseline branch policy and remove test reviewers.
+
+## 31. Lab 27 — SLSA v1.2 Build track and hardened builder isolation
+
+**Objective:** Assess build provenance, hosted-builder trust, signature verification and Build L3 isolation requirements.
+
+**Prerequisites:** Dedicated hosted or disposable CI builder, synthetic artifact and lab signing identity.
+
+### Procedure
+
+1. Pin SLSA v1.2 and read the normative Build L1, L2 and L3 requirements.
+2. Build a synthetic artifact with a consistent documented workflow.
+3. Generate provenance containing the artifact digest, build type, builder identity and top-level inputs.
+4. Verify provenance exists and is distributed with the artifact.
+5. Move the test to a hosted build platform that can generate and sign provenance.
+6. Verify provenance authenticity against the expected signer and builder identity.
+7. Inspect the builder's isolation model and trusted control-plane boundary.
+8. Run two controlled jobs and verify they cannot influence each other's writable state.
+9. Verify the user-defined build steps cannot read or modify provenance-signing secrets.
+10. Verify untrusted pull-request code cannot access signing credentials or production deployment identity.
+11. Attempt to alter an artifact after the build and verify digest/provenance checks fail.
+12. Record which Build track level is fully supported by evidence and which requirements remain unmet.
+
+**Expected result:** Build provenance is tied to the artifact digest and expected builder; higher-level claims are made only when the hosted platform and isolation requirements are evidenced.
+
+**Evidence:** Provenance statement, signature bundle, builder documentation, isolation test, secret-access policy and digest verification.
+
+**Teardown:** Revoke lab signing identity and destroy builder resources.
+
+## 32. Assessment rubric
 
 | Criterion | Points |
 |---|---:|
@@ -730,7 +784,7 @@ For each lab capture:
 
 Suggested training interpretation: 90–100 strong independent engineering; 75–89 competent with review; 60–74 guided remediation required; below 60 repeat the exercises. These are educational thresholds, not a certification.
 
-## 31. Instructor review checklist
+## 33. Instructor review checklist
 
 - Was the scope authorized and isolated?
 - Were all repositories, dependencies, registries, workflows and artifacts inventoried?
@@ -756,30 +810,32 @@ Suggested training interpretation: 90–100 strong independent engineering; 75�
 - Was the release evidence gate tested with missing and mismatched evidence?
 - Were all test credentials, registries, runners and artifacts removed?
 
-## 32. References
+## 34. References
 
 1. NIST SP 800-218 SSDF v1.1: https://csrc.nist.gov/pubs/sp/800/218/final
-2. SLSA framework: https://slsa.dev/spec/v1.0/
-3. in-toto: https://in-toto.io/
-4. SPDX specification: https://spdx.github.io/spdx-spec/v3.0.1/
-5. CycloneDX 1.7: https://cyclonedx.org/specification/overview/
-6. CISA 2026 Minimum Elements for an SBOM: https://www.cisa.gov/resources-tools/resources/2026-minimum-elements-software-bill-materials-sbom
-7. Sigstore: https://docs.sigstore.dev/
-8. Cosign quickstart: https://docs.sigstore.dev/quickstart/quickstart-cosign/
-9. OpenSSF Scorecard: https://scorecard.dev/
-10. OSV: https://osv.dev/
-11. OSV-Scanner: https://google.github.io/osv-scanner/
-12. OWASP Dependency-Track: https://dependencytrack.org/
-13. Syft: https://github.com/anchore/syft
-14. Grype: https://github.com/anchore/grype
-15. NIST CSF 2.0: https://www.nist.gov/cyberframework
-16. ISO/IEC 27001: https://www.iso.org/standard/27001
-17. ISO/IEC 27036: https://www.iso.org/standard/82905.html
-18. PCI DSS: https://www.pcisecuritystandards.org/document_library/
-19. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
-20. OWASP SAMM: https://owaspsamm.org/
+2. SLSA v1.2 specification: https://slsa.dev/spec/v1.2/
+3. SLSA v1.2 Source track: https://slsa.dev/spec/v1.2/source-requirements
+4. SLSA v1.2 Build track: https://slsa.dev/spec/v1.2/build-requirements
+5. in-toto: https://in-toto.io/
+6. SPDX specification: https://spdx.github.io/spdx-spec/v3.0.1/
+7. CycloneDX 1.7: https://cyclonedx.org/specification/overview/
+8. CISA 2026 Minimum Elements for an SBOM announcement: https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb
+9. Sigstore: https://docs.sigstore.dev/
+10. Cosign quickstart: https://docs.sigstore.dev/quickstart/quickstart-cosign/
+11. OpenSSF Scorecard: https://scorecard.dev/
+12. OSV: https://osv.dev/
+13. OSV-Scanner: https://google.github.io/osv-scanner/
+14. OWASP Dependency-Track: https://dependencytrack.org/
+15. Syft: https://github.com/anchore/syft
+16. Grype: https://github.com/anchore/grype
+17. NIST CSF 2.0: https://www.nist.gov/cyberframework
+18. ISO/IEC 27001: https://www.iso.org/standard/27001
+19. ISO/IEC 27036: https://www.iso.org/standard/82905.html
+20. PCI DSS: https://www.pcisecuritystandards.org/document_library/
+21. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
+22. OWASP SAMM: https://owaspsamm.org/
 
-## 33. Revision history
+## 35. Revision history
 
 | Version | Date | Change |
 |---|---|---|
