@@ -674,7 +674,107 @@ Redact prompts or outputs that include secrets or personal data even if syntheti
 
 **Teardown:** Revoke exercise identities and reset synthetic data.
 
-## 28. Assessment rubric
+## 28. Lab 25 — Secure inter-agent communication
+
+**Objective:** Verify that messages exchanged between agents preserve sender identity, task scope, integrity and replay protection.
+
+**Prerequisites:** Two or more local agents with separate synthetic identities and a message broker or in-process message bus.
+
+### Procedure
+
+1. Register agent A and agent B with distinct workload identities.
+2. Define a strict message schema containing sender, recipient, task ID, parent task ID, tenant, requested capability, expiry and correlation ID.
+3. Configure agent B to accept only approved senders and task types.
+4. Send a valid request from agent A and verify processing.
+5. Attempt a message with a forged sender name but no valid identity.
+6. Attempt a replay of a previously accepted task ID.
+7. Attempt to change tenant, recipient or requested capability in transit.
+8. Attempt to delegate a task outside agent A's permitted scope.
+9. Verify the receiver independently authorizes the requested operation and does not trust natural-language claims of authority.
+10. Review message audit and delegation lineage.
+
+**Expected result:** Only authenticated, authorized, integrity-protected and in-scope agent messages are accepted; replay and privilege escalation are rejected.
+
+**Evidence:** Agent identity matrix, message schema, rejected message logs and delegation trace.
+
+**Teardown:** Revoke agent identities and delete synthetic task records.
+
+## 29. Lab 26 — Cascading failure containment
+
+**Objective:** Verify that agent/tool dependency failures do not create runaway retries, recursive delegation or uncontrolled side effects.
+
+**Prerequisites:** Local orchestrator, two mock tools and a synthetic dependent agent.
+
+### Procedure
+
+1. Configure explicit workflow deadline, retry budget, concurrency ceiling and maximum delegation depth.
+2. Run a normal workflow and record baseline calls and latency.
+3. Configure one mock tool to return bounded transient errors.
+4. Observe retries and verify exponential backoff and global workflow budget.
+5. Configure a second tool to time out.
+6. Verify circuit breaker and bulkhead behavior.
+7. Simulate a child agent failing while the parent continues.
+8. Verify the parent does not recursively create replacement agents without policy approval.
+9. Confirm partial workflow state is durable and the user is not told the task succeeded.
+10. Restore dependencies and verify controlled recovery without a retry burst.
+
+**Expected result:** Failure is contained within the workflow budget; no uncontrolled agent fan-out or duplicate action occurs.
+
+**Evidence:** Workflow trace, retry counters, circuit-breaker state and partial-state record.
+
+**Teardown:** Restore mock tools and delete fault-injection configuration.
+
+## 30. Lab 27 — Human-agent trust exploitation and action preview integrity
+
+**Objective:** Ensure human reviewers are not induced to approve an action different from the canonical operation that will execute.
+
+**Prerequisites:** Mock approval UI and draft-only synthetic tool.
+
+### Procedure
+
+1. Create a synthetic action with target, operation, arguments, impact summary and canonical digest.
+2. Configure the agent to produce both a human-readable summary and machine-readable action.
+3. Compare the displayed summary with the canonical action fields.
+4. In a controlled test, make the summary omit a material argument or describe a different target.
+5. Verify the approval UI presents the actual target, permissions, data and consequences independently of the agent's summary.
+6. Attempt to alter action arguments after approval.
+7. Verify the digest mismatch blocks execution.
+8. Attempt to reuse an approval or use an expired approval.
+9. Verify high-impact operations require a separate approver where policy requires.
+10. Record what evidence the approver saw and what action the server executed.
+
+**Expected result:** Approval is based on the canonical action, not a potentially deceptive agent-generated summary.
+
+**Evidence:** UI capture with synthetic data, action digest, approval record and execution log.
+
+**Teardown:** Delete approval and synthetic action.
+
+## 31. Lab 28 — Rogue agent discovery, quarantine and kill switch
+
+**Objective:** Detect and contain an agent that is unregistered, misconfigured or operating outside its declared capabilities.
+
+**Prerequisites:** Disposable agent runtime, approved agent registry and mock tool gateway.
+
+### Procedure
+
+1. Register one approved synthetic agent with a declared identity, owner, model, prompt version and tool manifest.
+2. Start the agent and verify it appears in inventory and telemetry.
+3. In a separate lab namespace, launch an unregistered agent with a synthetic identity.
+4. Attempt to access a tool using an undeclared capability.
+5. Modify a test agent's tool manifest or runtime configuration without an approved change.
+6. Verify inventory/configuration monitoring detects the drift.
+7. Trigger quarantine and revoke the rogue agent's tool credentials.
+8. Confirm active workflows stop or enter a safe suspended state.
+9. Verify the agent cannot re-register itself or obtain new credentials without approval.
+10. Review forensic records and recovery approval.
+
+**Expected result:** Unregistered or policy-drifting agents are discovered, quarantined and prevented from continuing privileged actions.
+
+**Evidence:** Agent registry, configuration diff, alert, revocation record and workflow stop event.
+
+**Teardown:** Remove rogue agent, revoke all test identities and clean up namespace.
+
+## 32. Assessment rubric
 
 | Criterion | Points |
 |---|---:|
@@ -682,16 +782,16 @@ Redact prompts or outputs that include secrets or personal data even if syntheti
 | Direct/indirect prompt injection and prompt protection | 10 |
 | RAG, document ingestion, vector and tenant isolation | 15 |
 | Tool gateway, authorization, agent autonomy and approval | 15 |
-| MCP and identity/delegation security | 10 |
+| MCP, identity/delegation and inter-agent communication security | 10 |
 | Output handling and downstream sinks | 10 |
 | Model/data supply chain and evaluation integrity | 10 |
 | Privacy, memory, multimodal and telemetry | 10 |
-| Rate limits, detection, incident response and cleanup | 10 |
+| Rate limits, cascading failure, rogue-agent containment, detection, incident response and cleanup | 10 |
 | **Total** | **100** |
 
 Suggested training interpretation: 90–100 strong independent engineering; 75–89 competent with review; 60–74 guided remediation required; below 60 repeat the exercises. These are educational thresholds, not a certification.
 
-## 29. Instructor review checklist
+## 33. Instructor review checklist
 
 - Was the environment authorized and isolated?
 - Were all models, prompts, datasets, tools and connectors inventoried?
@@ -707,6 +807,10 @@ Suggested training interpretation: 90–100 strong independent engineering; 75�
 - Was human approval bound to the exact action?
 - Were memory writes and cross-session access controlled?
 - Were MCP server trust and token audience validated?
+- Were inter-agent identities, task scope, integrity and replay protection tested?
+- Were cascading failures and agent fan-out contained?
+- Was human approval based on canonical action details rather than agent summaries?
+- Were rogue agent registration, configuration drift and quarantine tested?
 - Was output safely rendered and prevented from reaching execution sinks?
 - Were citations checked against real authorized source IDs?
 - Were model artifacts and datasets traceable and approved?
@@ -716,7 +820,7 @@ Suggested training interpretation: 90–100 strong independent engineering; 75�
 - Was the emergency stop and credential revocation tested?
 - Was evidence sanitized and teardown verified?
 
-## 30. References
+## 34. References
 
 1. OWASP Top 10 for LLM Applications: https://genai.owasp.org/llm-top-10/
 2. OWASP GenAI Security Project: https://genai.owasp.org/
@@ -731,7 +835,7 @@ Suggested training interpretation: 90–100 strong independent engineering; 75�
 11. OWASP AI Exchange: https://owaspai.org/
 12. OWASP Machine Learning Security Top 10: https://owasp.org/www-project-machine-learning-security-top-10/
 
-## 31. Revision history
+## 35. Revision history
 
 | Version | Date | Change |
 |---|---|---|
