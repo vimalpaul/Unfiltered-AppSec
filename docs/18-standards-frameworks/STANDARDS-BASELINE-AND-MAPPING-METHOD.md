@@ -192,6 +192,18 @@ flowchart TD
 10. Qatar NCSA National Information Assurance Standard v2.1: https://assurance.ncsa.gov.qa/sites/default/files/publications/policy/2023/NCSA_CSGA_%20National_Information_Assurance_Standard_En_V2.1_0.pdf
 11. Saudi NCA Essential Cybersecurity Controls ECC 2:2024: https://cdn.nca.gov.sa/api/files/public/upload/86e09090-44e4-481f-bc28-355673607654_ECC--2024-EN.pdf
 
+## 9.1 Software supply chain standards and source additions
+
+
+12. NIST SP 800-204D, Strategies for the Integration of Software Supply Chain Security in DevSecOps CI/CD Pipelines: https://csrc.nist.gov/pubs/sp/800/204/d/final
+13. SLSA v1.0 specification and provenance: https://slsa.dev/spec/v1.0/
+14. in-toto: https://in-toto.io/
+15. SPDX 3.0.1: https://spdx.github.io/spdx-spec/v3.0.1/
+16. CycloneDX 1.7 specification: https://cyclonedx.org/specification/overview/
+17. CISA 2026 SBOM Minimum Elements announcement: https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb
+18. Sigstore: https://docs.sigstore.dev/
+19. OpenSSF Scorecard: https://scorecard.dev/
+
 ## 10. Maintenance and limitations
 
 This is a baseline register and mapping method. It does not contain a full clause-level crosswalk for every listed framework. Each detailed mapping must be added after applicability and source verification. Check official publishers before each audit, procurement or regulatory engagement. ISO catalogue details and copyrighted clause text require publisher-controlled verification.
