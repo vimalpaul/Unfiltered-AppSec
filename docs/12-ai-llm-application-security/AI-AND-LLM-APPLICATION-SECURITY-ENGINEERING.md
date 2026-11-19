@@ -534,6 +534,19 @@ Map data at collection, upload, parsing, prompt construction, inference, retriev
 - Provide appropriate transparency and user controls.
 - Test data deletion across source, index, vector, cache and backup layers.
 
+### 13.3 Memory security
+
+Memory is a persistence layer and must be treated like a database:
+- Define what can be stored and for what purpose.
+- Separate user-owned memory from system instructions.
+- Validate provenance and source trust.
+- Restrict who can write, read and delete memory.
+- Prevent one user's memory from entering another user's context.
+- Expire stale memory and support correction/deletion.
+- Avoid storing secrets and unnecessary sensitive data.
+- Audit memory changes and access.
+- Test memory poisoning and cross-session contamination.
+
 ### 13.4 GenAI data security architecture patterns
 
 Use the OWASP GenAI Data Security Best Practices v2 material as a companion for detailed data classification, governance and lifecycle implementation. Part 2, published 17 November 2026, describes reusable patterns including governed ingress, metadata propagation, retrieval boundaries, full-chain erasure, AI-BOM lineage and federated policy enforcement.
@@ -548,19 +561,6 @@ Engineering implications:
 - Enforce policy consistently across services and providers rather than relying on per-prompt conventions.
 
 Reference: https://genai.owasp.org/resource/genai-data-security-best-practices-v2-part2/
-
-### 13.3 Memory security
-
-Memory is a persistence layer and must be treated like a database:
-- Define what can be stored and for what purpose.
-- Separate user-owned memory from system instructions.
-- Validate provenance and source trust.
-- Restrict who can write, read and delete memory.
-- Prevent one user's memory from entering another user's context.
-- Expire stale memory and support correction/deletion.
-- Avoid storing secrets and unnecessary sensitive data.
-- Audit memory changes and access.
-- Test memory poisoning and cross-session contamination.
 
 ## 14. Multimodal security
 
