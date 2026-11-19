@@ -194,15 +194,18 @@ flowchart TD
 
 ## 9.1 Software supply chain standards and source additions
 
+The detailed implementation and project-specific mappings are maintained in [Chapter 13: Software Supply Chain Security](../13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md) and its [lab pack](../13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-LAB-PACK.md).
 
 12. NIST SP 800-204D, Strategies for the Integration of Software Supply Chain Security in DevSecOps CI/CD Pipelines: https://csrc.nist.gov/pubs/sp/800/204/d/final
-13. SLSA v1.0 specification and provenance: https://slsa.dev/spec/v1.0/
-14. in-toto: https://in-toto.io/
-15. SPDX 3.0.1: https://spdx.github.io/spdx-spec/v3.0.1/
-16. CycloneDX 1.7 specification: https://cyclonedx.org/specification/overview/
-17. CISA 2026 SBOM Minimum Elements announcement: https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb
-18. Sigstore: https://docs.sigstore.dev/
-19. OpenSSF Scorecard: https://scorecard.dev/
+13. SLSA v1.2 approved specification: https://slsa.dev/spec/v1.2/
+14. SLSA v1.2 Source track requirements: https://slsa.dev/spec/v1.2/source-requirements
+15. SLSA v1.2 Build track requirements: https://slsa.dev/spec/v1.2/build-requirements
+16. in-toto: https://in-toto.io/
+17. SPDX 3.0.1: https://spdx.github.io/spdx-spec/v3.0.1/
+18. CycloneDX 1.7: https://cyclonedx.org/specification/overview/
+19. CISA 2026 SBOM Minimum Elements announcement: https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb
+20. Sigstore: https://docs.sigstore.dev/
+21. OpenSSF Scorecard: https://scorecard.dev/
 
 ## 10. Maintenance and limitations
 
