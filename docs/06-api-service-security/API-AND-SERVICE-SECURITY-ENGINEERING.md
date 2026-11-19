@@ -1121,6 +1121,7 @@ Before implementation:
 - This playbook does not replace Chapter 07 identity engineering or Chapter 11 distributed systems engineering.
 
 ## 33. Related chapters
+- [12. AI and LLM Application Security](../12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-ENGINEERING.md)
 - [11. Distributed Systems and Integration Security](../11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-ENGINEERING.md)
 
 - [01. AppSec Fundamentals](../01-fundamentals/APPSEC-FUNDAMENTALS.md)
