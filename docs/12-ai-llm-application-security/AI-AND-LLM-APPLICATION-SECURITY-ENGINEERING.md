@@ -841,6 +841,20 @@ Mappings are relevance guidance, not compliance assertions. Use the exact editio
 
 The OWASP GenAI Security Project published the **OWASP GenAI LLM Top 10 2026** on 3 August 2026. It is the current edition as of this chapter's review date. It updates the risk taxonomy and mappings using community research and real-world incident analysis. The complete 2026 taxonomy and mitigation wording must be taken from the official 2026 resource before claiming numbered control alignment. This chapter currently provides a broad engineering baseline across the risk domains; its internal test IDs are not OWASP control IDs.
 
+The official OWASP Q3 2026 exploit roundup explicitly uses the following 2026 identifiers. This is a **partial confirmed mapping**, not a complete reproduction of the Top 10. The full 2026 PDF must be reviewed and pinned before mapping all ten categories.
+
+| Confirmed 2026 ID | Risk name | Chapter coverage |
+|---|---|---|
+| LLM01:2026 | Prompt Injection | Sections 7, 8, 9, 17 |
+| LLM02:2026 | Sensitive Information Disclosure | Sections 8, 13, 17 |
+| LLM03:2026 | Excessive Agency | Sections 9, 10, 15, 17 |
+| LLM04:2026 | Supply Chain | Section 11 |
+| LLM05:2026 | Data and Model Poisoning | Sections 8, 11, 13 |
+| LLM06:2026 | Unbounded Consumption | Sections 15, 16, 18 |
+
+The 2026 numbering differs from the 2025 legacy list below. Do not carry over 2025 identifiers into 2026 findings without validating the updated taxonomy.
+
+
 - Current 2026 resource: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
 - Official initiative page: https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/
 
