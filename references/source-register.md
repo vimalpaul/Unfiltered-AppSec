@@ -195,3 +195,23 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-W3C-TRACE-CONTEXT | W3C | https://www.w3.org/TR/trace-context/ | W3C Trace Context Recommendation | A | Trace propagation and security/privacy considerations |
 | SRC-OTEL-SENSITIVE-DATA | OpenTelemetry | https://opentelemetry.io/docs/security/handling-sensitive-data/ | Living official guidance | A | Telemetry data minimization and sensitive attribute handling |
 
+
+
+## AI and LLM application security
+
+| ID | Publisher | Source | Edition / status captured | Grade | Main use |
+|---|---|---|---|---|---|
+| SRC-OWASP-LLM-TOP10 | OWASP GenAI Security Project | https://genai.owasp.org/llm-top-10/ | 2025 LLM Application Top 10; verify latest edition before release claims | A | Prompt injection, sensitive information disclosure, supply chain, poisoning, output handling, excessive agency, prompt leakage, vector weaknesses, misinformation and unbounded consumption |
+| SRC-OWASP-GENAI | OWASP GenAI Security Project | https://genai.owasp.org/ | Living project guidance | A | GenAI application security resources and threat taxonomy |
+| SRC-NIST-AI-RMF | NIST | https://www.nist.gov/itl/ai-risk-management-framework | AI RMF 1.0, 2023 | A | Govern, Map, Measure and Manage AI risk |
+| SRC-NIST-AI-600-1 | NIST | https://doi.org/10.6028/NIST.AI.600-1 | AI 600-1, Generative AI Profile, 2024-07 | A | Generative AI risk management profile |
+| SRC-MITRE-ATLAS | MITRE | https://atlas.mitre.org/ | Living knowledge base; pin snapshot for assessment | A | Adversary tactics and techniques targeting AI-enabled systems |
+| SRC-MCP-SPEC | Model Context Protocol | https://modelcontextprotocol.io/specification/ | Living protocol specification; pin exact protocol version | A | MCP clients, servers, tools, resources and protocol behavior |
+| SRC-MCP-SECURITY | Model Context Protocol | https://modelcontextprotocol.io/specification/draft/basic/security_best_practices | Draft/living security guidance; verify current status and version | A | OAuth, confused deputy, token audience, local/remote server security |
+| SRC-OWASP-API | OWASP | https://owasp.org/API-Security/ | OWASP API Security Top 10 current project page | A | API authorization, authentication, SSRF, resource consumption and unsafe API consumption |
+| SRC-NIST-SSDF | NIST | https://csrc.nist.gov/pubs/sp/800/218/final | SP 800-218 final, 2022-02-03 | A | Secure development lifecycle for AI application components and supporting software |
+| SRC-ISO-42001 | ISO | https://www.iso.org/standard/81230.html | ISO/IEC 42001:2023 | A | AI management system requirements |
+| SRC-ISO-27001 | ISO | https://www.iso.org/standard/27001 | ISO/IEC 27001:2022 | A | Information security management system controls supporting AI service security |
+| SRC-OWASP-AI-EXCHANGE | OWASP | https://owaspai.org/ | Living AI Exchange resource | B | AI security knowledge and implementation references |
+| SRC-OWASP-ML-TOP10 | OWASP | https://owasp.org/www-project-machine-learning-security-top-10/ | Project page; verify latest taxonomy | B | Machine-learning pipeline and model security risks |
+
