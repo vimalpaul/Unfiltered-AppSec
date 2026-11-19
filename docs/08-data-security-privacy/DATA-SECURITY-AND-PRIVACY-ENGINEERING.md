@@ -1034,6 +1034,7 @@ Evidence must be time-bound, attributable, scoped and protected. Screenshots wit
 This roadmap is a planning model; prioritize based on risk and legal deadlines.
 
 ## 29. Related chapters
+- [12. AI and LLM Application Security](../12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-ENGINEERING.md)
 
 - [01. AppSec Fundamentals](../01-fundamentals/APPSEC-FUNDAMENTALS.md)
 - [02. Application Architecture and Trust Boundaries](../02-architecture-threat-modeling/APP-ARCHITECTURE-AND-TRUST-BOUNDARIES.md)
