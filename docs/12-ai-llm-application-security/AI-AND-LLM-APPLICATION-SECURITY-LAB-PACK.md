@@ -822,18 +822,21 @@ Suggested training interpretation: 90â€“100 strong independent engineering; 75â€
 
 ## 34. References
 
-1. OWASP Top 10 for LLM Applications: https://genai.owasp.org/llm-top-10/
-2. OWASP GenAI Security Project: https://genai.owasp.org/
-3. NIST AI RMF: https://www.nist.gov/itl/ai-risk-management-framework
-4. NIST AI 600-1: https://doi.org/10.6028/NIST.AI.600-1
-5. MITRE ATLAS: https://atlas.mitre.org/
-6. MCP specification: https://modelcontextprotocol.io/specification/
-7. MCP security best practices: https://modelcontextprotocol.io/specification/draft/basic/security_best_practices
-8. OWASP API Security: https://owasp.org/API-Security/
-9. NIST SSDF: https://csrc.nist.gov/pubs/sp/800/218/final
-10. ISO/IEC 42001: https://www.iso.org/standard/81230.html
-11. OWASP AI Exchange: https://owaspai.org/
-12. OWASP Machine Learning Security Top 10: https://owasp.org/www-project-machine-learning-security-top-10/
+1. OWASP GenAI LLM Top 10 2026: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
+2. OWASP Top 10 for Agentic Applications 2026: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+3. OWASP Agent Control Standard: https://genai.owasp.org/resource/agent-control-standard-acs/
+4. OWASP GenAI Red Teaming Manual v1.0: https://genai.owasp.org/resource/genai-red-teaming-manual-version-1-0/
+5. OWASP GenAI Security Project: https://genai.owasp.org/
+6. NIST AI RMF: https://www.nist.gov/itl/ai-risk-management-framework
+7. NIST AI 600-1: https://doi.org/10.6028/NIST.AI.600-1
+8. MITRE ATLAS: https://atlas.mitre.org/
+9. MCP specification: https://modelcontextprotocol.io/specification/
+10. MCP security best practices: https://modelcontextprotocol.io/specification/draft/basic/security_best_practices
+11. OWASP API Security: https://owasp.org/API-Security/
+12. NIST SSDF: https://csrc.nist.gov/pubs/sp/800/218/final
+13. ISO/IEC 42001: https://www.iso.org/standard/81230.html
+14. OWASP AI Exchange: https://owaspai.org/
+15. OWASP Machine Learning Security Top 10: https://owasp.org/www-project-machine-learning-security-top-10/
 
 ## 35. Revision history
 
