@@ -1136,6 +1136,7 @@ An AI application security assessment pack should include:
 - This chapter is an engineering baseline, not a legal opinion, model certification or compliance attestation.
 
 ## 28. Related chapters
+- [13. Software Supply Chain Security](../13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md)
 
 - [02. Application Architecture and Trust Boundaries](../02-architecture-threat-modeling/APP-ARCHITECTURE-AND-TRUST-BOUNDARIES.md)
 - [03. Secure SDLC and Product Security](../03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md)
