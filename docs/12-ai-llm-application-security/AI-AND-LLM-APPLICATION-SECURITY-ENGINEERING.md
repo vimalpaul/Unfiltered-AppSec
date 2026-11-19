@@ -802,11 +802,16 @@ A detection is not operational until telemetry source, query, thresholds, false-
 
 Mappings are relevance guidance, not compliance assertions. Use the exact edition and map requirements to the deployed system boundary and evidence.
 
-### 20.1 OWASP Top 10 for LLM Applications
+### 20.1 OWASP GenAI LLM Top 10 2026
 
-The OWASP GenAI Security Project's LLM application risk taxonomy is a useful threat-discovery baseline. Confirm the current edition before claiming alignment. The 2025 list includes:
+The OWASP GenAI Security Project published the **OWASP GenAI LLM Top 10 2026** on 3 August 2026. It is the current edition as of this chapter's review date. It updates the risk taxonomy and mappings using community research and real-world incident analysis. The complete 2026 taxonomy and mitigation wording must be taken from the official 2026 resource before claiming numbered control alignment. This chapter currently provides a broad engineering baseline across the risk domains; its internal test IDs are not OWASP control IDs.
 
-| OWASP category | Security concern | Chapter coverage |
+- Current 2026 resource: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
+- Official initiative page: https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/
+
+The 2025 list below is retained only as a historical cross-reference because many tools, reports and existing programs still use its identifiers. Do not present it as the latest edition.
+
+| OWASP 2025 legacy category | Security concern | Chapter coverage |
 |---|---|---|
 | LLM01 Prompt Injection | Direct and indirect instruction manipulation | Sections 7, 8, 9, 17 |
 | LLM02 Sensitive Information Disclosure | Confidential data exposure through context/output | Sections 8, 13, 17 |
@@ -819,7 +824,35 @@ The OWASP GenAI Security Project's LLM application risk taxonomy is a useful thr
 | LLM09 Misinformation | Incorrect or fabricated output and unsafe reliance | Sections 12, 16 |
 | LLM10 Unbounded Consumption | Cost, compute and availability abuse | Sections 15, 16 |
 
-### 20.2 NIST AI Risk Management Framework
+### 20.2 OWASP Top 10 for Agentic Applications 2026
+
+The OWASP Agentic Security Initiative published the 2026 Agentic Applications Top 10 in December 2025. Its categories are particularly relevant when a model can plan, delegate, invoke tools, retain memory or act across systems.
+
+| ID | Agentic risk | Chapter coverage |
+|---|---|---|
+| ASI01 | Agent Goal Hijack | Sections 7, 9, 17 |
+| ASI02 | Tool Misuse and Exploitation | Sections 9, 10, 17 |
+| ASI03 | Identity and Privilege Abuse | Sections 6, 9, 10 |
+| ASI04 | Agentic Supply Chain Vulnerabilities | Sections 10, 11 |
+| ASI05 | Unexpected Code Execution (RCE) | Sections 12, 15, 17 |
+| ASI06 | Memory and Context Poisoning | Sections 7, 8, 13 |
+| ASI07 | Insecure Inter-Agent Communication | Sections 9, 10 |
+| ASI08 | Cascading Failures | Sections 9, 15, 18 |
+| ASI09 | Human-Agent Trust Exploitation | Sections 9, 16 |
+| ASI10 | Rogue Agents | Sections 9, 16, 19 |
+
+The agentic taxonomy emphasizes least agency, tool-level least privilege, action-level authentication and approval, execution isolation, egress control, policy enforcement middleware, adaptive tool budgets, ephemeral access, semantic tool validation and observable agent behavior. Use the original document for detailed definitions, attack scenarios and mitigations: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+
+### 20.3 OWASP Agent Control Standard (ACS)
+
+The OWASP Agent Control Standard provides a runtime-oriented approach to making agents inspectable, traceable and instrumentable, with middleware hooks through which policies can be enforced across agent frameworks. It is relevant to the tool gateway, approval, agent identity, telemetry and emergency-stop controls in Sections 9, 10, 18 and 19.
+
+Reference: https://genai.owasp.org/resource/agent-control-standard-acs/
+
+Treat ACS as a control implementation resource; verify its current version, implementation maturity and compatibility with the deployed agent framework before adopting it.
+
+
+### 20.4 NIST AI Risk Management Framework
 
 NIST AI RMF 1.0 organizes AI risk management around Govern, Map, Measure and Manage. Apply the functions across:
 - Govern: ownership, accountability, policies, third-party and lifecycle oversight.
@@ -827,27 +860,27 @@ NIST AI RMF 1.0 organizes AI risk management around Govern, Map, Measure and Man
 - Measure: evaluation, testing, monitoring and documented limitations.
 - Manage: prioritization, response, mitigation, residual risk and ongoing monitoring.
 
-### 20.3 NIST Generative AI Profile
+### 20.5 NIST Generative AI Profile
 
 NIST AI 600-1, Generative Artificial Intelligence Profile, is a companion resource to the AI RMF. Use it to structure generative AI risk identification, measurement and management. It is not a technical control checklist or a certification.
 
-### 20.4 MITRE ATLAS
+### 20.6 MITRE ATLAS
 
 MITRE ATLAS provides a knowledge base of adversary tactics and techniques targeting AI-enabled systems. Use it to expand threat scenarios, red-team hypotheses and detection coverage. Map each technique to the actual architecture and do not treat technique presence as proof of exploitability.
 
-### 20.5 MCP official security guidance
+### 20.7 MCP official security guidance
 
 Use the official MCP specification and security best-practice documentation for the exact protocol version. Review authorization, token audience/resource binding, confused deputy risks, local server trust, consent and tool security. MCP protocol conformance is not equivalent to application authorization.
 
-### 20.6 OWASP API Security Top 10
+### 20.8 OWASP API Security Top 10
 
 AI endpoints remain APIs. Relevant categories include broken object-level authorization, broken authentication, broken object property-level authorization, unrestricted resource consumption, broken function-level authorization, SSRF, security misconfiguration, improper inventory management and unsafe consumption of APIs.
 
-### 20.7 ISO/IEC 42001 and ISO/IEC 27001
+### 20.9 ISO/IEC 42001 and ISO/IEC 27001
 
 ISO/IEC 42001 provides an AI management system framework. ISO/IEC 27001 provides an information security management system framework. Neither should be reduced to a list of AI attack tests. Establish scope, context, roles, risk treatment, operational controls, evaluation and continual improvement. Map AI-specific technical controls into the organization's broader ISMS and AIMS where applicable.
 
-### 20.8 Secure development and privacy
+### 20.10 Secure development and privacy
 
 Use NIST SSDF SP 800-218 for secure development practices; use applicable privacy laws and organizational policies for lawful purpose, minimization, transparency, retention, data-subject rights and cross-border processing. The relevant law depends on entity, data subject, processing, jurisdiction and sector.
 
@@ -1065,19 +1098,24 @@ An AI application security assessment pack should include:
 
 ## 29. Authoritative references
 
-1. OWASP Top 10 for LLM Applications (2025): https://genai.owasp.org/llm-top-10/
-2. OWASP GenAI Security Project: https://genai.owasp.org/
-3. NIST AI Risk Management Framework: https://www.nist.gov/itl/ai-risk-management-framework
-4. NIST AI 600-1, Generative Artificial Intelligence Profile: https://doi.org/10.6028/NIST.AI.600-1
-5. MITRE ATLAS: https://atlas.mitre.org/
-6. Model Context Protocol specification: https://modelcontextprotocol.io/specification/
-7. MCP security best practices: https://modelcontextprotocol.io/specification/draft/basic/security_best_practices
-8. OWASP API Security Top 10: https://owasp.org/API-Security/
-9. NIST SP 800-218, Secure Software Development Framework: https://csrc.nist.gov/pubs/sp/800/218/final
-10. ISO/IEC 42001, Artificial intelligence management systems: https://www.iso.org/standard/81230.html
-11. ISO/IEC 27001, Information security management systems: https://www.iso.org/standard/27001
-12. OWASP AI Exchange: https://owaspai.org/
-13. OWASP Machine Learning Security Top Ten: https://owasp.org/www-project-machine-learning-security-top-10/
+1. OWASP GenAI LLM Top 10 2026: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
+2. OWASP Top 10 for Agentic Applications 2026: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+3. OWASP Agent Control Standard (ACS): https://genai.owasp.org/resource/agent-control-standard-acs/
+4. OWASP GenAI Red Teaming Manual Version 1.0: https://genai.owasp.org/resource/genai-red-teaming-manual-version-1-0/
+5. OWASP Securing Agentic Applications V2: https://genai.owasp.org/initiative_name/agentic-security/
+6. OWASP GenAI Security Project: https://genai.owasp.org/
+7. OWASP Top 10 for LLM Applications 2025 (historical cross-reference): https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/
+8. NIST AI Risk Management Framework: https://www.nist.gov/itl/ai-risk-management-framework
+9. NIST AI 600-1, Generative Artificial Intelligence Profile: https://doi.org/10.6028/NIST.AI.600-1
+10. MITRE ATLAS: https://atlas.mitre.org/
+11. Model Context Protocol specification: https://modelcontextprotocol.io/specification/
+12. MCP security best practices: https://modelcontextprotocol.io/specification/draft/basic/security_best_practices
+13. OWASP API Security Top 10: https://owasp.org/API-Security/
+14. NIST SP 800-218, Secure Software Development Framework: https://csrc.nist.gov/pubs/sp/800/218/final
+15. ISO/IEC 42001, Artificial intelligence management systems: https://www.iso.org/standard/81230.html
+16. ISO/IEC 27001, Information security management systems: https://www.iso.org/standard/27001
+17. OWASP AI Exchange: https://owaspai.org/
+18. OWASP Machine Learning Security Top Ten: https://owasp.org/www-project-machine-learning-security-top-10/
 14. OWASP Cheat Sheet Series: https://cheatsheetseries.owasp.org/
 
 ## 30. Revision history
