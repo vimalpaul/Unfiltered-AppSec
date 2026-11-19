@@ -800,6 +800,7 @@ For each production release retain:
 - Retention location and evidence integrity control.
 
 ## 32. Related chapters
+- [13. Software Supply Chain Security Lab Pack](SOFTWARE-SUPPLY-CHAIN-SECURITY-LAB-PACK.md)
 
 - [03. Secure SDLC and Product Security](../03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md)
 - [10. Cloud-Native Application Security](../10-cloud-native-application-security/CLOUD-NATIVE-APPLICATION-SECURITY-ENGINEERING.md)
