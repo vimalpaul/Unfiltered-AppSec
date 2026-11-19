@@ -20,7 +20,7 @@
 - Starting state: empty repository, no files and no commits
 - GitHub access: read/write/admin permission confirmed through the connected account
 - Existing content preserved: not applicable; initial repository was empty
-- Current milestone: Milestone 9 distributed systems and integration security playbook and lab specifications
+- Current milestone: Milestone 10 AI and LLM application security playbook and lab specifications
 
 ## 2. Current work state
 
@@ -53,6 +53,8 @@
 | Cloud-native application security labs | Isolated cloud, container, Kubernetes, serverless, IaC and CI/CD exercises | Draft lab specifications created | `docs/10-cloud-native-application-security/CLOUD-NATIVE-APPLICATION-SECURITY-LAB-PACK.md`; implement and validate local/cloud environments and cleanup/cost controls before marking complete |
 | Distributed systems and integration security | Microservices, workload identity, service authorization, service mesh, brokers, events, webhooks, distributed workflows, third-party integrations and telemetry | Draft baseline created | `docs/11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-ENGINEERING.md`; validate broker/service-mesh version profiles, add exact standards traceability and reproduce implementation labs |
 | Distributed systems and integration security labs | Isolated workload identity, mTLS, broker ACL, event integrity, replay, outbox/inbox, saga, webhook, SSRF, resilience and telemetry exercises | Draft lab specifications created | `docs/11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-LAB-PACK.md`; implement and independently validate pinned environments before marking complete |
+| AI and LLM application security | Prompt injection, RAG, vector and embedding security, tool authorization, agents, MCP, model/data supply chain, output handling, privacy and operations | Draft baseline created | `docs/12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-ENGINEERING.md`; verify framework editions, provider-specific behavior and exact AI risk-control traceability |
+| AI and LLM application security labs | Isolated prompt injection, cross-tenant RAG, tool/agent, MCP, output, supply-chain, multimodal, privacy and incident-response exercises | Draft lab specifications created | `docs/12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-LAB-PACK.md`; implement and independently validate pinned sandbox environments before marking complete |
 | Labs and templates | Safe reproducible labs and professional templates | Pending | Build alongside technical chapters |
 | AI agent workflows | Governed automation design and assessment | Pending | Build after core architecture and agent-security content |
 
@@ -74,13 +76,13 @@
 
 ## 4. Next work sequence
 
-1. Expand Chapter 11 with exact broker-version profiles, service-mesh implementation matrices, protocol-level security requirements and traceable test-to-control mappings.
-2. Build Chapter 12 AI and LLM Application Security, including prompt injection, RAG, tool-use authorization, agent identity, data boundaries and AI supply-chain risks.
+1. Expand Chapter 12 with exact OWASP LLM risk-to-test mappings, current MCP security profiles, provider-specific controls, model artifact and dataset provenance, and repeatable evaluation methodology.
+2. Expand Chapter 11 with exact broker-version profiles, service-mesh implementation matrices, protocol-level security requirements and traceable test-to-control mappings.
 3. Expand Chapter 10 with provider-specific identity federation, cloud policy, service configuration and exact CIS/provider framework traceability; validate current editions.
 4. Expand Chapter 09 with exact MASVS control-to-MASWE-to-MASTG v2 test traceability and pinned platform implementation examples.
 5. Expand Chapters 08 and 07 with exact ASVS mappings, cryptographic lifecycle examples and federation implementation profiles.
 6. Expand Chapter 06 with exact ASVS mappings, API contract automation and protocol-version-specific GraphQL/gRPC profiles.
-7. Implement and reproduce the web, API, identity, data, mobile, cloud-native, distributed-systems and secure-coding labs in pinned isolated environments.
+7. Implement and reproduce the web, API, identity, data, mobile, cloud-native, distributed-systems, AI/LLM and secure-coding labs in pinned isolated environments.
 8. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
 9. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
 10. Continue standards crosswalks into chapter-specific requirement-to-test mappings.
@@ -111,6 +113,7 @@ Scores use the 0–5 scale defined in the Research and Quality Method. Vectors a
 | 04 Secure Coding and Code Review | 4, 4, 3, 3, 2, 4, 3, 4, 4, 3, N/A (agent governance is a later chapter), 4, 2, 3 | Broad initial playbook and lab specifications; framework-specific executable examples and ASVS IDs remain to be validated |
 | 05 Web Application Security | 4, 4, 3, 3, 2, 4, 4, 4, 4, 4, N/A (agent security is covered in dedicated chapters), 4, 2, 3 | Broad web engineering baseline and lab specifications; exact ASVS/WSTG traceability and executable lab validation remain open |
 | 06 API and Service Security | 4, 4, 4, 3, 2, 4, 4, 4, 4, 4, N/A (agent security is covered in dedicated chapters), 4, 2, 3 | Broad protocol and authorization engineering baseline with lab specifications; exact ASVS traceability and executable lab validation remain open |
+| 12 AI and LLM Application Security | 4, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 2, 3 | Broad LLM, RAG, vector, agent/tool, MCP, model supply-chain and privacy baseline with 24 lab specifications; provider-specific validation and independently executed labs remain open |
 | 11 Distributed Systems and Integration Security | 4, 4, 4, 3, 3, 4, 4, 4, 4, 4, N/A (AI/agent security is a later chapter), 4, 2, 3 | Broad microservices, workload identity, brokers, events, distributed workflow, webhook and integration baseline with lab specifications; exact broker/version traceability and independent lab execution remain open |
 | 10 Cloud-Native Application Security | 4, 4, 4, 3, 3, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Broad cloud, container, Kubernetes, serverless and delivery engineering baseline with lab specifications; exact provider/CIS mappings and executable cloud validation remain open |
 | 09 Mobile Application Security | 4, 4, 4, 3, 3, 4, 4, 4, 4, 4, 3, 4, 2, 3 | Broad Android/iOS and hybrid mobile engineering baseline with lab specifications; exact pinned MASVS/MASTG traceability and executable lab validation remain open |
