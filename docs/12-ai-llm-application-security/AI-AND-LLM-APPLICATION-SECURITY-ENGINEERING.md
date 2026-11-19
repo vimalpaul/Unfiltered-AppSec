@@ -701,6 +701,10 @@ The IDs below are internal project identifiers, not external standard control ID
 | AI-T-038 | Human oversight | Trigger high-impact action without required approver | Action is blocked pending valid approval |
 | AI-T-039 | Emergency stop | Disable agent/tool credentials during active workflow | New actions stop and state is safely recorded |
 | AI-T-040 | Incident detection | Simulate injection, unauthorized tool call and quota abuse | Actionable alerts reach the assigned owner |
+| AI-T-041 | Inter-agent communication | Send forged, replayed or schema-invalid message from a synthetic peer agent | Sender identity, message integrity, task scope and replay controls reject the message |
+| AI-T-042 | Cascading failure | Simulate one dependent tool/agent becoming unavailable in a bounded lab workflow | Deadlines, retry budgets, circuit breakers and workflow isolation prevent cascade |
+| AI-T-043 | Human-agent trust | Present a synthetic deceptive agent summary or altered action preview to an approver | Approver sees canonical action details and independently verifiable evidence |
+| AI-T-044 | Rogue agent | Simulate unauthorized agent registration, configuration drift or tool activation | Inventory, runtime policy and kill switch detect and contain the agent |
 
 ## 18. Detection engineering catalogue
 
@@ -726,6 +730,10 @@ The IDs below are internal project identifiers, not external standard control ID
 | AI-D-018 | Provider key misuse | API key used from unexpected service, region or volume | Revoke/rotate key and inspect provider audit |
 | AI-D-019 | Approval bypass | Tool action occurs without valid approval record | Stop workflow and investigate orchestration |
 | AI-D-020 | Emergency stop failure | Tool continues after revocation or kill switch | Isolate agent runtime and revoke downstream credentials |
+| AI-D-021 | Inter-agent trust anomaly | Unknown agent identity, invalid signature, unexpected delegation hop or replayed task ID | Reject message, suspend delegation and investigate peer identity |
+| AI-D-022 | Agent cascade | Retry/agent-call fan-out, queue age, tool failure and workflow recursion rise together | Apply workflow circuit breaker and isolate failing dependency |
+| AI-D-023 | Approval deception | Difference between agent summary, canonical action digest and executed arguments | Block execution and require fresh independent approval |
+| AI-D-024 | Rogue agent behavior | Unregistered agent, altered tool manifest, unexpected capability or policy bypass | Quarantine agent and revoke runtime credentials |
 
 A detection is not operational until telemetry source, query, thresholds, false-positive handling, owner, severity, runbook and test evidence are defined.
 
