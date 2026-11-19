@@ -223,3 +223,31 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-OWASP-AI-EXCHANGE | OWASP | https://owaspai.org/ | Living AI Exchange resource | B | AI security knowledge and implementation references |
 | SRC-OWASP-ML-TOP10 | OWASP | https://owasp.org/www-project-machine-learning-security-top-10/ | Project page; verify latest taxonomy | B | Machine-learning pipeline and model security risks |
 
+
+
+## Software supply chain security
+
+| ID | Publisher | Source | Edition / status captured | Grade | Main use |
+|---|---|---|---|---|---|
+| SRC-NIST-SSDF-218 | NIST | https://csrc.nist.gov/pubs/sp/800/218/final | SP 800-218 v1.1 final, 2022-02 | A | Secure software development practices across the SDLC |
+| SRC-NIST-SSDF-PROJECT | NIST | https://csrc.nist.gov/Projects/ssdf | Living project page; monitor revision status | A | SSDF updates, drafts and publication status |
+| SRC-NIST-800-204D | NIST | https://csrc.nist.gov/pubs/sp/800/204/d/final | SP 800-204D final | A | Software supply-chain security integration into DevSecOps CI/CD pipelines |
+| SRC-SLSA | OpenSSF / SLSA | https://slsa.dev/spec/v1.0/ | SLSA v1.0 baseline; monitor current specification releases | A | Source/build integrity and provenance requirements |
+| SRC-SLSA-PROVENANCE | SLSA | https://slsa.dev/spec/v1.0/provenance | SLSA provenance predicate v1 | A | Build source, builder, invocation, materials and subject claims |
+| SRC-IN-TOTO | in-toto | https://in-toto.io/ | Living project specification; pin schema/tool versions | A | Supply-chain step attestations and layout verification |
+| SRC-SPDX-301 | Linux Foundation / SPDX | https://spdx.github.io/spdx-spec/v3.0.1/ | SPDX 3.0.1 specification | A | SBOM, software component, provenance and license data |
+| SRC-CYCLONEDX-17 | OWASP / Ecma | https://cyclonedx.org/specification/overview/ | CycloneDX 1.7 specification; release tooling may have 1.7.x patch releases | A | SBOM, VEX, SaaSBOM, HBOM, CBOM, ML-BOM and attestations |
+| SRC-CYCLONEDX-RELEASES | OWASP CycloneDX | https://github.com/CycloneDX/specification/releases | Release feed; latest inspected patch release 1.7.1 | A | Schema and tooling change monitoring; verify latest release before pinning |
+| SRC-CISA-SBOM-2026 | CISA and international partners | https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb | 2026 Minimum Elements for an SBOM announced 2026-07-29 | A | Updated component hash, license, tool name, generation context and AI/SaaS considerations |
+| SRC-SIGSTORE | Sigstore | https://docs.sigstore.dev/ | Living project documentation | A | Artifact signing, verification, short-lived identity and transparency |
+| SRC-COSIGN | Sigstore | https://docs.sigstore.dev/quickstart/quickstart-cosign/ | Current quickstart; pin installed release | A | Blob/container signing and identity-bound verification |
+| SRC-OPENSSF-SCORECARD | OpenSSF | https://scorecard.dev/ | Living project | A | Automated open-source project security posture signals; not a certification |
+| SRC-OPENSSF-BEST-PRACTICES | OpenSSF | https://www.bestpractices.dev/ | Living project | B | Open-source project practices and self-assessment |
+| SRC-OSV | Google / OpenSSF ecosystem | https://osv.dev/ | Living vulnerability database | A | Open-source package vulnerability advisories |
+| SRC-OSV-SCANNER | Google | https://google.github.io/osv-scanner/ | Living scanner; pin release | A | Dependency and source vulnerability scanning |
+| SRC-OWASP-DEPENDENCY-TRACK | OWASP | https://dependencytrack.org/ | Living project; pin release | A | SBOM ingestion, component risk and vulnerability management |
+| SRC-SYFT | Anchore | https://github.com/anchore/syft | Living project; pin release | B | SBOM generation from filesystems, directories and container images |
+| SRC-GRYPE | Anchore | https://github.com/anchore/grype | Living project; pin release | B | Vulnerability matching for packages and images |
+| SRC-ISO-27036 | ISO | https://www.iso.org/standard/82905.html | ISO/IEC 27036 catalogue record; verify applicable part and edition | A | Supplier relationship security |
+| SRC-OWASP-SAMM | OWASP | https://owaspsamm.org/ | Living maturity model | A | Secure build/deploy and software assurance maturity |
+| SRC-EU-CRA | European Union | https://eur-lex.europa.eu/eli/reg/2024/2847/oj | Regulation (EU) 2024/2847 | A | Product cybersecurity, vulnerability handling and reporting; applicability review required |
