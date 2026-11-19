@@ -286,12 +286,13 @@ Generate the SBOM in a machine-readable format and validate it against the selec
 
 Select one primary exchange format per product or define a conversion/dual-format strategy. Do not assume two SBOM formats contain equivalent semantics. Pin schema version and validate producer/consumer interoperability.
 
-As of this review, CycloneDX 1.7 is the current published specification baseline captured for this chapter; SPDX 3.0.1 is the inspected SPDX specification. Confirm exact schema and tool support at implementation time.
+As of this review, CycloneDX 1.7 is the specification/schema version captured for this chapter; 1.7.x release numbers refer to specification repository releases and should be checked independently. SPDX 3.0.1 is the inspected SPDX specification. Confirm exact schema and tool support at implementation time.
 
 ### 12.3 SBOM quality
 
 Check:
 - Unique and stable document serial/version.
+- SBOM tool name/version and generation context, consistent with the CISA 2026 minimum-elements guidance.
 - Creation timestamp and author/tool metadata.
 - Product and release identity.
 - Component name, supplier, version and purl/CPE where available.
@@ -711,12 +712,13 @@ For each production release retain:
 ## 33. References
 
 1. NIST SP 800-218 SSDF v1.1: https://csrc.nist.gov/pubs/sp/800/218/final
+2. NIST SP 800-204D, Strategies for the Integration of Software Supply Chain Security in DevSecOps CI/CD Pipelines: https://csrc.nist.gov/pubs/sp/800/204/d/final
 2. SLSA framework and specifications: https://slsa.dev/spec/v1.0/
 3. SLSA build provenance: https://slsa.dev/spec/v1.0/provenance
 4. in-toto: https://in-toto.io/
 5. SPDX 3.0.1 specification: https://spdx.github.io/spdx-spec/v3.0.1/
 6. CycloneDX 1.7 specification: https://cyclonedx.org/specification/overview/
-7. CISA 2026 Minimum Elements for an SBOM: https://www.cisa.gov/resources-tools/resources/2026-minimum-elements-software-bill-materials-sbom
+7. CISA 2026 Minimum Elements for an SBOM announcement and guidance link: https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb
 8. Sigstore documentation: https://docs.sigstore.dev/
 9. Cosign quickstart: https://docs.sigstore.dev/quickstart/quickstart-cosign/
 10. OpenSSF Scorecard: https://scorecard.dev/
