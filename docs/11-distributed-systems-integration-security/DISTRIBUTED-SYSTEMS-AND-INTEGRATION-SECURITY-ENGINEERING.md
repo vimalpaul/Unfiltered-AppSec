@@ -1226,6 +1226,7 @@ A distributed systems security assessment pack should include scope, authorizati
 - This chapter is an engineering baseline, not a protocol certification, legal opinion or compliance attestation.
 
 ## 28. Related chapters
+- [12. AI and LLM Application Security](../12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-ENGINEERING.md)
 
 - [02. Application Architecture and Trust Boundaries](../02-architecture-threat-modeling/APP-ARCHITECTURE-AND-TRUST-BOUNDARIES.md)
 - [03. Secure SDLC and Product Security](../03-secure-sdlc-product-security/SECURE-SDLC-AND-PRODUCT-SECURITY.md)
