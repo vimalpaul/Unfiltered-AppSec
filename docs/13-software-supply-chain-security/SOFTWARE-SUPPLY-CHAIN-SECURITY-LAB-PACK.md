@@ -840,3 +840,4 @@ Suggested training interpretation: 90â€“100 strong independent engineering; 75â€
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-19 | Initial software supply-chain security lab specifications |
+| 0.2 | 2026-11-19 | Add SLSA v1.2 Source and Build track assessment labs |
