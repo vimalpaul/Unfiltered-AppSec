@@ -1167,6 +1167,7 @@ A cloud-native security assessment pack should include:
 - This chapter is an engineering baseline, not a cloud provider certification, legal opinion or compliance attestation.
 
 ## 30. Related chapters
+- [13. Software Supply Chain Security](../13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md)
 - [12. AI and LLM Application Security](../12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-ENGINEERING.md)
 - [11. Distributed Systems and Integration Security](../11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-ENGINEERING.md)
 
