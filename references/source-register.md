@@ -232,12 +232,14 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-NIST-SSDF-218 | NIST | https://csrc.nist.gov/pubs/sp/800/218/final | SP 800-218 v1.1 final, 2022-02 | A | Secure software development practices across the SDLC |
 | SRC-NIST-SSDF-PROJECT | NIST | https://csrc.nist.gov/Projects/ssdf | Living project page; monitor revision status | A | SSDF updates, drafts and publication status |
 | SRC-NIST-800-204D | NIST | https://csrc.nist.gov/pubs/sp/800/204/d/final | SP 800-204D final | A | Software supply-chain security integration into DevSecOps CI/CD pipelines |
-| SRC-SLSA | OpenSSF / SLSA | https://slsa.dev/spec/v1.0/ | SLSA v1.0 baseline; monitor current specification releases | A | Source/build integrity and provenance requirements |
-| SRC-SLSA-PROVENANCE | SLSA | https://slsa.dev/spec/v1.0/provenance | SLSA provenance predicate v1 | A | Build source, builder, invocation, materials and subject claims |
+| SRC-SLSA-12 | OpenSSF / SLSA | https://slsa.dev/spec/v1.2/ | SLSA v1.2 approved specification, current baseline captured 2026-11-19 | A | Separate Source and Build tracks; Source L1–L4 and Build L0–L3 |
+| SRC-SLSA-SOURCE-12 | OpenSSF / SLSA | https://slsa.dev/spec/v1.2/source-requirements | SLSA v1.2 Source track, approved | A | Source revision identity, history, source provenance, technical controls and two-party review |
+| SRC-SLSA-BUILD-12 | OpenSSF / SLSA | https://slsa.dev/spec/v1.2/build-requirements | SLSA v1.2 Build track, approved | A | Provenance completeness/authenticity/accuracy and build isolation requirements |
+| SRC-SLSA-PROVENANCE | SLSA | https://slsa.dev/spec/v1.2/build-provenance | SLSA v1.2 Build provenance; predicate type remains slsa.dev/provenance/v1 | A | Build source, builder, invocation, resolved dependencies and artifact subject claims |
 | SRC-IN-TOTO | in-toto | https://in-toto.io/ | Living project specification; pin schema/tool versions | A | Supply-chain step attestations and layout verification |
 | SRC-SPDX-301 | Linux Foundation / SPDX | https://spdx.github.io/spdx-spec/v3.0.1/ | SPDX 3.0.1 specification | A | SBOM, software component, provenance and license data |
 | SRC-CYCLONEDX-17 | OWASP / Ecma | https://cyclonedx.org/specification/overview/ | CycloneDX 1.7 specification; release tooling may have 1.7.x patch releases | A | SBOM, VEX, SaaSBOM, HBOM, CBOM, ML-BOM and attestations |
-| SRC-CYCLONEDX-RELEASES | OWASP CycloneDX | https://github.com/CycloneDX/specification/releases | Release feed; latest inspected patch release 1.7.1 | A | Schema and tooling change monitoring; verify latest release before pinning |
+| SRC-CYCLONEDX-RELEASES | OWASP CycloneDX | https://github.com/CycloneDX/specification/releases | Release feed; patch release must be checked at implementation time | A | Schema and tooling change monitoring; distinguish 1.7 schema version from 1.7.x repository releases |
 | SRC-CISA-SBOM-2026 | CISA and international partners | https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb | 2026 Minimum Elements for an SBOM announced 2026-07-29 | A | Updated component hash, license, tool name, generation context and AI/SaaS considerations |
 | SRC-SIGSTORE | Sigstore | https://docs.sigstore.dev/ | Living project documentation | A | Artifact signing, verification, short-lived identity and transparency |
 | SRC-COSIGN | Sigstore | https://docs.sigstore.dev/quickstart/quickstart-cosign/ | Current quickstart; pin installed release | A | Blob/container signing and identity-bound verification |
