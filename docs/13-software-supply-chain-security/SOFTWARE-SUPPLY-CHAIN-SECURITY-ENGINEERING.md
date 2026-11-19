@@ -379,7 +379,28 @@ Capture at minimum:
 
 Consumers must verify the attestation cryptographically and enforce policy over expected source, builder identity, workflow, repository, ref and artifact digest. A provenance document that is not authenticated or whose signer is not trusted is only an assertion.
 
-SLSA levels describe increasing supply-chain guarantees; do not claim a level from the presence of a provenance file alone. Evaluate the requirements for the exact SLSA version and build platform.
+### 15.1 SLSA v1.2 tracks and levels
+
+SLSA v1.2 is the approved specification baseline captured for this review. It separates source integrity from build integrity. Do not confuse the current multi-track model with the earlier single SLSA 1–4 level numbering.
+
+| Track | Level | High-level requirement | Main assurance focus |
+|---|---|---|---|
+| Source | L1 | Version-controlled source revisions | Immutable, identifiable source revisions |
+| Source | L2 | Continuous history and source provenance | Reliable history, contributor and process evidence |
+| Source | L3 | Continuous technical controls | Enforced repository controls with verifiable evidence |
+| Source | L4 | Two-party review | Two trusted persons review changes to protected branches |
+| Build | L0 | No guarantees | No SLSA build assurance |
+| Build | L1 | Provenance exists | Provenance describes how artifact was built |
+| Build | L2 | Hosted build platform and signed provenance | Provenance authenticity and protection against post-build tampering |
+| Build | L3 | Hardened build platform | Strong isolation and protection against tampering during build |
+
+Use the Source track for source-control system guarantees and the Build track for artifact production. A product may have different levels on each track. Record the exact track, level, source branch/revision, builder, artifact and evidence; never publish one ambiguous statement such as "SLSA Level 3" without naming the track and specification version.
+
+For Build L3, verify the build platform prevents runs from influencing one another and prevents provenance-signing secrets from being accessible to user-defined build steps. For Source L4, verify two trusted reviewers are required for every change to the protected branch; a nominal pull-request rule that administrators can silently bypass is not equivalent.
+
+SLSA levels are not a general product security rating and do not guarantee that source code is vulnerability-free. They provide scoped supply-chain assurances. Confirm the complete normative requirements and evidence with the official v1.2 specification before making a conformance claim.
+
+
 
 ## 16. Artifact signing and verification
 
@@ -578,7 +599,7 @@ Tool output is evidence for triage, not a substitute for threat modeling, source
 | Source | Relevant coverage | Application in this chapter | Mapping caveat |
 |---|---|---|---|
 | NIST SP 800-218 SSDF v1.1 | Prepare the Organization, Protect the Software, Produce Well-Secured Software, Respond to Vulnerabilities | Governance, source protection, build/release integrity, vulnerability response | Outcome/practice mapping must be made to exact task IDs in the published document |
-| SLSA | Source and build integrity, provenance, build platform requirements | Build isolation, provenance, trusted builders and verification | Pin version; do not claim a level without checking all requirements |
+| SLSA v1.2 | Source track L1–L4 and Build track L0–L3 | Source history/review/technical controls, provenance, hosted builder and hardened build isolation | Name track and level separately; verify all normative requirements and evidence before claiming conformance |
 | in-toto | Supply-chain steps, layouts, links and attestations | Define and verify authorized supply-chain steps | Secure layout/key distribution and verifier policy |
 | SPDX 3.0.1 | Software component, provenance and license exchange | SBOM and license inventory | Pin spec version and validate consumers |
 | CycloneDX 1.7 | BOM, dependency graph, vulnerability, VEX and attestations | SBOM/VEX and software/AI asset inventory | Pin schema and validate implementation support |
@@ -590,6 +611,72 @@ Tool output is evidence for triage, not a substitute for threat modeling, source
 | PCI DSS v4.0.1 | Software development and security practices for applicable environments | Payment software and CDE supply-chain controls | Only where applicable; map exact requirements |
 | EU Cyber Resilience Act | Secure product lifecycle, vulnerability handling and reporting | Product release and vulnerability response | Legal applicability and phased dates require counsel |
 | OWASP SAMM | Secure build and deployment, defect management, governance | Maturity assessment | Maturity model, not certification |
+
+### 28.1 NIST SSDF v1.1 practice-to-chapter mapping
+
+NIST SP 800-218 SSDF v1.1 is the published baseline used here. The following is this project's informative mapping of relevant SSDF task identifiers to chapter sections and evidence. It is not a NIST-endorsed crosswalk, a complete mapping of every SSDF task, or a certification checklist. Applicability must be assessed for the software and supplier model.
+
+| SSDF practice/task | NIST task intent (summary) | Chapter sections | Example evidence |
+|---|---|---|---|
+| PO.1.1 | Define security requirements for development infrastructure and processes | 4, 7, 8, 14, 26 | Supply-chain policy, toolchain security requirements and exception register |
+| PO.1.2 | Define security requirements for organization-developed software | 2, 3, 19, 31 | Release integrity requirements, archive policy and release criteria |
+| PO.1.3 | Define and address requirements for third-party software | 9, 10, 20, 21 | Component intake criteria, supplier requirements and exceptions |
+| PO.2.1 | Define and maintain SDLC roles and responsibilities | 4, 21, 24 | RACI, repository owner and incident roles |
+| PO.2.2 | Provide role-based secure development training | 4, 8, 14, 24 | Developer, reviewer, platform and release training records |
+| PO.3.1 | Specify toolchain tools and integration requirements | 14, 27 | Approved toolchain architecture and data-flow definitions |
+| PO.3.2 | Securely deploy, operate and maintain toolchains | 8, 14, 23 | Tool hardening, provenance checks, patching and monitoring records |
+| PO.5.1 | Separate and protect software development environments | 14, 18 | Environment segmentation, access and egress policy |
+| PS.1.1 | Restrict access to all code forms and protect from tampering | 7, 14, 18 | Repository ACLs, protected branches, workflow and configuration controls |
+| PS.2.1 | Make software integrity verification information available to acquirers | 16, 19, 31 | Artifact digest, signature and consumer verification instructions |
+| PS.3.1 | Securely archive release files and supporting data | 19, 24, 31 | Immutable release archive, retention and access evidence |
+| PS.3.2 | Collect, protect, maintain and share provenance for release components, including SBOM | 12, 15, 31 | Release SBOM, provenance, component lineage and integrity verification |
+| PW.4.1 | Acquire and maintain well-secured third-party components | 9, 10, 11, 20, 21 | Component approval, provenance, maintenance and vulnerability assessment |
+| PW.4.4 | Analyze third-party components for known vulnerabilities and maintenance status | 9, 11, 20 | SCA reports, advisory triage and end-of-life decisions |
+| PW.6.1 / PW.6.2 | Securely configure compiler, interpreter and build processes | 14, 15 | Pinned toolchain, hardened build flags and build configuration review |
+| RV.1.1 | Gather and investigate vulnerability reports for product and third-party components | 11, 23, 24 | Advisory monitoring, triage record and affected-product analysis |
+| RV.1.2 | Review and test code to identify or confirm vulnerabilities | 11, 14, 17, 18 | SCA/SAST/image scan and controlled validation evidence |
+| RV.1.3 | Establish vulnerability disclosure and remediation policy and roles | 21, 24 | Supplier notification, PSIRT workflow and response playbook |
+| RV.2.1 / RV.2.2 | Assess risk and plan/implement vulnerability response | 11, 13, 24, 26 | Risk decision, VEX, remediation plan and approved exception |
+| RV.3.1–RV.3.4 | Analyze root causes and improve the SDLC to prevent recurrence | 24, 25 | Root-cause report, systemic fix and regression-control evidence |
+
+NIST describes SSDF practices as outcome-focused and risk-based. The chapter therefore maps only the tasks directly relevant to software supply-chain controls; other SSDF tasks are covered in the broader Secure SDLC and Secure Coding chapters.
+
+### 28.2 SLSA v1.2 track-to-control mapping
+
+The SLSA v1.2 specification has separate Source and Build tracks. The mapping below translates those track outcomes into this chapter's control IDs. It is an implementation guide, not an assertion that the listed controls alone establish conformance.
+
+| SLSA track/level | Main assurance outcome | Chapter control IDs | Required evidence before claiming the level |
+|---|---|---|---|
+| Source L1 | Source revisions are version controlled | SSC-C-001, SSC-C-002 | Repository and immutable revision inventory |
+| Source L2 | Continuous history and source provenance | SSC-C-001, SSC-C-003, SSC-C-019 | Protected history, source provenance attestations and continuity evidence |
+| Source L3 | Organizational technical controls continuously enforced | SSC-C-002, SSC-C-003, SSC-C-004, SSC-C-019 | Enforced branch/repository policy and verifiable control evidence |
+| Source L4 | Two trusted persons review protected-branch changes | SSC-C-003, SSC-C-004 | Technical enforcement of independent two-person review, including bypass governance |
+| Build L1 | Provenance exists and identifies artifact and build | SSC-C-011 | Provenance for artifact digest and build process |
+| Build L2 | Hosted build platform produces signed provenance | SSC-C-009, SSC-C-010, SSC-C-011, SSC-C-012, SSC-C-013 | Hosted builder identity, signed provenance and consumer verification |
+| Build L3 | Hardened build platform protects runs and signing secrets | SSC-C-009, SSC-C-010, SSC-C-011, SSC-C-012, SSC-C-013 | Strong isolation, non-exposure of signing secrets to user-defined build steps and verified provenance |
+
+Before making a SLSA claim:
+1. Pin the approved specification version and the applicable track.
+2. Read the normative requirements for the exact level.
+3. Identify which controls are implemented by the organization and which are inherited from the build/source platform.
+4. Collect platform documentation and independently verifiable attestations.
+5. Test bypass, identity, continuity and isolation assumptions.
+6. Record gaps and do not claim a higher level based on partial implementation.
+
+### 28.3 CISA 2026 SBOM minimum-elements alignment
+
+CISA and international partners announced updated 2026 SBOM Minimum Elements on 29 July 2026. The announcement identifies refined fields including component hash, license, SBOM tool name and SBOM generation context, and calls out additional considerations for AI and SaaS software.
+
+| CISA 2026 element / practice | Chapter implementation |
+|---|---|
+| Component hash | Sections 12.1 and 12.3; bind components to release/artifact digests |
+| License | Sections 9.1 and 20; record license metadata and legal review |
+| SBOM tool name | Section 12.3; capture generator identity and version |
+| SBOM generation context | Section 12.3; record source, build, artifact, environment and configuration context |
+| AI and SaaS considerations | Sections 5, 12, 21 and 22; extend inventory for model assets, services and dependencies |
+| Machine-processable exchange | Sections 12.2 and 31; pin format/schema and validate consumers |
+
+Use the official 2026 guidance for the complete required field definitions. This table is a concise chapter mapping, not a substitute for the complete CISA publication.
 
 ## 29. Control and test catalogue
 
@@ -617,6 +704,9 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-C-018 | Extend inventory to AI/ML assets | Model/dataset/adapter provenance and digest |
 | SSC-C-019 | Monitor supply-chain trust transitions | Alerts for identity, workflow, registry and signing events |
 | SSC-C-020 | Rehearse compromise and recovery | Tabletop or technical exercise evidence |
+| SSC-C-021 | Enforce source-track controls and source provenance | Source history, review and technical-control attestations |
+| SSC-C-022 | Enforce build-track provenance and hardened builder requirements | SLSA track/level evidence, builder identity and isolation tests |
+| SSC-C-023 | Meet SBOM minimum metadata and generation-context requirements | Component hashes, licenses, tool identity and generation context |
 
 | Test ID | Test objective | Expected result |
 |---|---|---|
@@ -650,6 +740,11 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-T-028 | Verify AI model/dataset asset provenance | Unapproved or mismatched asset is rejected |
 | SSC-T-029 | Verify release record contains all required evidence | Release gate reports missing evidence |
 | SSC-T-030 | Exercise compromise recovery and rebuild | Trusted rebuild, re-sign, redeploy and evidence chain completed |
+| SSC-T-031 | Verify source revision history and source provenance attestation | Source revision, actor, parent and change-control evidence are verifiable |
+| SSC-T-032 | Attempt change to protected source ref without required technical controls | Source control system blocks change and records evidence |
+| SSC-T-033 | Attempt protected-branch change without two trusted reviewers | Change is blocked by technical enforcement |
+| SSC-T-034 | Verify Build L3 isolation between concurrent/untrusted runs | Runs cannot influence one another and signing secrets are inaccessible to user-defined steps |
+| SSC-T-035 | Validate CISA 2026 SBOM metadata and generation context | Required component hashes, licenses, tool identity and generation context are present or documented as unavailable |
 
 ## 30. Detection catalogue
 
@@ -680,6 +775,9 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-D-023 | Signing key/certificate nearing expiry or revoked | Rotate trust material and verify consumer readiness |
 | SSC-D-024 | AI model/dataset digest or publisher mismatch | Quarantine asset and prevent model deployment |
 | SSC-D-025 | Rebuild differs from expected artifact without explanation | Investigate nondeterminism, toolchain and possible compromise |
+| SSC-D-026 | Source provenance missing or control-continuity claim cannot be verified | Block source-level assurance claim and investigate repository control gap |
+| SSC-D-027 | Build isolation or signing-secret boundary is violated | Stop affected builds, revoke credentials and quarantine artifacts |
+| SSC-D-028 | SBOM lacks required metadata or generation context | Quarantine release evidence and regenerate/validate SBOM |
 
 ## 31. Minimum release evidence package
 
@@ -713,8 +811,10 @@ For each production release retain:
 
 1. NIST SP 800-218 SSDF v1.1: https://csrc.nist.gov/pubs/sp/800/218/final
 2. NIST SP 800-204D, Strategies for the Integration of Software Supply Chain Security in DevSecOps CI/CD Pipelines: https://csrc.nist.gov/pubs/sp/800/204/d/final
-2. SLSA framework and specifications: https://slsa.dev/spec/v1.0/
-3. SLSA build provenance: https://slsa.dev/spec/v1.0/provenance
+2. SLSA v1.2 specification: https://slsa.dev/spec/v1.2/
+3. SLSA v1.2 Source track requirements: https://slsa.dev/spec/v1.2/source-requirements
+4. SLSA v1.2 Build track requirements: https://slsa.dev/spec/v1.2/build-requirements
+5. SLSA v1.2 Build provenance: https://slsa.dev/spec/v1.2/build-provenance
 4. in-toto: https://in-toto.io/
 5. SPDX 3.0.1 specification: https://spdx.github.io/spdx-spec/v3.0.1/
 6. CycloneDX 1.7 specification: https://cyclonedx.org/specification/overview/
