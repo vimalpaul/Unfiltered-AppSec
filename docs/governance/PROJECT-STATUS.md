@@ -69,6 +69,9 @@
 | OWASP API Security Top 10 | 2023 edition | Use as API risk awareness taxonomy; not as a complete test specification |
 | NIST SSDF | SP 800-218 v1.1 final, 2022 | Published baseline |
 | NIST SSDF revision | SP 800-218 Rev. 1 v1.2 draft dated 2025-12-17 | Monitor; do not present as final unless NIST changes the publication status |
+| SLSA | v1.2 approved specification, Source and Build tracks | Use separate Source L1–L4 and Build L0–L3 claims; verify normative requirements and evidence per track |
+| CISA SBOM Minimum Elements | 2026 joint guidance announced 2026-07-29 | Include component hash, license, SBOM tool name and generation context; assess AI/SaaS-specific fields |
+| CycloneDX | 1.7 specification; check current 1.7.x release patch | Pin schema and tool versions; validate consumer interoperability |
 | NIST CSF | CSF 2.0, 2024-02-26 | Governance and risk outcome taxonomy; not an AppSec test standard |
 | PCI DSS | v4.0.1 | Use where cardholder-data environment and contractual/acquirer applicability exist |
 | India DPDP Rules | 2025 Gazette notification and phased commencement | Track phased commencement; re-check corrigendum and current legal status before operational reliance |
@@ -128,7 +131,7 @@ Scores use the 0–5 scale defined in the Research and Quality Method. Vectors a
 
 - Independent practitioner review has not yet been performed.
 - Mermaid source has been committed but rendering has not been independently validated in a documentation renderer.
-- A repository-relative Markdown link check was run across all 12 committed Markdown files on 2026-11-18: 22 relative references were found and none were broken. Mermaid code fences are balanced. External-link availability and rendered diagram validation have not been independently automated.
+- Initial repository-relative link validation covered the original 12 Markdown files. Chapter 13 was subsequently checked for relative links and cross-references to Chapters 03, 10, 11, 12 and 18; the new Chapter 13 chapter-to-lab link is also maintained. A complete repository-wide link scan, external-link availability check and rendered diagram validation remain open.
 - Jurisdiction applicability requires entity- and sector-specific legal review.
 - Technical procedures and labs must be implemented and reproduced in isolated environments before being marked validated.
 
