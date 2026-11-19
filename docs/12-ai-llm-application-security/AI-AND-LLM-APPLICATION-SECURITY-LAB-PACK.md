@@ -774,7 +774,59 @@ Redact prompts or outputs that include secrets or personal data even if syntheti
 
 **Teardown:** Remove rogue agent, revoke all test identities and clean up namespace.
 
-## 32. Assessment rubric
+## 32. Lab 29 — Data classification, metadata propagation and full-chain erasure
+
+**Objective:** Trace synthetic data through an AI pipeline and verify classification, provenance and deletion across derived stores.
+
+**Prerequisites:** Local document ingestion, chunking, embedding, vector index, cache and memory components.
+
+### Procedure
+
+1. Create a synthetic document with owner, tenant, classification, source, retention and deletion metadata.
+2. Ingest the document and record its source hash and provenance.
+3. Verify metadata is preserved through parsing, chunk creation and embedding.
+4. Verify each vector record retains the required tenant, ACL reference and classification.
+5. Retrieve the document as an authorized synthetic user.
+6. Attempt retrieval as an unauthorized tenant and verify the retrieval boundary blocks it.
+7. Submit a deletion request for the synthetic source record.
+8. Verify deletion or tombstoning propagates to chunks, vector records, caches, memory and applicable evaluation copies.
+9. Inspect backup and provider retention behavior and document any bounded residual retention.
+10. Produce a lineage record showing every derived artifact and deletion acknowledgment.
+
+**Expected result:** Data classification and provenance survive pipeline transformations; deletion is traceable across all applicable stores.
+
+**Evidence:** Data lineage graph, metadata snapshots, ACL decision, deletion acknowledgments and residual-retention record.
+
+**Teardown:** Remove all synthetic source and derived artifacts.
+
+## 33. Lab 30 — Runtime policy enforcement hooks and agent control
+
+**Objective:** Verify that agent and tool actions pass through an observable, enforceable runtime policy layer.
+
+**Prerequisites:** Local agent framework with middleware/interceptor hooks and mock tools.
+
+### Procedure
+
+1. Register a synthetic agent with owner, identity, model version, prompt version and declared tool manifest.
+2. Instrument model requests, tool proposals, policy decisions and tool execution outcomes.
+3. Define a policy allowing one read-only tool and denying a mock external-send tool.
+4. Run a permitted tool call and verify the policy hook records allow and the tool executes.
+5. Propose the denied tool and verify the runtime blocks execution before the connector is called.
+6. Simulate policy service timeout or unavailable middleware.
+7. Verify the action path fails closed for sensitive operations.
+8. Attempt to invoke the underlying tool through an alternate path that bypasses the agent framework.
+9. Verify network/API controls prevent bypass or enforce equivalent policy at the final execution boundary.
+10. Verify runtime records include agent identity, user/tenant context, tool, canonical arguments, policy version, decision, result and correlation ID.
+11. Test emergency disablement of the agent and revocation of its tool credential.
+12. Review whether the implementation is portable across the selected framework and whether policy changes are versioned.
+
+**Expected result:** Agent actions are inspectable and traceable; policy is enforced at runtime and cannot be bypassed by prompt behavior or middleware outage.
+
+**Evidence:** Middleware configuration, policy decision logs, tool execution audit, bypass test and kill-switch record.
+
+**Teardown:** Remove synthetic agent, policies, credentials and tool state.
+
+## 34. Assessment rubric
 
 | Criterion | Points |
 |---|---:|
@@ -785,13 +837,13 @@ Redact prompts or outputs that include secrets or personal data even if syntheti
 | MCP, identity/delegation and inter-agent communication security | 10 |
 | Output handling and downstream sinks | 10 |
 | Model/data supply chain and evaluation integrity | 10 |
-| Privacy, memory, multimodal and telemetry | 10 |
-| Rate limits, cascading failure, rogue-agent containment, detection, incident response and cleanup | 10 |
+| Privacy, memory, multimodal, data lineage and telemetry | 10 |
+| Rate limits, cascading failure, rogue-agent containment, runtime policy enforcement, detection, incident response and cleanup | 10 |
 | **Total** | **100** |
 
 Suggested training interpretation: 90–100 strong independent engineering; 75–89 competent with review; 60–74 guided remediation required; below 60 repeat the exercises. These are educational thresholds, not a certification.
 
-## 33. Instructor review checklist
+## 35. Instructor review checklist
 
 - Was the environment authorized and isolated?
 - Were all models, prompts, datasets, tools and connectors inventoried?
@@ -818,9 +870,13 @@ Suggested training interpretation: 90–100 strong independent engineering; 75�
 - Were prompts, completions and tool telemetry redacted?
 - Was deletion tested across source, vector, cache and memory stores?
 - Was the emergency stop and credential revocation tested?
+- Did data classification and provenance survive parsing, chunking and embedding?
+- Was deletion traced across source, vectors, caches, memory and applicable derived stores?
+- Were runtime policy hooks observable and fail-closed when unavailable?
+- Were alternate tool execution paths tested for policy bypass?
 - Was evidence sanitized and teardown verified?
 
-## 34. References
+## 36. References
 
 1. OWASP GenAI LLM Top 10 2026: https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
 2. OWASP Top 10 for Agentic Applications 2026: https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
@@ -837,8 +893,9 @@ Suggested training interpretation: 90–100 strong independent engineering; 75�
 13. ISO/IEC 42001: https://www.iso.org/standard/81230.html
 14. OWASP AI Exchange: https://owaspai.org/
 15. OWASP Machine Learning Security Top 10: https://owasp.org/www-project-machine-learning-security-top-10/
+16. OWASP GenAI Data Security Best Practices v2 Part 2: https://genai.owasp.org/resource/genai-data-security-best-practices-v2-part2/
 
-## 35. Revision history
+## 37. Revision history
 
 | Version | Date | Change |
 |---|---|---|
