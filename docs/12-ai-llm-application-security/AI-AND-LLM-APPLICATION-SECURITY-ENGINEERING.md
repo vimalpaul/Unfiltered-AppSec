@@ -534,6 +534,21 @@ Map data at collection, upload, parsing, prompt construction, inference, retriev
 - Provide appropriate transparency and user controls.
 - Test data deletion across source, index, vector, cache and backup layers.
 
+### 13.4 GenAI data security architecture patterns
+
+Use the OWASP GenAI Data Security Best Practices v2 material as a companion for detailed data classification, governance and lifecycle implementation. Part 2, published 17 November 2026, describes reusable patterns including governed ingress, metadata propagation, retrieval boundaries, full-chain erasure, AI-BOM lineage and federated policy enforcement.
+
+Engineering implications:
+- Classify data before it enters a prompt, embedding, model context, tool or telemetry pipeline.
+- Propagate tenant, owner, classification, source and retention metadata through parsing, chunking, embedding, retrieval, memory and export.
+- Enforce retrieval boundaries before content enters model context.
+- Maintain lineage from source document to chunks, embeddings, indexes and derived artifacts.
+- Implement deletion across source, chunk, vector, cache, memory, evaluation and eligible downstream stores.
+- Record model, prompt, dataset, embedding and connector dependencies in an AI bill of materials or equivalent inventory.
+- Enforce policy consistently across services and providers rather than relying on per-prompt conventions.
+
+Reference: https://genai.owasp.org/resource/genai-data-security-best-practices-v2-part2/
+
 ### 13.3 Memory security
 
 Memory is a persistence layer and must be treated like a database:
@@ -655,7 +670,15 @@ A release should not proceed if:
 - Preserve sanitized evidence and redact prompts or payloads containing sensitive data.
 - Confirm tool revocation, test data cleanup and index cleanup after testing.
 
-### 17.3 AI and LLM security test catalogue
+### 17.3 Red-team execution lifecycle
+
+The OWASP GenAI Red Teaming Manual Version 1.0 describes an eight-phase methodology: planning, reconnaissance, attack surface mapping, exploitation, persistence, impact assessment, reporting and remediation. Use this as an assessment lifecycle overlay, not as a substitute for the detailed test cases in this chapter.
+
+For each phase, record scope and authorization, test identity, target model/application/tool version, reproducible steps, observed behavior, security impact, evidence, containment and retest. Persistence testing must remain within explicitly authorized disposable environments. Do not establish persistence in production or third-party systems.
+
+Reference: https://genai.owasp.org/resource/genai-red-teaming-manual-version-1-0/
+
+### 17.4 AI and LLM security test catalogue
 
 The IDs below are internal project identifiers, not external standard control IDs.
 
