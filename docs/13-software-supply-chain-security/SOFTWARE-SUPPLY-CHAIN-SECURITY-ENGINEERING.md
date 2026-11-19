@@ -810,34 +810,35 @@ For each production release retain:
 ## 33. References
 
 1. NIST SP 800-218 SSDF v1.1: https://csrc.nist.gov/pubs/sp/800/218/final
-2. NIST SP 800-204D, Strategies for the Integration of Software Supply Chain Security in DevSecOps CI/CD Pipelines: https://csrc.nist.gov/pubs/sp/800/204/d/final
-2. SLSA v1.2 specification: https://slsa.dev/spec/v1.2/
-3. SLSA v1.2 Source track requirements: https://slsa.dev/spec/v1.2/source-requirements
-4. SLSA v1.2 Build track requirements: https://slsa.dev/spec/v1.2/build-requirements
-5. SLSA v1.2 Build provenance: https://slsa.dev/spec/v1.2/build-provenance
-4. in-toto: https://in-toto.io/
-5. SPDX 3.0.1 specification: https://spdx.github.io/spdx-spec/v3.0.1/
-6. CycloneDX 1.7 specification: https://cyclonedx.org/specification/overview/
-7. CISA 2026 Minimum Elements for an SBOM announcement and guidance link: https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb
-8. Sigstore documentation: https://docs.sigstore.dev/
-9. Cosign quickstart: https://docs.sigstore.dev/quickstart/quickstart-cosign/
-10. OpenSSF Scorecard: https://scorecard.dev/
-11. OpenSSF Best Practices: https://www.bestpractices.dev/
-12. OSV database: https://osv.dev/
-13. OSV-Scanner: https://google.github.io/osv-scanner/
-14. OWASP Dependency-Track: https://dependencytrack.org/
-15. Syft: https://github.com/anchore/syft
-16. Grype: https://github.com/anchore/grype
-17. in-toto attestation framework: https://github.com/in-toto/attestation
-18. NIST CSF 2.0: https://www.nist.gov/cyberframework
-19. ISO/IEC 27001:2022: https://www.iso.org/standard/27001
-20. ISO/IEC 27036 supplier relationship security: https://www.iso.org/standard/82905.html
-21. PCI DSS v4.0.1: https://www.pcisecuritystandards.org/document_library/
-22. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
-23. OWASP SAMM: https://owaspsamm.org/
+2. NIST SP 800-204D: https://csrc.nist.gov/pubs/sp/800/204/d/final
+3. SLSA v1.2 specification: https://slsa.dev/spec/v1.2/
+4. SLSA v1.2 Source track requirements: https://slsa.dev/spec/v1.2/source-requirements
+5. SLSA v1.2 Build track requirements: https://slsa.dev/spec/v1.2/build-requirements
+6. SLSA v1.2 Build provenance: https://slsa.dev/spec/v1.2/build-provenance
+7. in-toto: https://in-toto.io/
+8. SPDX 3.0.1 specification: https://spdx.github.io/spdx-spec/v3.0.1/
+9. CycloneDX 1.7 specification: https://cyclonedx.org/specification/overview/
+10. CISA 2026 Minimum Elements for an SBOM announcement: https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb
+11. Sigstore documentation: https://docs.sigstore.dev/
+12. Cosign quickstart: https://docs.sigstore.dev/quickstart/quickstart-cosign/
+13. OpenSSF Scorecard: https://scorecard.dev/
+14. OpenSSF Best Practices: https://www.bestpractices.dev/
+15. OSV database: https://osv.dev/
+16. OSV-Scanner: https://google.github.io/osv-scanner/
+17. OWASP Dependency-Track: https://dependencytrack.org/
+18. Syft: https://github.com/anchore/syft
+19. Grype: https://github.com/anchore/grype
+20. in-toto attestation framework: https://github.com/in-toto/attestation
+21. NIST CSF 2.0: https://www.nist.gov/cyberframework
+22. ISO/IEC 27001:2022: https://www.iso.org/standard/27001
+23. ISO/IEC 27036 supplier relationship security: https://www.iso.org/standard/82905.html
+24. PCI DSS v4.0.1: https://www.pcisecuritystandards.org/document_library/
+25. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
+26. OWASP SAMM: https://owaspsamm.org/
 
 ## 34. Revision history
 
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-19 | Initial software supply-chain security engineering baseline |
+| 0.2 | 2026-11-19 | Add NIST SSDF task mappings, SLSA v1.2 Source/Build tracks and CISA 2026 SBOM alignment |
