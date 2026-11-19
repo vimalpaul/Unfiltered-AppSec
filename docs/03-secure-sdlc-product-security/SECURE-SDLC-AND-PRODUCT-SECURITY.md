@@ -290,7 +290,7 @@ Minimum controls:
 - Restrict deployment permissions and record approvals.
 - Rebuild from trusted source rather than patching an untraceable artifact.
 
-See the Software Supply Chain and DevSecOps chapters for detailed implementation and platform-specific examples.
+See [Chapter 13: Software Supply Chain Security](../13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md) for detailed implementation, build integrity, SBOM, provenance, signing and supplier assurance.
 
 ## 10. Verification strategy
 
