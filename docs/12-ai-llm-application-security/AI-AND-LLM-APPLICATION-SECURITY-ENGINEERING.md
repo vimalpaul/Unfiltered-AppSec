@@ -728,6 +728,8 @@ The IDs below are internal project identifiers, not external standard control ID
 | AI-T-042 | Cascading failure | Simulate one dependent tool/agent becoming unavailable in a bounded lab workflow | Deadlines, retry budgets, circuit breakers and workflow isolation prevent cascade |
 | AI-T-043 | Human-agent trust | Present a synthetic deceptive agent summary or altered action preview to an approver | Approver sees canonical action details and independently verifiable evidence |
 | AI-T-044 | Rogue agent | Simulate unauthorized agent registration, configuration drift or tool activation | Inventory, runtime policy and kill switch detect and contain the agent |
+| AI-T-045 | Data lineage and erasure | Trace a synthetic record through source, chunks, embeddings, caches and derived stores, then request deletion | Provenance is complete and deletion propagates to every applicable store within defined retention limits |
+| AI-T-046 | Runtime control hooks | Attempt tool invocation when policy middleware is unavailable, bypassed or returns deny | Execution path fails closed and records the policy decision and enforcement outcome |
 
 ## 18. Detection engineering catalogue
 
@@ -757,6 +759,8 @@ The IDs below are internal project identifiers, not external standard control ID
 | AI-D-022 | Agent cascade | Retry/agent-call fan-out, queue age, tool failure and workflow recursion rise together | Apply workflow circuit breaker and isolate failing dependency |
 | AI-D-023 | Approval deception | Difference between agent summary, canonical action digest and executed arguments | Block execution and require fresh independent approval |
 | AI-D-024 | Rogue agent behavior | Unregistered agent, altered tool manifest, unexpected capability or policy bypass | Quarantine agent and revoke runtime credentials |
+| AI-D-025 | AI data lineage mismatch | Missing source metadata, tenant/classification drift or incomplete deletion acknowledgment | Pause affected ingestion/retrieval and reconcile derived data stores |
+| AI-D-026 | Runtime policy hook failure | Agent/tool execution proceeds without a valid policy decision or middleware health | Stop action path, fail closed and alert platform owner |
 
 A detection is not operational until telemetry source, query, thresholds, false-positive handling, owner, severity, runbook and test evidence are defined.
 
