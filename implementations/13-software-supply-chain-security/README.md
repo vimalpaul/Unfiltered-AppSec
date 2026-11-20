@@ -71,7 +71,7 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 | Deterministic file integrity manifest | Implemented in code | Unit tests plus CI run; review generated manifest semantics |
 | SPDX/CycloneDX SBOM | Implemented for this repository filesystem using pinned Syft 1.57.1; CI passed and uploaded two SBOM formats | [Run 44755935644](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755935644); actual product-release SBOM and full schema validation remain open |
 | SCA and VEX | Not implemented | Select tools, configure policy, validate findings and dispositions |
-| SCA vulnerability matching | Implemented as a report-only Grype scan of the generated SPDX SBOM; main-branch CI passed with 2 package records and 0 matches | [Run 44756774695](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44756774695); no severity threshold or release gate is enforced |
+| SCA vulnerability matching | Implemented as a report-only Grype scan of the generated SPDX SBOM; main-branch CI passed with 2 package records and 0 matches | [Run 44757253987](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44757253987); no severity threshold or release gate is enforced |
 | SLSA provenance / attestations | Not implemented | Select supported builder and verify attestation subject, source and builder identity |
 | Artifact signing / verification | Not implemented | Establish trust policy, sign in a controlled test environment and verify negative cases |
 | Container hardening / scanning | Not implemented | Add actual image build, digest pinning, scanning and deployment verification |
