@@ -35,8 +35,8 @@ def valid_timestamp(value: Any) -> bool:
     if not nonempty(value):
         return False
     try:
-        datetime.fromisoformat(value.replace("Z", "+00:00"))
-        return True
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return parsed.tzinfo is not None and parsed.utcoffset() is not None
     except ValueError:
         return False
 
@@ -75,7 +75,7 @@ def validate_document(document: Any) -> list[str]:
             errors.append(f"{prefix}.vulnerability.name is required")
 
         status = statement.get("status")
-        if status not in STATUSES:
+        if not isinstance(status, str) or status not in STATUSES:
             errors.append(f"{prefix}.status must be one of {sorted(STATUSES)}")
 
         timestamp = statement.get("timestamp", document.get("timestamp"))
@@ -115,11 +115,11 @@ def validate_document(document: Any) -> list[str]:
         if status == "not_affected":
             justification = statement.get("justification")
             impact = statement.get("impact_statement")
-            if justification not in JUSTIFICATIONS and not nonempty(impact):
+            if (not isinstance(justification, str) or justification not in JUSTIFICATIONS) and not nonempty(impact):
                 errors.append(
                     f"{prefix} not_affected requires a valid justification or impact_statement"
                 )
-            if justification is not None and justification not in JUSTIFICATIONS:
+            if justification is not None and (not isinstance(justification, str) or justification not in JUSTIFICATIONS):
                 errors.append(f"{prefix}.justification is not a recognized OpenVEX justification")
         if status == "affected" and not nonempty(statement.get("action_statement")):
             errors.append(f"{prefix} affected requires an action_statement")
