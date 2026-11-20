@@ -24,6 +24,7 @@ It does **not** prove that the application builds securely, that dependencies ar
 - `.github/workflows/supply-chain-baseline.yml` — minimal-permission CI validation workflow; no external Actions are invoked.
 - `.github/workflows/sbom-generation.yml` — pinned Syft SBOM generation, structural validation and artifact upload; the upload Action is pinned to a full commit SHA.
 - `sbom/` — Syft version/digest record, SBOM scope notes, validator and validator unit tests.
+- `sca/` — Grype version/digest record, report validator and SCA unit tests.
 - `scripts/release_manifest.py` — generate and verify a deterministic SHA-256 file-integrity manifest.
 - `tests/test_release_manifest.py` — unit tests for path handling, tamper detection and deterministic output.
 - `policy/release-policy.md` — release evidence gates and operational configuration checklist.
@@ -70,6 +71,7 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 | Deterministic file integrity manifest | Implemented in code | Unit tests plus CI run; review generated manifest semantics |
 | SPDX/CycloneDX SBOM | Implemented for this repository filesystem using pinned Syft 1.57.1; CI passed and uploaded two SBOM formats | [Run 44755935644](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755935644); actual product-release SBOM and full schema validation remain open |
 | SCA and VEX | Not implemented | Select tools, configure policy, validate findings and dispositions |
+| SCA vulnerability matching | Implemented as a report-only Grype scan of the generated SPDX SBOM; main-branch CI passed with 2 package records and 0 matches | [Run 44756774695](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44756774695); no severity threshold or release gate is enforced |
 | SLSA provenance / attestations | Not implemented | Select supported builder and verify attestation subject, source and builder identity |
 | Artifact signing / verification | Not implemented | Establish trust policy, sign in a controlled test environment and verify negative cases |
 | Container hardening / scanning | Not implemented | Add actual image build, digest pinning, scanning and deployment verification |
@@ -82,7 +84,7 @@ A committed file is not proof that a GitHub setting is enabled. A green workflow
 1. Add and verify pull-request trigger coverage; review artifact access and retention settings.
 2. Add project-specific build and dependency discovery without assuming a language or package manager.
 3. Extend SBOM generation to the actual application build/image and bind each SBOM to the exact artifact digest; add full schema validation and package inventory reconciliation.
-4. Add SCA policy, vulnerability disposition and VEX evidence.
+4. Define product-specific SCA severity gates, vulnerability disposition, VEX generation and time-bound exception handling.
 5. Add provenance generation and verification against the actual builder identity.
 6. Add signing and verification with a disposable test identity before defining production trust.
 7. Add container and deployment policy only after the repository's real build/deploy architecture is known.
