@@ -1,0 +1,76 @@
+name: VEX validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'implementations/13-software-supply-chain-security/vex/**'
+      - '.github/workflows/vex-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'implementations/13-software-supply-chain-security/vex/**'
+      - '.github/workflows/vex-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vex-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-openvex:
+    name: Validate OpenVEX records and policy tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Fetch exact event commit
+        shell: bash
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          EVENT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${REPOSITORY}.git"
+          AUTH="$(printf 'x-access-token:%s' "${GH_READ_TOKEN}" | base64 -w0)"
+          git -c http.extraheader="AUTHORIZATION: basic ${AUTH}" fetch --no-tags --depth=1 origin "${EVENT_SHA}"
+          unset AUTH GH_READ_TOKEN
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${EVENT_SHA}"
+
+      - name: Run VEX policy unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover \
+            -s implementations/13-software-supply-chain-security/vex \
+            -p 'test_*.py' -v
+
+      - name: Validate synthetic OpenVEX example
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 implementations/13-software-supply-chain-security/vex/validate_openvex.py \
+            --document implementations/13-software-supply-chain-security/vex/examples/synthetic-under-investigation.json
+
+      - name: Validate reviewed production VEX records
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r -d '' document; do
+            count=$((count + 1))
+            echo "Validating ${document}"
+            python3 implementations/13-software-supply-chain-security/vex/validate_openvex.py --document "${document}"
+          done < <(find implementations/13-software-supply-chain-security/vex/records -type f -name '*.json' -print0)
+          if [ "${count}" -eq 0 ]; then
+            echo "No production VEX records present; no product-level dispositions are asserted."
+          else
+            echo "Validated ${count} production VEX document(s)."
+          fi
