@@ -249,7 +249,7 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-OSV-SCANNER | Google | https://google.github.io/osv-scanner/ | Living scanner; pin release | A | Dependency and source vulnerability scanning |
 | SRC-OWASP-DEPENDENCY-TRACK | OWASP | https://dependencytrack.org/ | Living project; pin release | A | SBOM ingestion, component risk and vulnerability management |
 | SRC-SYFT | Anchore | https://github.com/anchore/syft | v1.57.1 immutable release published 2026-11-09; implementation pins Linux AMD64 archive SHA-256 | B | SBOM generation from filesystems, directories and container images; see official CLI, output-format and download-verification guidance |
-| SRC-GRYPE | Anchore | https://github.com/anchore/grype | Living project; pin release | B | Vulnerability matching for packages and images |
+| SRC-GRYPE | Anchore | https://github.com/anchore/grype | v0.122.1 immutable release published 2026-11-18; implementation pins Linux AMD64 archive SHA-256 | B | Vulnerability matching for packages, SBOMs and images; retain vulnerability DB metadata and freshness |
 | SRC-ISO-27036 | ISO | https://www.iso.org/standard/82905.html | ISO/IEC 27036 catalogue record; verify applicable part and edition | A | Supplier relationship security |
 | SRC-OWASP-SAMM | OWASP | https://owaspsamm.org/ | Living maturity model | A | Secure build/deploy and software assurance maturity |
 | SRC-EU-CRA | European Union | https://eur-lex.europa.eu/eli/reg/2024/2847/oj | Regulation (EU) 2024/2847 | A | Product cybersecurity, vulnerability handling and reporting; applicability review required |
