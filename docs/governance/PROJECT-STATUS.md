@@ -20,7 +20,7 @@
 - Starting state: empty repository, no files and no commits
 - GitHub access: read/write/admin permission confirmed through the connected account
 - Existing content preserved: not applicable; initial repository was empty
-- Current milestone: Milestone 11 Software Supply Chain Security engineering playbook and lab specifications
+- Current milestone: Milestone 11 Software Supply Chain Security engineering, lab specifications and initial executable implementation baseline
 
 ## 2. Current work state
 
@@ -53,6 +53,7 @@
 | Cloud-native application security labs | Isolated cloud, container, Kubernetes, serverless, IaC and CI/CD exercises | Draft lab specifications created | `docs/10-cloud-native-application-security/CLOUD-NATIVE-APPLICATION-SECURITY-LAB-PACK.md`; implement and validate local/cloud environments and cleanup/cost controls before marking complete |
 | Distributed systems and integration security | Microservices, workload identity, service authorization, service mesh, brokers, events, webhooks, distributed workflows, third-party integrations and telemetry | Draft baseline created | `docs/11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-ENGINEERING.md`; validate broker/service-mesh version profiles, add exact standards traceability and reproduce implementation labs |
 | Distributed systems and integration security labs | Isolated workload identity, mTLS, broker ACL, event integrity, replay, outbox/inbox, saga, webhook, SSRF, resilience and telemetry exercises | Draft lab specifications created | `docs/11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-LAB-PACK.md`; implement and independently validate pinned environments before marking complete |
+| Software supply-chain implementation | Initial read-only CI baseline, deterministic SHA-256 source integrity manifest, unit tests, release evidence policy and control traceability | Implemented in repository; workflow execution pending | `implementations/13-software-supply-chain-security/README.md`; `.github/workflows/supply-chain-baseline.yml`; do not describe as SBOM, SLSA provenance, signing or production enforcement |
 | AI and LLM application security | Prompt injection, RAG, vector and embedding security, tool authorization, agents, MCP, model/data supply chain, output handling, privacy and operations | Draft baseline created: 46 test cases and 26 detection scenarios | `docs/12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-ENGINEERING.md`; verify framework editions, provider-specific behavior and exact AI risk-control traceability |
 | AI and LLM application security labs | Isolated prompt injection, cross-tenant RAG, tool/agent, MCP, output, supply-chain, multimodal, privacy and incident-response exercises | Draft specifications created: 30 labs | `docs/12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-LAB-PACK.md`; implement and independently validate pinned sandbox environments before marking complete |
 | Software supply chain security | Repository governance, developer endpoints, dependencies, registries, CI/CD, runners, SBOM, SCA/VEX, provenance, signing, containers, releases, suppliers and AI assets | Draft engineering baseline created: 23 controls, 35 tests and 28 detection scenarios | `docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md`; validate the expanded NIST SSDF/SLSA v1.2/CISA 2026 mappings, add platform-specific GitHub/GitLab and cloud workload identity implementation profiles, and reproduce build/provenance/signing controls |
@@ -137,3 +138,8 @@ Scores use the 0–5 scale defined in the Research and Quality Method. Vectors a
 
 
 The initial architecture and documents are foundation drafts. Their existence demonstrates repository initialization, not final approval or independent technical review. The first three technical chapters are substantive starting baselines and remain open for expansion, cross-chapter verification and practitioner review. Content and internal-link validation completed at pre-bookkeeping checkpoint `dd0d1286bdaf6a6421374ca026acba953f8f4615`; this status update records those validation results. The scores below are preliminary internal self-assessments, not independent reviews or evidence of compliance.
+
+
+## Chapter 13 implementation checkpoint — 2026-11-20
+
+An initial executable baseline has been added under `implementations/13-software-supply-chain-security/`. It includes a GitHub Actions workflow with `contents: read`, exact event-SHA checkout, standard-library unit tests, and a deterministic SHA-256 source-file integrity manifest with verification. The workflow deliberately uses no third-party Actions and receives no deployment, signing or package-registry secrets. This manifest is not an SPDX/CycloneDX SBOM and does not provide build provenance or an artifact signature. GitHub Actions execution, branch/ruleset enforcement, SBOM generation, SCA, SLSA provenance, signing, container controls and independent validation remain pending.
