@@ -27,7 +27,11 @@ python implementations/13-software-supply-chain-security/sbom/validate_sbom.py \
   --spdx /tmp/unfiltered-appsec.spdx.json
 ```
 
-## CI evidence\n\nThe main-branch SBOM workflow completed successfully on 2026-11-20: [run 44755935644](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755935644). It uploaded both formats as artifact ID `14636948729` with artifact digest `sha256:295bd0d6cb116cd4f7c7cf1919664eff276efde802d1969284c629d193bd9446`. GitHub reported an expiry of 2026-12-04. This confirms the workflow completed generation, structural checks and upload; it does not establish independent schema conformance or product-release completeness.\n\n## What this SBOM means
+## CI evidence
+
+The main-branch SBOM workflow completed successfully on 2026-11-20: [run 44755935644](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755935644). It uploaded both formats as artifact ID `14636948729` with artifact digest `sha256:295bd0d6cb116cd4f7c7cf1919664eff276efde802d1969284c629d193bd9446`. GitHub reported an expiry of 2026-12-04. This confirms the workflow completed generation, structural checks and upload; it does not establish independent schema conformance or product-release completeness.
+
+## What this SBOM means
 
 This repository is primarily a documentation and engineering-reference repository. A directory scan catalogs recognized package manifests and software components that Syft can identify in the scanned filesystem. It does not automatically represent deployed products, cloud services, runtime-loaded dependencies, supplier services, or artifacts built from other repositories.
 
@@ -44,4 +48,10 @@ The workflow uploads the generated SBOMs as a GitHub Actions artifact with a 14-
 - The workflow does not upload SBOMs to a registry or deployment platform.
 - Schema structure is checked for essential fields; this is not a full external JSON Schema conformance test.
 - The SBOM is untrusted evidence for pull-request commits until the change is reviewed and merged.
-\n## References\n\n- [Syft v1.57.1 immutable release](https://github.com/anchore/syft/releases/tag/v1.57.1)\n- [Syft CLI reference](https://oss.anchore.com/docs/reference/syft/cli/)\n- [Syft output formats](https://oss.anchore.com/docs/guides/sbom/formats/)\n- [Anchore release verification guidance](https://oss.anchore.com/docs/installation/verification/)\n
+
+## References
+
+- [Syft v1.57.1 immutable release](https://github.com/anchore/syft/releases/tag/v1.57.1)
+- [Syft CLI reference](https://oss.anchore.com/docs/reference/syft/cli/)
+- [Syft output formats](https://oss.anchore.com/docs/guides/sbom/formats/)
+- [Anchore release verification guidance](https://oss.anchore.com/docs/installation/verification/)
