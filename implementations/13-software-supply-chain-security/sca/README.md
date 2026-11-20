@@ -20,9 +20,13 @@ python implementations/13-software-supply-chain-security/sca/validate_grype_repo
 
 Grype consumes SPDX, CycloneDX and Syft SBOM formats. The vulnerability database is maintained separately from the scanner binary and is automatically checked/updated by Grype by default. Database freshness, schema and provider metadata must be retained with the scan record.
 
+## CI evidence
+
+The main-branch workflow completed on 2026-11-20: [run 44756774695](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44756774695). Syft identified 2 SPDX package records. Grype v0.122.1 scanned the SPDX SBOM using a valid vulnerability database (schema 6.1.10, built 2026-11-20T06:21:00Z) and reported 0 vulnerability matches. The four-file evidence artifact is ID `14638375912`, digest `sha256:561b150ce7f9696fb6c43a1729c18d84ef0884f1c07c310f92e6dfc123d71b25`, with GitHub retention through 2026-12-04. This run proves the configured workflow executed; it does not establish that a deployed application is free of vulnerabilities.
+
 ## Current policy mode: report-only
 
-The repository workflow generates a machine-readable report but does not set `--fail-on`. A release-blocking severity threshold has not been approved or tuned for a real application. This repository is documentation-first and may contain no recognizable runtime packages; a scan with zero matches or zero packages must not be misrepresented as evidence that a product is vulnerability-free.
+The repository workflow generates a machine-readable report but does not set `--fail-on`. It runs Grype only when the SPDX SBOM contains package records; otherwise it records an explicit not-run disposition rather than a clean scan. A release-blocking severity threshold has not been approved or tuned for a real application. This repository is documentation-first and may contain no recognizable runtime packages; a scan with zero matches or zero packages must not be misrepresented as evidence that a product is vulnerability-free.
 
 Before enabling a production gate, define:
 - affected product and artifact digest;
