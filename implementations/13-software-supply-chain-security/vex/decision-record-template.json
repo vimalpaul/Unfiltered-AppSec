@@ -1,0 +1,88 @@
+{
+  "_template_metadata": {
+    "purpose": "Internal vulnerability disposition record; not an OpenVEX document",
+    "instructions": "Replace every TODO, attach evidence references, and obtain independent approval before issuing a production VEX statement."
+  },
+  "case_id": "TODO-UNIQUE-ID",
+  "finding": {
+    "scanner": "TODO",
+    "scanner_version": "TODO",
+    "scanner_database_version_and_timestamp": "TODO",
+    "scanner_finding_reference": "TODO",
+    "vulnerability_ids": ["TODO-CVE-OR-ADVISORY"],
+    "severity": "TODO",
+    "cvss_version": "TODO",
+    "cvss_vector": "TODO",
+    "cvss_score": "TODO"
+  },
+  "product": {
+    "name": "TODO",
+    "version": "TODO",
+    "release_id": "TODO",
+    "artifact_sha256": "TODO-64-HEX",
+    "sbom_sha256": "TODO-64-HEX",
+    "component_purl": "TODO-PURL",
+    "component_version": "TODO",
+    "component_supplier": "TODO",
+    "advisory_affected_range": "TODO",
+    "known_fixed_version": "TODO"
+  },
+  "impact_assessment": {
+    "vex_status": "under_investigation",
+    "justification": null,
+    "impact_statement": null,
+    "component_present_in_artifact": "unknown",
+    "vulnerable_code_present": "unknown",
+    "code_reachability": "unknown",
+    "attacker_control_of_inputs": "unknown",
+    "required_configuration": "TODO",
+    "runtime_environment": "TODO",
+    "network_exposure": "TODO",
+    "privilege_and_data_impact": "TODO",
+    "known_exploit_or_kev_status": "TODO",
+    "compensating_controls": [],
+    "confidence": "low",
+    "assumptions_and_limitations": []
+  },
+  "evidence": [
+    {
+      "evidence_id": "TODO",
+      "description": "TODO",
+      "location_or_controlled_reference": "TODO",
+      "collected_at": "TODO-RFC3339",
+      "collected_by": "TODO",
+      "integrity_sha256": "TODO-64-HEX"
+    }
+  ],
+  "response": {
+    "action_statement": "TODO",
+    "remediation_owner": "TODO",
+    "target_date": "TODO-RFC3339",
+    "mitigation": "TODO",
+    "exception_id": null,
+    "exception_expiry": null
+  },
+  "approval": {
+    "assessor": "TODO",
+    "assessed_at": "TODO-RFC3339",
+    "independent_reviewer": "TODO",
+    "reviewed_at": "TODO-RFC3339",
+    "product_owner_approval": "TODO",
+    "release_decision": "hold",
+    "approval_reference": "TODO"
+  },
+  "lifecycle": {
+    "record_version": 1,
+    "created_at": "TODO-RFC3339",
+    "last_updated": "TODO-RFC3339",
+    "next_review_at": "TODO-RFC3339",
+    "re_evaluate_on": [
+      "component version changes",
+      "product build or artifact digest changes",
+      "feature/configuration/runtime changes",
+      "new exploit intelligence or vendor advisory",
+      "mitigation or perimeter control changes",
+      "new reachability evidence"
+    ]
+  }
+}
