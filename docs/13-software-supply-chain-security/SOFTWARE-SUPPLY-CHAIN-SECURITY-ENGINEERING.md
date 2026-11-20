@@ -829,15 +829,17 @@ For each production release retain:
 15. OSV database: https://osv.dev/
 16. OSV-Scanner: https://google.github.io/osv-scanner/
 17. OWASP Dependency-Track: https://dependencytrack.org/
-18. Syft: https://github.com/anchore/syft
-19. Grype: https://github.com/anchore/grype
-20. in-toto attestation framework: https://github.com/in-toto/attestation
-21. NIST CSF 2.0: https://www.nist.gov/cyberframework
-22. ISO/IEC 27001:2022: https://www.iso.org/standard/27001
-23. ISO/IEC 27036 supplier relationship security: https://www.iso.org/standard/82905.html
-24. PCI DSS v4.0.1: https://www.pcisecuritystandards.org/document_library/
-25. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
-26. OWASP SAMM: https://owaspsamm.org/
+18. OpenVEX v0.2.0 specification: https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md
+19. CISA Minimum Requirements for VEX: https://www.cisa.gov/sites/default/files/2023-04/minimum-requirements-for-vex-508c.pdf
+20. Syft: https://github.com/anchore/syft
+21. Grype: https://github.com/anchore/grype
+22. in-toto attestation framework: https://github.com/in-toto/attestation
+23. NIST CSF 2.0: https://www.nist.gov/cyberframework
+24. ISO/IEC 27001:2022: https://www.iso.org/standard/27001
+25. ISO/IEC 27036 supplier relationship security: https://www.iso.org/standard/82905.html
+26. PCI DSS v4.0.1: https://www.pcisecuritystandards.org/document_library/
+27. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
+28. OWASP SAMM: https://owaspsamm.org/
 
 ## 34. Revision history
 
@@ -846,3 +848,4 @@ For each production release retain:
 | 0.1 | 2026-11-19 | Initial software supply-chain security engineering baseline |
 | 0.2 | 2026-11-19 | Add NIST SSDF task mappings, SLSA v1.2 Source/Build tracks and CISA 2026 SBOM alignment |
 | 0.3 | 2026-11-20 | Clarify VEX status semantics, OpenVEX requirements and implementation profile |
+| 0.4 | 2026-11-20 | Add executable VEX validator profile and link SSC-C-008 / SSC-T-011 implementation evidence |
