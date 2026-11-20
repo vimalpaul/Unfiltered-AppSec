@@ -148,4 +148,4 @@ An initial executable baseline has been added under `implementations/13-software
 The SBOM artifact digest recorded by GitHub is `sha256:295bd0d6cb116cd4f7c7cf1919664eff276efde802d1969284c629d193bd9446` (artifact ID `14636948729`; GitHub expiry 2026-12-04).
 
 
-Grype evidence artifact: ID `14638375912`; SHA-256 `561b150ce7f9696fb6c43a1729c18d84ef0884f1c07c310f92e6dfc123d71b25`; GitHub expiry 2026-12-04.
+Grype evidence artifact: ID `14639231729`; SHA-256 `cbdd4aa9592920fc044be122e2e62ab7a16a668fb3154a1f04b9d5bb824c1d7f`; GitHub expiry 2026-12-04.
