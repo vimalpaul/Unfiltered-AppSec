@@ -1,0 +1,27 @@
+{
+  "@context": "https://openvex.dev/ns/v0.2.0",
+  "@id": "https://example.invalid/vex/unfiltered-appsec-synthetic-demo",
+  "author": "Unfiltered AppSec Synthetic Fixture",
+  "role": "Test fixture only; not a product security assertion",
+  "timestamp": "2026-11-20T10:00:00Z",
+  "version": 1,
+  "tooling": "Unfiltered-AppSec VEX validator unit-test fixture",
+  "statements": [
+    {
+      "vulnerability": {
+        "name": "CVE-2099-0001",
+        "description": "Synthetic identifier used only to test VEX parsing; not a real vulnerability record."
+      },
+      "products": [
+        {
+          "@id": "pkg:generic/demo-product@1.0.0",
+          "identifiers": {
+            "purl": "pkg:generic/demo-product@1.0.0"
+          }
+        }
+      ],
+      "status": "under_investigation",
+      "status_notes": "Synthetic fixture only. No real product or vulnerability assessment is represented."
+    }
+  ]
+}
