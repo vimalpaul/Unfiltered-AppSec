@@ -65,7 +65,7 @@ Geographic scope is global. Dedicated workstreams will cover India and Middle Ea
 | 10 | Cloud-Native Application Security | Cloud IAM, workload identity, containers, Kubernetes, serverless, IaC, CI/CD and runtime | Draft baseline and lab pack created |
 | 11 | Distributed Systems and Integration Security | Workload identity, service authorization, service mesh, Kafka/RabbitMQ, events, replay, idempotency, sagas, webhooks and partner integrations | Draft baseline and lab pack created |
 | 12 | AI and LLM Application Security | Prompt injection, RAG, vector security, tool calling, agents, MCP, model supply chain, privacy and AI operations | Draft baseline and lab pack created |
-| 13 | Software Supply Chain Security | Repository and dependency security, CI/CD, SBOM, SLSA provenance, signing, artifact verification and supplier assurance | Draft engineering baseline and lab pack created |
+| 13 | Software Supply Chain Security | Repository and dependency security, CI/CD, SBOM, SLSA provenance, signing, artifact verification and supplier assurance | Draft engineering baseline, lab pack and initial executable implementation baseline created |
 | 14 | Security Verification and Assessment | SAST, DAST, IAST, SCA, manual testing, penetration tests and assurance | Planned |
 | 15 | Vulnerability Management and PSIRT | Intake, triage, severity, disclosure, remediation, patching and product advisories | Planned |
 | 16 | AppSec Operations and Incident Response | Security telemetry, detection, incident handling, forensics and recovery | Planned |
@@ -109,6 +109,7 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 - [12. AI and LLM Application Security Lab Pack](docs/12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-LAB-PACK.md)
 - [13. Software Supply Chain Security Engineering](docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md)
 - [13. Software Supply Chain Security Lab Pack](docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-LAB-PACK.md)
+- [13. Software Supply Chain Security Implementation Pack](implementations/13-software-supply-chain-security/README.md)
 - [07. Identity and Access Security](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [07. Identity and Access Security Lab Pack](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [04. Secure Coding Lab Pack](docs/04-secure-coding/SECURE-CODING-LAB-PACK.md)
