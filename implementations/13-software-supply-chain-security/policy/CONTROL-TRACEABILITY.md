@@ -13,6 +13,6 @@ This is a deliberately narrow implementation slice. Control IDs below must be re
 
 - Authored: yes.
 - Committed: only after the repository write is confirmed.
-- Workflow executed: pending GitHub Actions run.
+- Workflow executed: successful on main-branch push at commit `63223ad4b6c6103f91d463fd60262b82fc2f0717`; [GitHub Actions run 44755594677](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755594677) reports all steps successful.
 - Independently validated: no.
 - Production enforcement: no.
