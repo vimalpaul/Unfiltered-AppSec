@@ -38,6 +38,12 @@ jobs:
           git checkout --detach FETCH_HEAD
           test "$(git rev-parse HEAD)" = "${EVENT_SHA}"
 
+      - name: Test SBOM validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s implementations/13-software-supply-chain-security/sbom -p 'test_*.py' -v
+
       - name: Download pinned Syft release
         shell: bash
         run: |
