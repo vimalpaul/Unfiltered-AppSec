@@ -153,7 +153,7 @@ jobs:
               "vulnerability_matches": len(report.get("matches", [])),
               "threshold_enforced": False,
           }
-          Path("/tmp/sca-scan-status.json").write_text(json.dumps(status, indent=2) + "\\n", encoding="utf-8")
+          Path("/tmp/sca-scan-status.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
           PY
           else
             python3 - <<'PY'
@@ -165,9 +165,20 @@ jobs:
               "scanner": "Grype",
               "threshold_enforced": False,
           }
-          Path("/tmp/sca-scan-status.json").write_text(json.dumps(status, indent=2) + "\\n", encoding="utf-8")
+          Path("/tmp/sca-scan-status.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
           PY
           fi
+          python3 - <<'PY' >> "${GITHUB_STEP_SUMMARY}"
+          import json
+          from pathlib import Path
+          sbom = json.loads(Path("/tmp/unfiltered-appsec.spdx.json").read_text(encoding="utf-8"))
+          status = json.loads(Path("/tmp/sca-scan-status.json").read_text(encoding="utf-8"))
+          print("## Software composition analysis")
+          print(f"- SPDX package records: {len(sbom.get('packages', []))}")
+          print(f"- Scan status: {status.get('status')}")
+          print(f"- Vulnerability matches: {status.get('vulnerability_matches', 'not scanned')}")
+          print("- Policy: report-only; no severity threshold enforced.")
+          PY
 
       - name: Upload SBOM evidence
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
