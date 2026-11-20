@@ -307,7 +307,7 @@ An SBOM is a point-in-time inventory, not a security certificate. Keep it update
 
 ## 13. VEX and vulnerability disposition
 
-VEX communicates whether a product is affected by a vulnerability and the basis for that assessment. Define controlled states supported by the chosen format and consumer tooling, typically including affected, not affected, fixed and under investigation.
+VEX communicates whether a product is affected by a vulnerability and the basis for that assessment. Define controlled states supported by the chosen format and consumer tooling, typically including affected, not affected, fixed and under investigation. The implementation profile in this repository uses OpenVEX v0.2.0; its status labels are `affected`, `not_affected`, `fixed` and `under_investigation`. CycloneDX uses its own vulnerability analysis state vocabulary; do not silently map values between formats without an explicit mapping.
 
 A defensible not-affected decision should include:
 - Product and component identity.
@@ -317,7 +317,9 @@ A defensible not-affected decision should include:
 - Decision owner, date, expiry/review trigger and approval.
 - Residual risk and compensating controls.
 
-Do not use VEX to suppress findings for convenience. Reassess when product features, dependencies, build flags, configuration or exploit knowledge changes.
+Do not use VEX to suppress findings for convenience. Reassess when product features, dependencies, build flags, configuration or exploit knowledge changes. For OpenVEX, a `not_affected` statement must carry a recognized justification or an impact statement, while an `affected` statement must include an action statement. Keep incomplete assessments `under_investigation`. Never infer `not_affected` from an empty scanner result, missing call-graph data or an unverified mitigation.
+
+The repository implementation profile and test evidence are maintained in [Chapter 13 VEX implementation](../../implementations/13-software-supply-chain-security/vex/README.md). The validator is a core-field/policy validator, not a full OpenVEX JSON-LD or official JSON Schema implementation. No production VEX statement has been issued from this repository.
 
 ## 14. Build system and CI/CD security
 
@@ -843,3 +845,4 @@ For each production release retain:
 |---|---|---|
 | 0.1 | 2026-11-19 | Initial software supply-chain security engineering baseline |
 | 0.2 | 2026-11-19 | Add NIST SSDF task mappings, SLSA v1.2 Source/Build tracks and CISA 2026 SBOM alignment |
+| 0.3 | 2026-11-20 | Clarify VEX status semantics, OpenVEX requirements and implementation profile |
