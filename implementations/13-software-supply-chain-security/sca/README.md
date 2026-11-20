@@ -22,7 +22,7 @@ Grype consumes SPDX, CycloneDX and Syft SBOM formats. The vulnerability database
 
 ## CI evidence
 
-The main-branch workflow completed on 2026-11-20: [run 44756774695](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44756774695). Syft identified 2 SPDX package records. Grype v0.122.1 scanned the SPDX SBOM using a valid vulnerability database (schema 6.1.10, built 2026-11-20T06:21:00Z) and reported 0 vulnerability matches. The four-file evidence artifact is ID `14638375912`, digest `sha256:561b150ce7f9696fb6c43a1729c18d84ef0884f1c07c310f92e6dfc123d71b25`, with GitHub retention through 2026-12-04. This run proves the configured workflow executed; it does not establish that a deployed application is free of vulnerabilities.
+The main-branch workflow completed on 2026-11-20: [run 44757253987](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44757253987). Syft identified 2 SPDX package records. Grype v0.122.1 scanned the SPDX SBOM using a valid vulnerability database (schema 6.1.10, built 2026-11-20T06:21:00Z) and reported 0 vulnerability matches. The four-file evidence artifact is ID `14639231729`, digest `sha256:cbdd4aa9592920fc044be122e2e62ab7a16a668fb3154a1f04b9d5bb824c1d7f`, with GitHub retention through 2026-12-04. This run proves the configured workflow executed; it does not establish that a deployed application is free of vulnerabilities.
 
 ## Current policy mode: report-only
 
