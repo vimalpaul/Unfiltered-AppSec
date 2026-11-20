@@ -83,6 +83,12 @@ jobs:
             --cyclonedx /tmp/unfiltered-appsec.cdx.json \
             --spdx /tmp/unfiltered-appsec.spdx.json
 
+      - name: Test Grype report validator
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s implementations/13-software-supply-chain-security/sca -p 'test_*.py' -v
+
       - name: Determine whether the SBOM contains packages
         id: inventory
         shell: bash
@@ -126,7 +132,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m unittest discover -s implementations/13-software-supply-chain-security/sca -p 'test_*.py' -v
           python3 implementations/13-software-supply-chain-security/sca/validate_grype_report.py \
             --report /tmp/grype-results.json
 
