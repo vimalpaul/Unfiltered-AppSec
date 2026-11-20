@@ -64,7 +64,7 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 
 | Capability | State | Evidence required to advance |
 |---|---|---|
-| Read-only CI workflow authored | Implemented in repository | Successful GitHub Actions run on a PR and a main-branch push |
+| Read-only CI workflow authored | Implemented in repository | Successful main-branch push run: [run 44755594677](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755594677); PR-triggered validation remains pending |
 | Deterministic file integrity manifest | Implemented in code | Unit tests plus CI run; review generated manifest semantics |
 | SPDX/CycloneDX SBOM | Not implemented | Generate from a real release/build, validate schema and reconcile inventory |
 | SCA and VEX | Not implemented | Select tools, configure policy, validate findings and dispositions |
