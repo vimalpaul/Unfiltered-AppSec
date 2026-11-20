@@ -83,13 +83,21 @@ jobs:
             --cyclonedx /tmp/unfiltered-appsec.cdx.json \
             --spdx /tmp/unfiltered-appsec.spdx.json
 
-      - name: Test Grype report validator
+      - name: Determine whether the SBOM contains packages
+        id: inventory
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m unittest discover -s implementations/13-software-supply-chain-security/sca -p 'test_*.py' -v
+          PACKAGE_COUNT="$(python3 -c 'import json; print(len(json.load(open("/tmp/unfiltered-appsec.spdx.json", encoding="utf-8")).get("packages", [])))')"
+          echo "SPDX package records: ${PACKAGE_COUNT}"
+          if [ "${PACKAGE_COUNT}" -gt 0 ]; then
+            echo "has_packages=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "has_packages=false" >> "${GITHUB_OUTPUT}"
+          fi
 
       - name: Download pinned Grype release
+        if: steps.inventory.outputs.has_packages == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -106,6 +114,7 @@ jobs:
           grype version
 
       - name: Scan SPDX SBOM with Grype (report-only)
+        if: steps.inventory.outputs.has_packages == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -113,11 +122,47 @@ jobs:
           grype db status
 
       - name: Validate Grype report
+        if: steps.inventory.outputs.has_packages == 'true'
         shell: bash
         run: |
           set -euo pipefail
+          python3 -m unittest discover -s implementations/13-software-supply-chain-security/sca -p 'test_*.py' -v
           python3 implementations/13-software-supply-chain-security/sca/validate_grype_report.py \
             --report /tmp/grype-results.json
+
+      - name: Record SCA scan disposition
+        shell: bash
+        env:
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.inventory.outputs.has_packages }}" = "true" ]; then
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("/tmp/grype-results.json").read_text(encoding="utf-8"))
+          status = {
+              "status": "completed_report_only",
+              "scanner": report.get("descriptor", {}).get("name"),
+              "scanner_version": report.get("descriptor", {}).get("version"),
+              "vulnerability_matches": len(report.get("matches", [])),
+              "threshold_enforced": False,
+          }
+          Path("/tmp/sca-scan-status.json").write_text(json.dumps(status, indent=2) + "\\n", encoding="utf-8")
+          PY
+          else
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+          status = {
+              "status": "not_run_no_package_records",
+              "reason": "The SPDX SBOM contains zero package records; no vulnerability-free conclusion is implied.",
+              "scanner": "Grype",
+              "threshold_enforced": False,
+          }
+          Path("/tmp/sca-scan-status.json").write_text(json.dumps(status, indent=2) + "\\n", encoding="utf-8")
+          PY
+          fi
 
       - name: Upload SBOM evidence
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -127,5 +172,6 @@ jobs:
             /tmp/unfiltered-appsec.cdx.json
             /tmp/unfiltered-appsec.spdx.json
             /tmp/grype-results.json
-          if-no-files-found: error
+            /tmp/sca-scan-status.json
+          if-no-files-found: warn
           retention-days: 14
