@@ -1,0 +1,88 @@
+name: SBOM generation
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sbom-generation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-sbom:
+    name: Generate CycloneDX and SPDX SBOMs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Fetch exact event commit
+        shell: bash
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          EVENT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${REPOSITORY}.git"
+          AUTH="$(printf 'x-access-token:%s' "${GH_READ_TOKEN}" | base64 -w0)"
+          git -c http.extraheader="AUTHORIZATION: basic ${AUTH}" fetch --no-tags --depth=1 origin "${EVENT_SHA}"
+          unset AUTH GH_READ_TOKEN
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${EVENT_SHA}"
+
+      - name: Download pinned Syft release
+        shell: bash
+        run: |
+          set -euo pipefail
+          SYFT_VERSION="1.57.1"
+          ARCHIVE="syft_${SYFT_VERSION}_linux_amd64.tar.gz"
+          EXPECTED_SHA256="bf52519eb57f675d47c07d43213cb6dff6449f3d6d1147ff6701ed91f44eef0c"
+          curl --fail --silent --show-error --location \
+            "https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/${ARCHIVE}" \
+            --output "/tmp/${ARCHIVE}"
+          echo "${EXPECTED_SHA256}  /tmp/${ARCHIVE}" | sha256sum --check --status
+          mkdir -p /tmp/syft-extract
+          tar -xzf "/tmp/${ARCHIVE}" -C /tmp/syft-extract syft
+          install -m 0755 /tmp/syft-extract/syft /usr/local/bin/syft
+          syft version
+
+      - name: Generate CycloneDX 1.7 and SPDX 2.3
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          syft scan dir:. \
+            --source-name "${REPOSITORY}" \
+            --source-version "${EVENT_SHA}" \
+            --exclude '**/.git/**' \
+            --exclude '**/node_modules/**' \
+            -o cyclonedx-json@1.7=/tmp/unfiltered-appsec.cdx.json \
+            -o spdx-json@2.3=/tmp/unfiltered-appsec.spdx.json
+
+      - name: Run SBOM structural validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 implementations/13-software-supply-chain-security/sbom/validate_sbom.py \
+            --cyclonedx /tmp/unfiltered-appsec.cdx.json \
+            --spdx /tmp/unfiltered-appsec.spdx.json
+
+      - name: Upload SBOM evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: unfiltered-appsec-sbom-${{ github.sha }}
+          path: |
+            /tmp/unfiltered-appsec.cdx.json
+            /tmp/unfiltered-appsec.spdx.json
+          if-no-files-found: error
+          retention-days: 14
