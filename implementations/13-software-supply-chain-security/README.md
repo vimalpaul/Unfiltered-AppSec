@@ -22,6 +22,8 @@ It does **not** prove that the application builds securely, that dependencies ar
 ## 2. Contents
 
 - `.github/workflows/supply-chain-baseline.yml` — minimal-permission CI validation workflow; no external Actions are invoked.
+- `.github/workflows/sbom-generation.yml` — pinned Syft SBOM generation, structural validation and artifact upload; the upload Action is pinned to a full commit SHA.
+- `sbom/` — Syft version/digest record, SBOM scope notes, validator and validator unit tests.
 - `scripts/release_manifest.py` — generate and verify a deterministic SHA-256 file-integrity manifest.
 - `tests/test_release_manifest.py` — unit tests for path handling, tamper detection and deterministic output.
 - `policy/release-policy.md` — release evidence gates and operational configuration checklist.
@@ -77,7 +79,7 @@ A committed file is not proof that a GitHub setting is enabled. A green workflow
 
 ## 7. Next implementation increments
 
-1. Confirm workflow execution and capture run URL, commit SHA and test output.
+1. Add and verify pull-request trigger coverage; review artifact access and retention settings.
 2. Add project-specific build and dependency discovery without assuming a language or package manager.
 3. Extend SBOM generation to the actual application build/image and bind each SBOM to the exact artifact digest; add full schema validation and package inventory reconciliation.
 4. Add SCA policy, vulnerability disposition and VEX evidence.
