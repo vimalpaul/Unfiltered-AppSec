@@ -1,6 +1,6 @@
 # Implementation Traceability — Initial Baseline
 
-This is a deliberately narrow implementation slice. Control IDs below must be reconciled to the canonical Chapter 13 control register during the next traceability review; no control is considered fully effective merely because this implementation exists.
+This is a deliberately narrow implementation slice. The VEX assets below implement part of canonical control SSC-C-008 and provide an executable check for test SSC-T-011. The remaining implementation rows are evidence assets, not claims that their full canonical controls are effective. No control is considered fully effective merely because this implementation exists.
 
 | Implementation asset | Security intent | Evidence produced | Not covered |
 |---|---|---|---|
@@ -11,7 +11,7 @@ This is a deliberately narrow implementation slice. Control IDs below must be re
 | `.github/workflows/sbom-generation.yml` | Generate CycloneDX 1.7 and SPDX 2.3, conditionally scan SPDX with pinned Grype, and retain report-only evidence | [Successful run 44757253987](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44757253987); uploaded SBOM and Grype evidence artifact ID `14639231729` | Actual product build/image coverage, VEX, severity enforcement, provenance and signature |
 | `sbom/validate_sbom.py` and `sbom/test_validate_sbom.py` | Check required top-level format and metadata fields | Unit tests and successful workflow validation | Full official JSON Schema validation and independent review |
 | `sca/validate_grype_report.py` and `sca/test_validate_grype_report.py` | Check Grype report structure before evidence retention | Three unit tests and successful scan validation | Finding correctness, exploitability, reachability and independent review |
-| `vex/validate_openvex.py` and `vex/test_validate_openvex.py` | Validate core OpenVEX v0.2.0 document/statement fields; require not-affected justification or impact statement; require affected action statement; apply conservative release policy | [VEX workflow 44764156909](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44764156909); 10 policy tests and synthetic document validation passed | Full official schema/JSON-LD validation, VEX signing, real finding mapping, product release enforcement and independent approval workflow |
+| `vex/validate_openvex.py` and `vex/test_validate_openvex.py` | Partial implementation of SSC-C-008; executable negative test for SSC-T-011; validate core OpenVEX v0.2.0 fields and apply conservative release policy | [VEX workflow 44764156909](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44764156909); 10 policy tests and synthetic document validation passed | Full official schema/JSON-LD validation, VEX signing, real finding mapping, product release enforcement and independent approval workflow |
 | `vex/decision-record-template.json` | Capture scanner, product, artifact, component, exploitability, evidence, remediation, approval and lifecycle context | Versioned internal case template | No real product case has been populated or approved |
 
 ## Assurance state
