@@ -3,14 +3,14 @@
 | Field | Value |
 |---|---|
 | Status | Initial implementation baseline — not production assurance |
-| Scope | Repository checkout, read-only CI validation, deterministic source-file integrity manifest and release evidence verification |
-| Safety | No production credentials, signing keys, deployment access or external package installation |
+| Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA and release evidence validation |
+| Safety | No production credentials, signing keys or deployment access; only pinned Syft/Grype scanner binaries are downloaded and SHA-256 checked |
 | Related engineering baseline | [Chapter 13 engineering](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md) |
 | Related labs | [Chapter 13 lab pack](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-LAB-PACK.md) |
 
 ## 1. Purpose
 
-This directory starts translating the Chapter 13 controls into executable repository assets. It deliberately begins with a small, low-privilege baseline that can run in GitHub Actions without third-party Actions, package downloads, deployment credentials or signing keys.
+This directory translates Chapter 13 controls into executable repository assets. The baseline uses low-privilege GitHub Actions jobs, a pinned artifact-upload Action, and pinned Syft/Grype scanner binaries whose downloaded archives are checked against recorded SHA-256 digests. It does not install application dependencies or use deployment credentials or signing keys.
 
 The first implementation proves only that:
 - the workflow can retrieve the exact event commit using a short-lived, read-only repository token;
