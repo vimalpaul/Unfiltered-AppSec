@@ -2,6 +2,11 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import sys
+
+# unittest discovery may place only this tests directory on sys.path.
+IMPLEMENTATION_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(IMPLEMENTATION_ROOT))
 
 from scripts.release_manifest import build_manifest, generate, verify
 
