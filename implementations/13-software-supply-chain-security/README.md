@@ -66,7 +66,7 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 |---|---|---|
 | Read-only CI workflow authored | Implemented in repository | Successful main-branch push run: [run 44755594677](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755594677); PR-triggered validation remains pending |
 | Deterministic file integrity manifest | Implemented in code | Unit tests plus CI run; review generated manifest semantics |
-| SPDX/CycloneDX SBOM | Not implemented | Generate from a real release/build, validate schema and reconcile inventory |
+| SPDX/CycloneDX SBOM | Implemented for this repository filesystem using pinned Syft 1.57.1; CI passed and uploaded two SBOM formats | [Run 44755935644](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755935644); actual product-release SBOM and full schema validation remain open |
 | SCA and VEX | Not implemented | Select tools, configure policy, validate findings and dispositions |
 | SLSA provenance / attestations | Not implemented | Select supported builder and verify attestation subject, source and builder identity |
 | Artifact signing / verification | Not implemented | Establish trust policy, sign in a controlled test environment and verify negative cases |
@@ -79,7 +79,7 @@ A committed file is not proof that a GitHub setting is enabled. A green workflow
 
 1. Confirm workflow execution and capture run URL, commit SHA and test output.
 2. Add project-specific build and dependency discovery without assuming a language or package manager.
-3. Add Syft SBOM generation and schema validation, then bind the SBOM to an immutable artifact digest.
+3. Extend SBOM generation to the actual application build/image and bind each SBOM to the exact artifact digest; add full schema validation and package inventory reconciliation.
 4. Add SCA policy, vulnerability disposition and VEX evidence.
 5. Add provenance generation and verification against the actual builder identity.
 6. Add signing and verification with a disposable test identity before defining production trust.
