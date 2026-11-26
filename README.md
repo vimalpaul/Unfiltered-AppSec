@@ -113,6 +113,7 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 - [13. Software Supply Chain Security VEX Implementation](implementations/13-software-supply-chain-security/vex/README.md)
 - [13. Software Supply Chain Security SLSA Provenance Implementation](implementations/13-software-supply-chain-security/provenance/README.md)
 - [13. Software Supply Chain Security Cosign Signing Implementation](implementations/13-software-supply-chain-security/signing/README.md)
+- [13. Unified Release Assurance Implementation](implementations/13-software-supply-chain-security/unified-release-assurance/README.md)
 - [07. Identity and Access Security](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [07. Identity and Access Security Lab Pack](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [04. Secure Coding Lab Pack](docs/04-secure-coding/SECURE-CODING-LAB-PACK.md)
