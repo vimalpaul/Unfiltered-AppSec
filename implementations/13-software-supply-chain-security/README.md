@@ -76,7 +76,7 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 | VEX disposition | OpenVEX v0.2.0 core validator, not-affected justification checks, affected action-statement checks and conservative release-gate prototype; CI passed | [VEX run 44764156909](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44764156909); no production VEX record exists and full official schema/JSON-LD validation is not implemented |
 | SCA vulnerability matching | Implemented as a report-only Grype scan of the generated SPDX SBOM; main-branch CI passed with 2 package records and 0 matches | [Run 44757253987](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44757253987); no severity threshold or release gate is enforced |
 | SLSA build provenance | Synthetic artifact, separate build/sign jobs, GitHub Sigstore-signed SLSA provenance, exact signer/source/digest verification and three negative tests passed | [Run 45790878803](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790878803); attestation [72577521](https://github.com/vimalpaul/Unfiltered-AppSec/attestations/72577521); evidence artifact `15103185028` (expires 2026-12-10). Synthetic only; no SLSA level or production assurance claim |
-| Artifact signing / verification | Cosign v3.1.6 keyless blob signing, Sigstore bundle verification and four negative tests passed on a synthetic artifact | [Cosign run 45791448527](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791448527); evidence artifact `15101489683` (expires 2026-12-10); production signing and release integration remain open |
+| Artifact signing / verification | Cosign v3.1.6 keyless blob signing, Sigstore bundle verification and four negative tests passed on a synthetic artifact | [Cosign run 45791994671](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791994671); evidence artifact `15103446197` (expires 2026-12-10); production signing and release integration remain open |
 | Container hardening / scanning | Not implemented | Add actual image build, digest pinning, scanning and deployment verification |
 | Branch protection / rulesets | Not verified | Read effective repository rules and test enforcement with an authorized change |
 
@@ -107,14 +107,14 @@ The retained evidence artifact is ID `15103185028`, digest `sha256:694058beb9ac1
 
 ## 10. Cosign artifact-signing execution evidence
 
-The synthetic Cosign workflow completed successfully on 2026-11-26: [run 45791448527](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791448527), source commit `938755922771e67543d847a3951a471d25f4d166`. The build job passed two signing-fixture tests, fetched the exact event commit, and generated the deterministic synthetic archive. The separate signing job verified the build metadata and archive digest, checked the pinned Cosign v3.1.6 binary and its Sigstore release bundle, and verified the binary using the official release signer identity before installation.
+The synthetic Cosign workflow completed successfully on 2026-11-26: [run 45791994671](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791994671), source commit `e04b39fdf72bc8ee4c51c8a6668cda3db302bcb1`. The build job passed two signing-fixture tests, fetched the exact event commit, and generated the deterministic synthetic archive. The separate signing job verified the build metadata and archive digest, checked the pinned Cosign v3.1.6 binary and its Sigstore release bundle, and verified the binary using the official release signer identity before installation.
 
 Cosign signed the archive using a short-lived GitHub OIDC identity and created `cosign-signature.sigstore.json`. Verification passed for the exact certificate identity, OIDC issuer, repository, source ref, source commit and workflow trigger. Four negative tests rejected a modified blob, incorrect signer identity, incorrect OIDC issuer and incorrect source revision.
 
-- Artifact SHA-256: `980a27c8160b2c654b21fec1f5abbe73d6017f3ad8b29755bd55804ed68cc290`
+- Artifact SHA-256: `efe0d00c0552e89029750baf35b7620842a9a447b188f0d50f25473e8d8c69ac`
 - Cosign version: `v3.1.6`
-- Evidence artifact ID: `15101489683`
-- Evidence artifact digest: `sha256:e8c60302c2c7a8362390aad561f8aaef28454fb197e404e6eeb71481f9cd9d3c`
+- Evidence artifact ID: `15103446197`
+- Evidence artifact digest: `sha256:bf1cc7ac71b2cea025133d660cb25392fe42dd48686c7dfce2140f7795941747`
 - Evidence retention: through 2026-12-10.
 
 This demonstrates a detached signature over a synthetic file. It is not a production signing deployment, key-management assessment, SLSA level claim or release gate.
