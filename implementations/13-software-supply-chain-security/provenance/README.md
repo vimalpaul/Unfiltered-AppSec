@@ -6,7 +6,7 @@
 | Format | in-toto Statement with SLSA provenance predicate `https://slsa.dev/provenance/v1` |
 | Attestation service | GitHub Artifact Attestations / Sigstore |
 | Attestation action | `actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6` (v4.2.2) |
-| Status | Implementation committed; workflow execution pending |
+| Status | Synthetic GitHub-signed provenance workflow executed successfully; independent review and production integration remain open |
 | Production use | Not approved |
 
 ## 1. What this implementation proves
@@ -82,7 +82,7 @@ SLSA v1.2 separates Source and Build tracks. This implementation focuses only on
 | Build level | Relevant property | Current implementation assessment |
 |---|---|---|
 | Build L0 | No guarantees | Not the target |
-| Build L1 | Provenance exists and identifies the artifact and build | Demonstrated for this synthetic artifact if the workflow succeeds |
+| Build L1 | Provenance exists and identifies the artifact and build | Provenance-generation evidence exercised; no SLSA level claim is made |
 | Build L2 | Authenticated provenance from a hosted build platform | GitHub-signed attestation is exercised; full level assessment remains open |
 | Build L3 | Strong resistance to tenant-controlled build tampering, including trusted control-plane provenance and isolation | Not claimed; this prototype is not a complete hardened builder assessment |
 
@@ -108,3 +108,19 @@ A successful attestation is not itself proof of a SLSA level. Level claims requi
 - [GitHub attestation generation](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations)
 - [GitHub attestation verification](https://cli.github.com/manual/gh_attestation_verify)
 - [actions/attest v4.2.2](https://github.com/actions/attest/releases/tag/v4.2.2)
+
+
+## 7. Execution evidence — 2026-11-26
+
+The workflow passed on source commit `e5866e3eb3b61acc7712a9f1e6e0bf840410ee46`: [GitHub Actions run 45790540789](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790540789).
+
+- Synthetic artifact: `unfiltered-appsec-demo.tar.gz`
+- Artifact SHA-256: `63deae5867135ecd02c5bda8e5b9868926edd4ad0c0280dff2fa39da2c830e32`
+- Verified builder: `https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/slsa-build-provenance.yml@refs/heads/main`
+- Build type: `https://actions.github.io/buildtypes/workflow/v1`
+- Attestation: [GitHub attestation 72576926](https://github.com/vimalpaul/Unfiltered-AppSec/attestations/72576926)
+- Sigstore Rekor log index: `4122722229`
+- Evidence artifact: ID `15102935476`, digest `sha256:cd0515bdaeff513037e20127dc21d52a42642105864ec4c2ba2a99cd3410d6ee`, expires 2026-12-10.
+- Negative tests: tampered subject, incorrect signer workflow and incorrect source revision were all rejected.
+
+The successful run establishes that this synthetic workflow produced and verified a signed provenance attestation. It does not establish a SLSA Build level, a production application build, complete materials capture, independent validation or deployment enforcement.
