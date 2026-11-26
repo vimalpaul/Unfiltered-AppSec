@@ -6,7 +6,7 @@
 | Tool | Cosign v3.1.6 |
 | Signature format | Sigstore bundle |
 | Identity | GitHub Actions OIDC workflow identity |
-| Status | Implementation committed; workflow execution pending |
+| Status | Synthetic keyless signing and verification workflow executed successfully; production integration remains open |
 | Production use | Not approved |
 
 ## 1. Why this is separate from SLSA provenance
@@ -81,3 +81,18 @@ The release checksum pin is an integrity check against the recorded release meta
 - [Cosign blob verification](https://github.com/sigstore/cosign/blob/main/doc/cosign_verify-blob.md)
 - [Sigstore verification quickstart](https://docs.sigstore.dev/quickstart/quickstart-cosign/)
 - [Cosign binary verification guidance](https://docs.sigstore.dev/cosign/system_config/installation/)
+
+
+## 8. Execution evidence — 2026-11-26
+
+The workflow passed: [GitHub Actions run 45791448527](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791448527), source commit `938755922771e67543d847a3951a471d25f4d166`.
+
+- Cosign version: `v3.1.6`
+- Synthetic artifact SHA-256: `980a27c8160b2c654b21fec1f5abbe73d6017f3ad8b29755bd55804ed68cc290`
+- Evidence artifact ID: `15101489683`
+- Evidence artifact digest: `sha256:e8c60302c2c7a8362390aad561f8aaef28454fb197e404e6eeb71481f9cd9d3c`
+- Evidence retention: through 2026-12-10.
+
+The signing job verified the pinned Cosign binary and its official Sigstore release bundle, signed the synthetic archive with GitHub OIDC, and verified the signature against the exact workflow certificate identity, issuer, repository, ref, source SHA and event trigger. Four negative tests rejected a modified blob, wrong signer identity, wrong OIDC issuer and wrong source revision.
+
+This is successful synthetic signing evidence, not production release signing, key-management governance, revocation/recovery validation or deployment enforcement.
