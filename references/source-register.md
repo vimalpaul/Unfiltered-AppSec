@@ -243,7 +243,7 @@ This register indexes authoritative sources referenced by the initial AppSec cha
 | SRC-CISA-SBOM-2026 | CISA and international partners | https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb | 2026 Minimum Elements for an SBOM announced 2026-07-29 | A | Updated component hash, license, tool name, generation context and AI/SaaS considerations |
 | SRC-SIGSTORE | Sigstore | https://docs.sigstore.dev/ | Living project documentation | A | Artifact signing, verification, short-lived identity and transparency |
 | SRC-COSIGN-RELEASE | Sigstore | https://github.com/sigstore/cosign/releases/tag/v3.1.6 | Cosign v3.1.6; binary SHA-256 and Sigstore release bundle hash pinned in implementation | A | Release binary integrity and signed release-bundle verification |
-| SRC-COSIGN | Sigstore | https://docs.sigstore.dev/quickstart/quickstart-cosign/ | Current quickstart; pin installed release | A | Blob/container signing and identity-bound verification |
+| SRC-COSIGN | Sigstore | https://docs.sigstore.dev/quickstart/quickstart-cosign/ | Cosign v3.1.6 current release captured 2026-11-26; Linux AMD64 binary and Sigstore bundle SHA-256 pinned in implementation | A | Keyless blob/container signing, Sigstore bundles, identity and issuer verification |
 | SRC-OPENSSF-SCORECARD | OpenSSF | https://scorecard.dev/ | Living project | A | Automated open-source project security posture signals; not a certification |
 | SRC-OPENSSF-BEST-PRACTICES | OpenSSF | https://www.bestpractices.dev/ | Living project | B | Open-source project practices and self-assessment |
 | SRC-OSV | Google / OpenSSF ecosystem | https://osv.dev/ | Living vulnerability database | A | Open-source package vulnerability advisories |
