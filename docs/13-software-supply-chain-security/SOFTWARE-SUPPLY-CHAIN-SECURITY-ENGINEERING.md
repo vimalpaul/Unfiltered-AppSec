@@ -4,7 +4,7 @@
 |---|---|
 | Document ID | UAPPSEC-13-ENG-001 |
 | Status | Draft engineering baseline |
-| Version | 1.0 |
+| Version | 1.2 |
 | Owner | Unfiltered AppSec maintainers |
 | Created | 2026-11-19 |
 | Review due | 2027-02-19 |
