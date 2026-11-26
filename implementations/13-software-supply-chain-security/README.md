@@ -2,8 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Status | Executable prototype baseline — not production assurance; unified release assurance under end-to-end validation |
-| Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation, signed SLSA provenance, Cosign keyless artifact signing and release evidence policy |
+| Document ID | UAPPSEC-SSC-IMPL-001 |
+| Version | 0.3 |
+| Last updated | 2026-11-26 |
+| Status | Executable synthetic prototype baseline; unified release assurance workflow passed; not production assurance |
+| Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation, signed SLSA provenance, Cosign keyless artifact signing, unified release evidence manifest, Grype DB status integrity/freshness and fail-closed policy |
 | Safety | No production credentials, long-lived signing keys or deployment access; Syft, Grype and Cosign are version/digest pinned, and Cosign's Sigstore release bundle is verified |
 | Related engineering baseline | [Chapter 13 engineering](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md) |
 | Related labs | [Chapter 13 lab pack](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-LAB-PACK.md) |
@@ -139,3 +142,12 @@ Cosign signed the archive using a short-lived GitHub OIDC identity and created `
 - Evidence retention: through 2026-12-10.
 
 This demonstrates a detached signature over a synthetic file. It is not a production signing deployment, key-management assessment, SLSA level claim or release gate.
+
+
+## 12. Revision history
+
+| Version | Date | Change | Evidence / status |
+|---|---|---|---|
+| 0.1 | 2026-11-20 | Initial read-only CI, source integrity manifest, SBOM/SCA and VEX implementation baseline | Earlier workflow evidence recorded in this document |
+| 0.2 | 2026-11-26 | Add SLSA v1.2 synthetic provenance and Cosign v3.1.6 keyless artifact-signing implementations | Successful runs 45790878803 and 45791994671 |
+| 0.3 | 2026-11-26 | Add unified release assurance, Grype database status evidence, 72-hour freshness policy and fail-closed release decision | Successful run 45812113513; decision DEMO_PASS_NOT_FOR_PRODUCTION |
