@@ -74,7 +74,7 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 | SPDX/CycloneDX SBOM | Implemented for this repository filesystem using pinned Syft 1.57.1; CI passed and uploaded two SBOM formats | [Run 44755935644](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755935644); actual product-release SBOM and full schema validation remain open |
 | VEX disposition | OpenVEX v0.2.0 core validator, not-affected justification checks, affected action-statement checks and conservative release-gate prototype; CI passed | [VEX run 44764156909](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44764156909); no production VEX record exists and full official schema/JSON-LD validation is not implemented |
 | SCA vulnerability matching | Implemented as a report-only Grype scan of the generated SPDX SBOM; main-branch CI passed with 2 package records and 0 matches | [Run 44757253987](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44757253987); no severity threshold or release gate is enforced |
-| SLSA build provenance | Synthetic artifact, isolated attestation job, GitHub Sigstore attestation and exact signer/digest verification workflow authored; execution pending | [Implementation guide](provenance/README.md); require successful run, signed bundle, CLI verification and negative tests before marking executed; no SLSA level claim |
+| SLSA build provenance | Synthetic artifact, separate build/sign jobs, GitHub Sigstore-signed SLSA provenance, exact signer/source/digest verification and three negative tests passed | [Run 45790540789](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790540789); attestation [72576926](https://github.com/vimalpaul/Unfiltered-AppSec/attestations/72576926); evidence artifact `15102935476` (expires 2026-12-10). Synthetic only; no SLSA level or production assurance claim |
 | Artifact signing / verification | Not implemented | Establish trust policy, sign in a controlled test environment and verify negative cases |
 | Container hardening / scanning | Not implemented | Add actual image build, digest pinning, scanning and deployment verification |
 | Branch protection / rulesets | Not verified | Read effective repository rules and test enforcement with an authorized change |
@@ -87,10 +87,18 @@ A committed file is not proof that a GitHub setting is enabled. A green workflow
 2. Add project-specific build and dependency discovery without assuming a language or package manager.
 3. Extend SBOM generation to the actual application build/image and bind each SBOM to the exact artifact digest; add full schema validation and package inventory reconciliation.
 4. Connect real product scanner findings to reviewed OpenVEX records, VEX signing, evidence retention, VEX status updates and product-specific release gates.
-5. Complete independent review of the synthetic SLSA workflow, then adapt its separate build/sign pattern to a real application build with complete materials capture.
+5. Independently review the synthetic SLSA workflow, then adapt its separate build/sign pattern to a real application build with complete materials capture.
 6. Assess GitHub-hosted and self-hosted builders against every applicable SLSA Build requirement; do not infer Build L2/L3 from a successful attestation.
 7. Implement separate artifact signing/verification for actual release outputs, then container and deployment enforcement after the real build/deploy architecture is established.
 
 ## 8. Safe-use restrictions
 
 Do not put customer source, private package credentials, production tokens, signing keys, cloud credentials or non-public architecture data in this public repository. Run compromise exercises only against synthetic dependencies and disposable environments.
+
+## 9. SLSA provenance execution evidence
+
+The synthetic SLSA workflow completed successfully on 2026-11-26: [run 45790540789](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790540789), source commit `e5866e3eb3b61acc7712a9f1e6e0bf840410ee46`. The build job passed 8 unit tests, fetched the exact event commit, created a deterministic archive and uploaded it to a separate attestation job. The attestation job verified the metadata and artifact SHA-256 `63deae5867135ecd02c5bda8e5b9868926edd4ad0c0280dff2fa39da2c830e32`, generated a GitHub Sigstore-signed SLSA provenance attestation, and verified the signature, repository, signer workflow, source ref, source digest, OIDC issuer, predicate type and hosted-runner requirement with GitHub CLI.
+
+The verified builder identity was `https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/slsa-build-provenance.yml@refs/heads/main`; build type was `https://actions.github.io/buildtypes/workflow/v1`. The signature was uploaded to the Sigstore transparency log (Rekor log index `4122722229`) and GitHub attestation ID `72576926`. Three negative tests passed: modified artifact rejected, incorrect signer workflow rejected, and incorrect source commit rejected.
+
+The retained evidence artifact is ID `15102935476`, digest `sha256:cd0515bdaeff513037e20127dc21d52a42642105864ec4c2ba2a99cd3410d6ee`, with GitHub retention through 2026-12-10. This is a successful synthetic workflow demonstration, not an independent SLSA assessment, a production application build, or a claim of Build L2/L3.
