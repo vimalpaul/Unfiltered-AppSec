@@ -366,7 +366,7 @@ Use controlled toolchains, declared inputs, deterministic dependency resolution 
 
 ## 15. Build provenance and attestations
 
-Build provenance should bind an artifact digest to verifiable information about the source, builder, build definition and resolved inputs. Use an established attestation model such as in-toto statements with SLSA provenance predicates.
+Build provenance should bind an artifact digest to verifiable information about the source, builder, build definition and resolved inputs. Use an established attestation model such as in-toto statements with SLSA provenance predicates. For SLSA v1.2 Build, use the predicate type `https://slsa.dev/provenance/v1`; the predicate type URI remains stable across minor specification revisions. The repository's synthetic implementation is documented in [the Chapter 13 provenance implementation](../../implementations/13-software-supply-chain-security/provenance/README.md).
 
 Capture at minimum:
 - Subject artifact name and cryptographic digest.
@@ -824,22 +824,22 @@ For each production release retain:
 10. CISA 2026 Minimum Elements for an SBOM announcement: https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb
 11. Sigstore documentation: https://docs.sigstore.dev/
 12. Cosign quickstart: https://docs.sigstore.dev/quickstart/quickstart-cosign/
-13. OpenSSF Scorecard: https://scorecard.dev/
-14. OpenSSF Best Practices: https://www.bestpractices.dev/
-15. OSV database: https://osv.dev/
-16. OSV-Scanner: https://google.github.io/osv-scanner/
-17. OWASP Dependency-Track: https://dependencytrack.org/
+15. OpenSSF Scorecard: https://scorecard.dev/
+16. OpenSSF Best Practices: https://www.bestpractices.dev/
+17. OSV database: https://osv.dev/
+18. OSV-Scanner: https://google.github.io/osv-scanner/
+19. OWASP Dependency-Track: https://dependencytrack.org/
 18. OpenVEX v0.2.0 specification: https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md
-19. CISA Minimum Requirements for VEX: https://www.cisa.gov/sites/default/files/2023-04/minimum-requirements-for-vex-508c.pdf
-20. Syft: https://github.com/anchore/syft
-21. Grype: https://github.com/anchore/grype
-22. in-toto attestation framework: https://github.com/in-toto/attestation
-23. NIST CSF 2.0: https://www.nist.gov/cyberframework
-24. ISO/IEC 27001:2022: https://www.iso.org/standard/27001
-25. ISO/IEC 27036 supplier relationship security: https://www.iso.org/standard/82905.html
-26. PCI DSS v4.0.1: https://www.pcisecuritystandards.org/document_library/
-27. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
-28. OWASP SAMM: https://owaspsamm.org/
+20. CISA Minimum Requirements for VEX: https://www.cisa.gov/sites/default/files/2023-04/minimum-requirements-for-vex-508c.pdf
+21. Syft: https://github.com/anchore/syft
+22. Grype: https://github.com/anchore/grype
+23. in-toto attestation framework: https://github.com/in-toto/attestation
+24. NIST CSF 2.0: https://www.nist.gov/cyberframework
+25. ISO/IEC 27001:2022: https://www.iso.org/standard/27001
+26. ISO/IEC 27036 supplier relationship security: https://www.iso.org/standard/82905.html
+27. PCI DSS v4.0.1: https://www.pcisecuritystandards.org/document_library/
+28. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
+29. OWASP SAMM: https://owaspsamm.org/
 
 ## 34. Revision history
 
@@ -849,3 +849,4 @@ For each production release retain:
 | 0.2 | 2026-11-19 | Add NIST SSDF task mappings, SLSA v1.2 Source/Build tracks and CISA 2026 SBOM alignment |
 | 0.3 | 2026-11-20 | Clarify VEX status semantics, OpenVEX requirements and implementation profile |
 | 0.4 | 2026-11-20 | Add executable VEX validator profile and link SSC-C-008 / SSC-T-011 implementation evidence |
+| 0.5 | 2026-11-20 | Add isolated GitHub signed SLSA build-provenance implementation profile |
