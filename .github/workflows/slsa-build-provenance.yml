@@ -1,0 +1,210 @@
+name: SLSA build provenance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'implementations/13-software-supply-chain-security/provenance/**'
+      - '.github/workflows/slsa-build-provenance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: slsa-build-provenance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    name: Build synthetic artifact (no signing permissions)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      artifact_name: ${{ steps.name.outputs.artifact_name }}
+    steps:
+      - name: Fetch exact event commit
+        shell: bash
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          EVENT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${REPOSITORY}.git"
+          AUTH="$(printf 'x-access-token:%s' "${GH_READ_TOKEN}" | base64 -w0)"
+          git -c http.extraheader="AUTHORIZATION: basic ${AUTH}" fetch --no-tags --depth=1 origin "${EVENT_SHA}"
+          unset AUTH GH_READ_TOKEN
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${EVENT_SHA}"
+
+      - name: Set artifact transfer name
+        id: name
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: echo "artifact_name=slsa-demo-build-${RUN_ID}-${RUN_ATTEMPT}" >> "${GITHUB_OUTPUT}"
+
+      - name: Run provenance fixture tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover \
+            -s implementations/13-software-supply-chain-security/provenance \
+            -p 'test_*.py' -v
+
+      - name: Build deterministic synthetic artifact
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+          BUILD_WORKFLOW: .github/workflows/slsa-build-provenance.yml
+        run: |
+          set -euo pipefail
+          python3 implementations/13-software-supply-chain-security/provenance/build_demo_artifact.py \
+            --output dist/unfiltered-appsec-demo.tar.gz \
+            --metadata-output dist/build-metadata.json \
+            --repository "${REPOSITORY}" \
+            --revision "${EVENT_SHA}" \
+            --workflow "${BUILD_WORKFLOW}"
+
+      - name: Upload artifact to isolated attestation job
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ steps.name.outputs.artifact_name }}
+          path: |
+            dist/unfiltered-appsec-demo.tar.gz
+            dist/build-metadata.json
+          if-no-files-found: error
+          retention-days: 7
+
+  attest-and-verify:
+    if: github.ref == 'refs/heads/main'
+    name: Attest and verify (separate trust domain)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    env:
+      EXPECTED_SIGNER_WORKFLOW: vimalpaul/Unfiltered-AppSec/.github/workflows/slsa-build-provenance.yml
+      EXPECTED_BUILD_WORKFLOW: .github/workflows/slsa-build-provenance.yml
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: dist
+
+      - name: Verify source metadata and exact artifact digest
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          metadata = json.loads(Path("dist/build-metadata.json").read_text(encoding="utf-8"))
+          summary = {
+              "source_repository": metadata.get("source_repository"),
+              "source_revision": metadata.get("source_revision"),
+              "artifact_name": metadata.get("artifact_name"),
+              "artifact_sha256": metadata.get("artifact_sha256"),
+              "build_workflow": metadata.get("build_workflow"),
+          }
+          print("## Build metadata received by attestation job")
+          for key, value in summary.items():
+              print(f"- {key}: {value}")
+          PY
+          python3 implementations/13-software-supply-chain-security/provenance/verify_build_metadata.py \
+            --artifact dist/unfiltered-appsec-demo.tar.gz \
+            --metadata dist/build-metadata.json \
+            --repository "${REPOSITORY}" \
+            --revision "${EVENT_SHA}" \
+            --workflow "${EXPECTED_BUILD_WORKFLOW}"
+
+      - name: Generate signed SLSA build provenance
+        id: attest
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: dist/unfiltered-appsec-demo.tar.gz
+
+      - name: Verify signature, repository, signer workflow and subject digest
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          ARTIFACT: dist/unfiltered-appsec-demo.tar.gz
+          ATTESTATION_BUNDLE: ${{ steps.attest.outputs.bundle-path }}
+        run: |
+          set -euo pipefail
+          gh --version
+          gh attestation verify "${ARTIFACT}" \
+            --repo "${REPOSITORY}" \
+            --signer-workflow "${EXPECTED_SIGNER_WORKFLOW}" \
+            | tee dist/attestation-verification.txt
+          test -s "${ATTESTATION_BUNDLE}"
+          cp "${ATTESTATION_BUNDLE}" dist/sigstore-attestation-bundle.json
+          echo "## Cryptographic provenance verification" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- Repository: ${REPOSITORY}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- Signer workflow: ${EXPECTED_SIGNER_WORKFLOW}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- Subject: ${ARTIFACT}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- Bundle: retained in workflow evidence artifact" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Negative test — reject modified artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          cp dist/unfiltered-appsec-demo.tar.gz dist/tampered-demo.tar.gz
+          printf '\nTAMPERED AFTER ATTESTATION\n' >> dist/tampered-demo.tar.gz
+          if gh attestation verify dist/tampered-demo.tar.gz \
+            --repo "${REPOSITORY}" \
+            --signer-workflow "${EXPECTED_SIGNER_WORKFLOW}"; then
+            echo "ERROR: modified artifact unexpectedly verified" >&2
+            exit 1
+          else
+            echo "Expected rejection: modified subject digest has no matching trusted attestation."
+            echo "- Modified artifact: rejected as expected." >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Negative test — reject untrusted signer workflow
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          WRONG_SIGNER="vimalpaul/Unfiltered-AppSec/.github/workflows/untrusted-workflow.yml"
+          if gh attestation verify dist/unfiltered-appsec-demo.tar.gz \
+            --repo "${REPOSITORY}" \
+            --signer-workflow "${WRONG_SIGNER}"; then
+            echo "ERROR: artifact unexpectedly verified for an untrusted signer workflow" >&2
+            exit 1
+          else
+            echo "Expected rejection: signer workflow is not allow-listed."
+            echo "- Wrong signer workflow: rejected as expected." >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Upload provenance evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: slsa-provenance-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            dist/unfiltered-appsec-demo.tar.gz
+            dist/build-metadata.json
+            dist/sigstore-attestation-bundle.json
+            dist/attestation-verification.txt
+          if-no-files-found: error
+          retention-days: 14
