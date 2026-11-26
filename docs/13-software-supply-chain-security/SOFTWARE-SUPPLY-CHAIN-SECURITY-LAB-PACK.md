@@ -438,7 +438,7 @@ For each lab capture:
 
 **Objective:** Sign and verify a synthetic release artifact using a disposable signing identity.
 
-**Prerequisites:** Cosign, test artifact and test key or approved sandbox keyless identity.
+**Prerequisites:** Cosign, test artifact and test key or approved sandbox keyless identity. The repository includes a keyless synthetic signing exercise at [Chapter 13 Cosign implementation](../../implementations/13-software-supply-chain-security/signing/README.md); use its successful workflow as a reproducible starter, not as independent lab validation.
 
 ### Procedure
 
