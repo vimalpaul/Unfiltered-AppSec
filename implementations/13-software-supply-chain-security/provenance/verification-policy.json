@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "policy_name": "Unfiltered-AppSec synthetic build provenance verifier",
+  "subject": {
+    "artifact_name": "unfiltered-appsec-demo.tar.gz",
+    "digest_algorithm": "sha256",
+    "artifact_kind": "synthetic-training-fixture"
+  },
+  "source": {
+    "repository": "vimalpaul/Unfiltered-AppSec",
+    "ref": "refs/heads/main",
+    "revision": "must_equal_workflow_event_github_sha"
+  },
+  "signer": {
+    "issuer": "https://token.actions.githubusercontent.com",
+    "workflow": "vimalpaul/Unfiltered-AppSec/.github/workflows/slsa-build-provenance.yml",
+    "repository": "vimalpaul/Unfiltered-AppSec"
+  },
+  "predicate_type": "https://slsa.dev/provenance/v1",
+  "verification": {
+    "require_exact_subject_digest": true,
+    "require_expected_repository": true,
+    "require_expected_signer_workflow": true,
+    "reject_tampered_subject": true,
+    "reject_untrusted_signer": true
+  },
+  "limitations": [
+    "This policy is exercised against a synthetic artifact only.",
+    "This file is a human-readable expectation record and is not itself a cryptographic trust root.",
+    "GitHub CLI verification is the cryptographic signature and identity verification step."
+  ]
+}
