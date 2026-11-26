@@ -768,7 +768,201 @@ For each lab capture:
 
 **Teardown:** Revoke lab signing identity and destroy builder resources.
 
-## 32. Assessment rubric
+## 32. Lab 28 — Unified release assurance and evidence consistency
+
+**Lab ID:** SSC-LAB-028  
+**Related controls:** SSC-C-007, SSC-C-008, SSC-C-011, SSC-C-012, SSC-C-013  
+**Related tests:** SSC-T-017, SSC-T-018, SSC-T-019, SSC-T-029, SSC-T-036, SSC-T-037, SSC-T-038, SSC-T-039, SSC-T-040  
+**Related detections:** SSC-D-012, SSC-D-013, SSC-D-014, SSC-D-022, SSC-D-029  
+**Difficulty:** Advanced  
+**Environment:** GitHub Actions, GitHub artifact attestations, GitHub CLI, Syft, Grype, Cosign and Python 3.10+  
+**Classification:** Synthetic training exercise; no production release or deployment
+
+### 32.1 Objective
+
+Demonstrate that individually valid SBOM, SCA, SLSA provenance and Cosign evidence are not sufficient unless they all refer to the same immutable artifact and satisfy one consistent trust policy. The learner will execute the repository's unified workflow, inspect the evidence contract, deliberately test invalid combinations and explain why the policy decision is fail-closed.
+
+### 32.2 Learning outcomes
+
+On completion, the learner must be able to:
+
+1. Explain the difference between artifact digest, SBOM document digest, SCA report digest, provenance bundle digest and signature bundle digest.
+2. Trace how one immutable artifact moves across build, inventory, scan, attestation, signing and final verification trust domains.
+3. Verify that provenance and signature identities are constrained to the expected repository, workflow, ref, revision and OIDC issuer.
+4. Detect evidence splicing, subject mismatch, missing evidence, cross-run evidence and false clean claims caused by empty inventories.
+5. Interpret a demonstration-only policy result without misrepresenting it as production release approval or a SLSA level claim.
+
+### 32.3 Authorization, scope and stop conditions
+
+This lab operates only in the public Unfiltered-AppSec repository and its GitHub-hosted Actions workflow using a deterministic synthetic archive. Do not substitute a customer application, production artifact, private package, real signing key, production cloud identity or deployment environment.
+
+Stop the exercise if:
+- the workflow requests production secrets or deployment permissions;
+- an unexpected repository, branch, signer identity or OIDC issuer is observed;
+- the artifact is not labelled as a synthetic training fixture;
+- the workflow attempts to deploy, publish a production release or modify external infrastructure;
+- evidence cannot be tied to the exact workflow run and source revision.
+
+### 32.4 Roles and responsibilities
+
+| Role | Responsibility |
+|---|---|
+| Learner / release engineer | Trigger the workflow, collect evidence and perform the consistency review |
+| Build platform | Build once, inventory and scan the exact synthetic artifact |
+| Attestation job | Generate and verify GitHub-signed provenance |
+| Signing job | Generate and verify the Cosign keyless signature |
+| Policy verifier | Re-download evidence, repeat cryptographic checks and make the policy decision |
+| Instructor / reviewer | Review trust boundaries, negative tests and evidence interpretation |
+
+### 32.5 Prerequisites and pinned components
+
+- Repository access with permission to run GitHub Actions.
+- GitHub-hosted Ubuntu runner.
+- Python 3.10 or later.
+- Syft 1.57.1, downloaded with the repository-pinned SHA-256.
+- Grype 0.122.1, downloaded with the repository-pinned SHA-256.
+- Cosign v3.1.6 and its pinned Sigstore release bundle.
+- GitHub CLI with `gh attestation verify` support.
+- Pinned GitHub Actions referenced in the workflow by full commit SHA.
+
+The versions above are the repository's implementation pins at the time of this lab. Re-check official releases and digest provenance before updating pins.
+
+### 32.6 Architecture and data flow
+
+```mermaid
+sequenceDiagram
+    participant S as Source revision
+    participant B as Build and inventory job
+    participant A as Attestation job
+    participant C as Cosign signing job
+    participant V as Read-only policy verifier
+    S->>B: Exact event commit
+    B->>B: Build once and calculate artifact SHA-256
+    B->>B: Extract safely, generate SBOM, run/record SCA
+    B-->>A: Exact artifact bytes and metadata
+    B-->>C: Exact artifact bytes and metadata
+    A->>A: Generate signed SLSA provenance
+    A->>A: Verify signer, source, predicate and subject
+    C->>C: Cosign keyless sign and verify
+    A-->>V: Attestation bundle
+    C-->>V: Cosign signature bundle
+    B-->>V: Artifact, SBOM and SCA evidence
+    V->>V: Recompute digest and re-verify provenance/signature
+    V->>V: Validate unified evidence contract
+    V-->>V: DEMO_PASS_NOT_FOR_PRODUCTION or reject
+```
+
+### 32.7 Setup and execution
+
+1. Open the repository's [Unified Release Assurance workflow](../../.github/workflows/unified-release-assurance.yml).
+2. Confirm the target ref is `main`. The workflow intentionally runs its signing and attestation jobs only for the protected target ref; the current repository ruleset state must be checked separately.
+3. Trigger the workflow through `workflow_dispatch` or make an approved change to one of the workflow's watched implementation paths.
+4. Open the resulting Actions run and confirm that the build, attestation, signing and final policy jobs belong to the same run ID and attempt.
+5. Inspect the build job. Confirm it fetched the exact event commit, built the deterministic synthetic archive once and calculated its SHA-256.
+6. Inspect the inventory job output. Confirm Syft generated CycloneDX 1.7 and SPDX 2.3 from the safely extracted release archive and the repository validator checked their required structure.
+7. Inspect the SCA disposition. If package records exist, confirm Grype ran and the report validator passed. If there are no package records, confirm the record says `not_run_no_package_records`, the match count is null and the disposition is `not_evaluated_no_package_records`. Do not interpret this as zero vulnerabilities.
+8. Inspect the attestation job. Confirm it received the artifact from the build job, checked the metadata and digest, generated GitHub-signed SLSA provenance and verified the expected signer workflow, repository, source ref, source digest, issuer and predicate.
+9. Inspect the signing job. Confirm it verified the pinned Cosign release binary and bundle, signed the same artifact and verified the certificate identity, issuer, repository, source ref, source SHA and trigger.
+10. Inspect the final policy job. Confirm it downloads the artifact and evidence, repeats GitHub attestation and Cosign verification, runs the negative cryptographic tests, creates the manifest and invokes the policy engine.
+11. Confirm the only acceptable successful result is `DEMO_PASS_NOT_FOR_PRODUCTION` and `promotion_authorized: false`.
+12. Download the retained `ura-release-evidence` artifact and preserve its manifest, decision, artifact, SBOM, SCA disposition, attestation bundle and Cosign bundle for review.
+
+### 32.8 Evidence consistency checks
+
+| Check | What to inspect | Pass condition |
+|---|---|---|
+| Artifact identity | SHA-256 in build metadata, manifest and final downloaded artifact | All identical |
+| SBOM binding | SBOM record subject digest and generation scope | Exact artifact digest and extracted-artifact scope |
+| SCA linkage | SCA subject digest and SBOM document digest | Both point to the exact artifact and SBOM document |
+| Provenance | GitHub CLI verification result and attestation bundle | Expected signer workflow, issuer, source revision, predicate and artifact subject |
+| Signature | Cosign verification and bundle | Exact artifact, certificate identity and OIDC issuer |
+| Run consistency | Run ID and attempt in every evidence record | All evidence from the same workflow execution |
+| Policy outcome | Release decision JSON | Demonstration pass only; no production promotion |
+
+### 32.9 Negative testing
+
+The integrated workflow executes cryptographic negative tests. The policy unit tests provide additional deterministic cases. Review the following scenarios:
+
+| Scenario | Controlled mutation | Expected result | Test reference |
+|---|---|---|---|
+| Artifact tampering | Append bytes after signing/attestation | GitHub attestation and Cosign verification reject | SSC-T-017 |
+| Untrusted provenance workflow | Supply a non-allow-listed signer workflow | GitHub CLI verification rejects | SSC-T-019 |
+| Untrusted Cosign identity | Supply an incorrect certificate identity | Cosign verification rejects | SSC-T-019 |
+| Wrong OIDC issuer | Supply an untrusted issuer | Cosign verification rejects | SSC-T-019 |
+| Missing SBOM | Remove the SBOM record | Policy engine rejects | SSC-T-038 |
+| Missing provenance/signature | Remove required evidence | Policy engine rejects | SSC-T-038 |
+| SBOM subject mismatch | Replace SBOM subject digest | Policy engine rejects | SSC-T-036 |
+| SCA-to-SBOM mismatch | Replace the SBOM document digest in SCA record | Policy engine rejects | SSC-T-037 |
+| Cross-run evidence | Change one evidence run ID or attempt | Policy engine rejects | SSC-T-039 |
+| False clean inventory | Mark no-package state as zero vulnerabilities | Policy engine rejects | SSC-T-040 |
+| Evidence tampering | Modify a retained evidence file without updating its digest | Policy engine rejects | SSC-T-038 |
+
+The unit tests are not a substitute for the real GitHub and Cosign cryptographic negative tests. Both layers are required.
+
+### 32.10 Expected results and troubleshooting
+
+A successful workflow demonstrates that the synthetic artifact, SBOM, SCA disposition, provenance and signature have a consistent evidence relationship. It does not establish production security or compliance.
+
+| Symptom | Likely cause | Action |
+|---|---|---|
+| GitHub attestation verification fails | Wrong source ref, signer workflow, issuer, predicate or subject | Inspect verified statement and workflow claims; do not relax identity constraints to force a pass |
+| Cosign verification fails | Wrong bundle, artifact bytes, certificate identity or issuer | Recompute artifact digest and inspect certificate claims |
+| SBOM structural check fails | Tool output format/version changed or artifact inventory issue | Inspect Syft version and JSON fields; update pins only after review |
+| SCA report validation fails | Scanner report format changed or report incomplete | Inspect Grype descriptor, database status and report structure |
+| Policy rejects cross-run evidence | Artifacts from different run attempts were mixed | Re-download all artifacts from the same workflow run |
+| Empty inventory is reported | No recognized package records in the synthetic archive | Preserve the explicit not-evaluated disposition; do not manufacture a clean scan |
+| Evidence file digest mismatch | File changed, truncated or path points to wrong object | Re-download and verify artifact retention and evidence path |
+
+### 32.11 Remediation and retest
+
+1. Do not weaken signer, issuer, source or digest constraints to clear a failed test.
+2. Identify the exact failed invariant and preserve the failing evidence.
+3. Correct the build, evidence-generation or policy logic in a reviewed change.
+4. Re-run the full workflow from a single source revision.
+5. Confirm all positive checks and all negative tests still behave as expected.
+6. Record the new workflow run, source SHA, artifact digest, evidence artifact ID and decision.
+7. Keep the previous failed run as an audit record; do not overwrite its evidence.
+
+### 32.12 Teardown and evidence retention
+
+- No persistent lab infrastructure is created.
+- Retain the workflow run URL, source SHA, artifact digest, release manifest, decision JSON, SBOMs, SCA disposition, provenance bundle, Cosign bundle and test logs.
+- Confirm temporary workflow artifacts expire under the configured retention period.
+- Do not copy the synthetic signer identity or test evidence into a production trust policy without a separate threat model and approval.
+
+### 32.13 Assessment rubric
+
+| Criterion | Points |
+|---|---:|
+| Explains trust domains and least-privilege job separation | 15 |
+| Correctly distinguishes artifact and evidence digests | 15 |
+| Verifies SBOM subject and SCA-to-SBOM linkage | 15 |
+| Interprets SLSA and Cosign identity verification | 15 |
+| Explains empty-inventory semantics correctly | 10 |
+| Demonstrates missing, tampered and mismatched evidence rejection | 15 |
+| Explains why a demo pass is not production authorization | 10 |
+| Preserves complete and traceable evidence | 5 |
+| **Total** | **100** |
+
+Suggested interpretation: 90–100 strong independent engineering; 75–89 competent with review; 60–74 guided remediation required; below 60 repeat the exercise. These are educational thresholds, not a certification.
+
+### 32.14 Instructor review checklist
+
+- Was the lab run only against the synthetic training fixture?
+- Did the build job lack OIDC, attestation and deployment permissions?
+- Was one artifact built and transferred without rebuilding?
+- Was the SBOM generated from the release artifact contents?
+- Was the SCA report bound to the exact SBOM digest?
+- Was an empty package inventory treated as not evaluated?
+- Were provenance and Cosign verification repeated in the final policy job?
+- Were signer, issuer, repository, ref, source revision and subject digest constrained?
+- Did tampering, wrong identity and wrong issuer tests reject?
+- Did missing, mismatched and cross-run evidence tests reject?
+- Did the final decision explicitly deny production promotion?
+- Were original evidence files and their digests retained?
+- Were limitations and outstanding production controls recorded?
+
+## 33. Assessment rubric
 
 | Criterion | Points |
 |---|---:|
@@ -784,7 +978,7 @@ For each lab capture:
 
 Suggested training interpretation: 90–100 strong independent engineering; 75–89 competent with review; 60–74 guided remediation required; below 60 repeat the exercises. These are educational thresholds, not a certification.
 
-## 33. Instructor review checklist
+## 34. Instructor review checklist
 
 - Was the scope authorized and isolated?
 - Were all repositories, dependencies, registries, workflows and artifacts inventoried?
@@ -810,7 +1004,7 @@ Suggested training interpretation: 90–100 strong independent engineering; 75�
 - Was the release evidence gate tested with missing and mismatched evidence?
 - Were all test credentials, registries, runners and artifacts removed?
 
-## 34. References
+## 35. References
 
 1. NIST SP 800-218 SSDF v1.1: https://csrc.nist.gov/pubs/sp/800/218/final
 2. SLSA v1.2 specification: https://slsa.dev/spec/v1.2/
@@ -835,9 +1029,10 @@ Suggested training interpretation: 90–100 strong independent engineering; 75�
 21. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
 22. OWASP SAMM: https://owaspsamm.org/
 
-## 35. Revision history
+## 36. Revision history
 
 | Version | Date | Change |
 |---|---|---|
 | 0.1 | 2026-11-19 | Initial software supply-chain security lab specifications |
 | 0.2 | 2026-11-19 | Add SLSA v1.2 Source and Build track assessment labs |
+| 0.3 | 2026-11-26 | Add Lab 28 for unified release evidence assurance, digest consistency and fail-closed verification |
