@@ -87,9 +87,9 @@ A committed file is not proof that a GitHub setting is enabled. A green workflow
 2. Add project-specific build and dependency discovery without assuming a language or package manager.
 3. Extend SBOM generation to the actual application build/image and bind each SBOM to the exact artifact digest; add full schema validation and package inventory reconciliation.
 4. Connect real product scanner findings to reviewed OpenVEX records, VEX signing, evidence retention, VEX status updates and product-specific release gates.
-5. Add provenance generation and verification against the actual builder identity.
-6. Add signing and verification with a disposable test identity before defining production trust.
-7. Add container and deployment policy only after the repository's real build/deploy architecture is known.
+5. Complete independent review of the synthetic SLSA workflow, then adapt its separate build/sign pattern to a real application build with complete materials capture.
+6. Assess GitHub-hosted and self-hosted builders against every applicable SLSA Build requirement; do not infer Build L2/L3 from a successful attestation.
+7. Implement separate artifact signing/verification for actual release outputs, then container and deployment enforcement after the real build/deploy architecture is established.
 
 ## 8. Safe-use restrictions
 
