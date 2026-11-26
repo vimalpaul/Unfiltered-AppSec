@@ -1037,3 +1037,4 @@ Suggested training interpretation: 90â€“100 strong independent engineering; 75â€
 | 0.2 | 2026-11-19 | Add SLSA v1.2 Source and Build track assessment labs |
 | 0.3 | 2026-11-26 | Add Lab 28 for unified release evidence assurance, digest consistency and fail-closed verification |
 | 0.4 | 2026-11-26 | Expand Lab 28 with integrated workflow, run-attempt binding, end-to-end negative cases and evidence retention procedure |
+| 0.5 | 2026-11-26 | Record successful synthetic workflow execution as pre-validation evidence; independent learner reproduction remains pending |
