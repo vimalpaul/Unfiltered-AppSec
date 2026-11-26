@@ -1,0 +1,102 @@
+name: Chapter 13 Lab 01 — Supply-chain inventory
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'implementations/13-software-supply-chain-security/labs/lab-01-supply-chain-inventory/**'
+      - '.github/workflows/ch13-lab01-inventory.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'implementations/13-software-supply-chain-security/labs/lab-01-supply-chain-inventory/**'
+      - '.github/workflows/ch13-lab01-inventory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ch13-lab01-inventory-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-synthetic-inventory:
+    name: Validate fixture and reproduce evidence
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Fetch exact event commit
+        shell: bash
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          EVENT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${REPOSITORY}.git"
+          AUTH="$(printf 'x-access-token:%s' "${GH_READ_TOKEN}" | base64 -w0)"
+          git -c http.extraheader="AUTHORIZATION: basic ${AUTH}" fetch --no-tags --depth=1 origin "${EVENT_SHA}"
+          unset AUTH GH_READ_TOKEN
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${EVENT_SHA}"
+
+      - name: Set up pinned Python 3.12.16
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.16'
+
+      - name: Record runtime versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python --version
+          python -c 'import sys; assert sys.version_info[:3] == (3, 12, 16), sys.version'
+          git --version
+
+      - name: Run Lab 01 unit and negative tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          LAB_DIR="implementations/13-software-supply-chain-security/labs/lab-01-supply-chain-inventory"
+          python -m py_compile "${LAB_DIR}/build_inventory.py" "${LAB_DIR}/tests/test_build_inventory.py"
+          PYTHONPATH="${LAB_DIR}" python -m unittest discover -s "${LAB_DIR}/tests" -p 'test_*.py' -v
+
+      - name: Generate evidence twice and verify deterministic output
+        shell: bash
+        run: |
+          set -euo pipefail
+          LAB_DIR="implementations/13-software-supply-chain-security/labs/lab-01-supply-chain-inventory"
+          python "${LAB_DIR}/build_inventory.py" --input "${LAB_DIR}/fixtures/synthetic-product-inventory.json" --output-dir /tmp/lab01-output-a
+          python "${LAB_DIR}/build_inventory.py" --input "${LAB_DIR}/fixtures/synthetic-product-inventory.json" --output-dir /tmp/lab01-output-b
+          diff -ru /tmp/lab01-output-a /tmp/lab01-output-b
+          (cd /tmp/lab01-output-a && sha256sum --check SHA256SUMS)
+          python - <<'PY' >> "${GITHUB_STEP_SUMMARY}"
+          import json
+          from pathlib import Path
+          summary = json.loads(Path("/tmp/lab01-output-a/inventory.normalized.json").read_text(encoding="utf-8"))
+          stats = summary["summary"]
+          print("# Chapter 13 Lab 01 — Execution summary")
+          print()
+          print("| Measure | Result |")
+          print("|---|---:|")
+          print(f"| Assets | {stats['asset_count']} |")
+          print(f"| Asset categories | {stats['asset_category_count']} |")
+          print(f"| Relationships | {stats['relationship_count']} |")
+          print(f"| Trust-boundary crossings | {stats['trust_boundary_crossings']} |")
+          print(f"| Risks | {stats['risk_count']} |")
+          print()
+          print("Outputs reproduced byte-for-byte in two independent directories; checksums verified.")
+          print("Synthetic fixture only; this run does not discover or attest real product assets.")
+          PY
+
+      - name: Retain generated lab evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ch13-lab01-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/lab01-output-a/
+          if-no-files-found: error
+          retention-days: 14

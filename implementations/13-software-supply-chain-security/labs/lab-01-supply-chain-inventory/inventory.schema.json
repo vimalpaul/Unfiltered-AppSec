@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unfiltered-appsec.example/schemas/ch13/lab01-inventory.schema.json",
+  "title": "Unfiltered AppSec Chapter 13 Lab 01 Supply-chain Inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "inventory_id", "product", "revision", "scope", "assets", "relationships", "risks"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "inventory_id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,63}$"},
+    "product": {"type": "object", "additionalProperties": false, "required": ["name", "description", "owner"], "properties": {
+      "name": {"type": "string", "minLength": 1},
+      "description": {"type": "string", "minLength": 1},
+      "owner": {"type": "string", "minLength": 1}
+    }},
+    "revision": {"type": "string", "pattern": "^[0-9a-f]{7,64}$"},
+    "scope": {"type": "object", "additionalProperties": false, "required": ["environment", "discovery_method", "limitations"], "properties": {
+      "environment": {"enum": ["synthetic-lab", "test", "staging", "production"]},
+      "discovery_method": {"type": "string", "minLength": 1},
+      "limitations": {"type": "array", "items": {"type": "string"}}
+    }},
+    "assets": {"type": "object", "additionalProperties": false, "required": ["source_repositories", "source_controls", "dependencies", "registries", "workflows", "runners", "identities", "artifacts", "suppliers", "deployment_targets"], "properties": {
+      "source_repositories": {"$ref": "#/$defs/assetList"},
+      "source_controls": {"$ref": "#/$defs/assetList"},
+      "dependencies": {"$ref": "#/$defs/assetList"},
+      "registries": {"$ref": "#/$defs/assetList"},
+      "workflows": {"$ref": "#/$defs/assetList"},
+      "runners": {"$ref": "#/$defs/assetList"},
+      "identities": {"$ref": "#/$defs/assetList"},
+      "artifacts": {"$ref": "#/$defs/assetList"},
+      "suppliers": {"$ref": "#/$defs/assetList"},
+      "deployment_targets": {"$ref": "#/$defs/assetList"}
+    }},
+    "relationships": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["id", "from", "to", "relationship", "crosses_trust_boundary"], "properties": {
+      "id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,63}$"},
+      "from": {"type": "string", "minLength": 1},
+      "to": {"type": "string", "minLength": 1},
+      "relationship": {"type": "string", "minLength": 1},
+      "crosses_trust_boundary": {"type": "boolean"},
+      "notes": {"type": "string"}
+    }}},
+    "risks": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["id", "asset_id", "scenario", "likelihood", "impact", "treatment", "owner", "status"], "properties": {
+      "id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,63}$"},
+      "asset_id": {"type": "string", "minLength": 1},
+      "scenario": {"type": "string", "minLength": 1},
+      "likelihood": {"enum": ["low", "medium", "high"]},
+      "impact": {"enum": ["low", "medium", "high", "critical"]},
+      "treatment": {"type": "string", "minLength": 1},
+      "owner": {"type": "string", "minLength": 1},
+      "status": {"enum": ["open", "mitigating", "accepted", "closed"]}
+    }}}
+  },
+  "$defs": {
+    "assetList": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["id", "name", "owner", "criticality", "trust_zone", "source", "evidence_refs", "attributes"], "properties": {
+      "id": {"type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]{2,63}$"},
+      "name": {"type": "string", "minLength": 1},
+      "owner": {"type": "string", "minLength": 1},
+      "criticality": {"enum": ["low", "medium", "high", "critical"]},
+      "trust_zone": {"enum": ["developer", "source-control", "third-party", "build", "identity", "artifact", "deployment"]},
+      "source": {"type": "string", "minLength": 1},
+      "evidence_refs": {"type": "array", "items": {"type": "string"}},
+      "attributes": {"type": "object"}
+    }}}
+  }
+}
