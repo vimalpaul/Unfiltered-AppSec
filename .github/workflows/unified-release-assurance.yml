@@ -179,7 +179,15 @@ jobs:
               "match_count": len(report.get("matches", [])),
               "threshold_enforced": False,
               "disposition": "report_only_no_release_threshold",
+              "database": {
+                  "schema_version": report.get("db", {}).get("status", {}).get("schemaVersion"),
+                  "built_at": report.get("db", {}).get("status", {}).get("built"),
+                  "valid": report.get("db", {}).get("status", {}).get("valid"),
+              },
           }
+          database = status["database"]
+          if database["valid"] is not True or not database["schema_version"] or not database["built_at"]:
+              raise SystemExit("Grype report does not contain valid database integrity and freshness metadata")
           Path("dist/build/evidence/sca-status.json").write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
           PY
           else
@@ -648,7 +656,8 @@ jobs:
                   "sca": record(sca, subject_sha256=artifact_digest, sbom_sha256=sha(sbom),
                       scanner="Grype", scanner_version=sca_status["scanner_version"],
                       scan_status=sca_status["scan_status"], match_count=sca_status["match_count"],
-                      threshold_enforced=False, disposition=sca_status["disposition"]),
+                      threshold_enforced=False, disposition=sca_status["disposition"],
+                      database=sca_status.get("database")),
                   "slsa_provenance": record(slsa, status="verified", subject_sha256=artifact_digest,
                       verification_method="gh-attestation-verify",
                       signer_workflow="vimalpaul/Unfiltered-AppSec/.github/workflows/unified-release-assurance.yml",
