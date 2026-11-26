@@ -84,7 +84,7 @@ class ReleaseAssuranceTests(unittest.TestCase):
             "source": {"repository": REPOSITORY, "ref": REF, "workflow": WORKFLOW},
             "provenance": {"signer_workflow": SIGNER, "oidc_issuer": ISSUER},
             "cosign": {"certificate_identity": COSIGN_IDENTITY, "oidc_issuer": ISSUER},
-            "allow_empty_inventory_for_demo": True,
+            "sbom": {"accepted_formats": ["CycloneDX 1.7", "SPDX 2.3"],\n                    "required_generation_scope": "extracted-release-artifact"},\n            "sca": {"allow_empty_inventory_for_demo": True},
         }
 
     def tearDown(self):
