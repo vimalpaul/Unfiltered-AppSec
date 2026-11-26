@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Executable prototype baseline — not production assurance |
+| Status | Executable prototype baseline — not production assurance; unified release assurance under end-to-end validation |
 | Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation, signed SLSA provenance, Cosign keyless artifact signing and release evidence policy |
 | Safety | No production credentials, long-lived signing keys or deployment access; Syft, Grype and Cosign are version/digest pinned, and Cosign's Sigstore release bundle is verified |
 | Related engineering baseline | [Chapter 13 engineering](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md) |
