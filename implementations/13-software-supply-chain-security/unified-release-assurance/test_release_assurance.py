@@ -186,6 +186,38 @@ class ReleaseAssuranceTests(unittest.TestCase):
         with self.assertRaisesRegex(PolicyError, "must not be described as vulnerability-free"):
             self.validate()
 
+    def test_completed_sca_requires_valid_database(self):
+        sca = self.manifest["evidence"]["sca"]
+        self.manifest["evidence"]["sbom"]["package_count"] = 1
+        sca.update(scan_status="completed_report_only", match_count=0,
+                   disposition="report_only_no_release_threshold", threshold_enforced=False,
+                   database={"schema_version": "v6.1.10", "built_at": "2026-11-26T06:22:34Z",
+                             "valid": True})
+        self.files["sca.json"].write_text('{"matches": []}', encoding="utf-8")
+        sca["sha256"] = digest(self.files["sca.json"])
+        result = self.validate()
+        self.assertEqual(result["evidence"]["sca"]["database"]["schema_version"], "v6.1.10")
+
+    def test_invalid_grype_database_is_rejected(self):
+        self.manifest["evidence"]["sbom"]["package_count"] = 1
+        sca = self.manifest["evidence"]["sca"]
+        sca.update(scan_status="completed_report_only", match_count=0,
+                   disposition="report_only_no_release_threshold", threshold_enforced=False,
+                   database={"schema_version": "v6.1.10", "built_at": "2026-11-26T06:22:34Z",
+                             "valid": False})
+        with self.assertRaisesRegex(PolicyError, "database is not valid"):
+            self.validate()
+
+    def test_stale_grype_database_is_rejected(self):
+        self.manifest["evidence"]["sbom"]["package_count"] = 1
+        sca = self.manifest["evidence"]["sca"]
+        sca.update(scan_status="completed_report_only", match_count=0,
+                   disposition="report_only_no_release_threshold", threshold_enforced=False,
+                   database={"schema_version": "v6.1.10", "built_at": "2026-11-20T06:22:34Z",
+                             "valid": True})
+        with self.assertRaisesRegex(PolicyError, "database is stale"):
+            self.validate()
+
     def test_non_demo_release_classification_is_rejected(self):
         self.manifest["release_classification"] = "production"
         with self.assertRaisesRegex(PolicyError, "does not match policy"):
