@@ -117,7 +117,8 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
             "SBOM is not bound to the exact release artifact digest")
     require(sbom.get("generation_scope") == "extracted-release-artifact",
             "SBOM was not generated from the extracted release artifact")
-    require(sbom.get("format") in ("CycloneDX 1.7", "SPDX 2.3"), "unsupported SBOM format")
+    accepted_formats = policy.get("sbom", {}).get("accepted_formats", ["CycloneDX 1.7", "SPDX 2.3"])
+    require(sbom.get("format") in accepted_formats, "unsupported SBOM format")
     sbom_digest = verify_evidence_file(evidence_root, sbom, "SBOM")
     package_count = sbom.get("package_count")
     require(isinstance(package_count, int) and package_count >= 0, "SBOM package_count must be a non-negative integer")
