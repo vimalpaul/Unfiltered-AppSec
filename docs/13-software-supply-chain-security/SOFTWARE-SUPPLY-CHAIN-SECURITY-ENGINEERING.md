@@ -824,22 +824,24 @@ For each production release retain:
 10. CISA 2026 Minimum Elements for an SBOM announcement: https://content.govdelivery.com/accounts/USDHSCISA/bulletins/422a7eb
 11. Sigstore documentation: https://docs.sigstore.dev/
 12. Cosign quickstart: https://docs.sigstore.dev/quickstart/quickstart-cosign/
-15. OpenSSF Scorecard: https://scorecard.dev/
-16. OpenSSF Best Practices: https://www.bestpractices.dev/
-17. OSV database: https://osv.dev/
-18. OSV-Scanner: https://google.github.io/osv-scanner/
-19. OWASP Dependency-Track: https://dependencytrack.org/
-18. OpenVEX v0.2.0 specification: https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md
-20. CISA Minimum Requirements for VEX: https://www.cisa.gov/sites/default/files/2023-04/minimum-requirements-for-vex-508c.pdf
-21. Syft: https://github.com/anchore/syft
-22. Grype: https://github.com/anchore/grype
-23. in-toto attestation framework: https://github.com/in-toto/attestation
-24. NIST CSF 2.0: https://www.nist.gov/cyberframework
-25. ISO/IEC 27001:2022: https://www.iso.org/standard/27001
-26. ISO/IEC 27036 supplier relationship security: https://www.iso.org/standard/82905.html
-27. PCI DSS v4.0.1: https://www.pcisecuritystandards.org/document_library/
-28. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
-29. OWASP SAMM: https://owaspsamm.org/
+13. GitHub artifact attestations: https://docs.github.com/en/actions/concepts/security/artifact-attestations
+14. GitHub attestation generation and verification: https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations
+15. OpenVEX v0.2.0 specification: https://github.com/openvex/spec/blob/main/OPENVEX-SPEC.md
+16. CISA Minimum Requirements for VEX: https://www.cisa.gov/sites/default/files/2023-04/minimum-requirements-for-vex-508c.pdf
+17. OpenSSF Scorecard: https://scorecard.dev/
+18. OpenSSF Best Practices: https://www.bestpractices.dev/
+19. OSV database: https://osv.dev/
+20. OSV-Scanner: https://google.github.io/osv-scanner/
+21. OWASP Dependency-Track: https://dependencytrack.org/
+22. Syft: https://github.com/anchore/syft
+23. Grype: https://github.com/anchore/grype
+24. in-toto attestation framework: https://github.com/in-toto/attestation
+25. NIST CSF 2.0: https://www.nist.gov/cyberframework
+26. ISO/IEC 27001:2022: https://www.iso.org/standard/27001
+27. ISO/IEC 27036 supplier relationship security: https://www.iso.org/standard/82905.html
+28. PCI DSS v4.0.1: https://www.pcisecuritystandards.org/document_library/
+29. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
+30. OWASP SAMM: https://owaspsamm.org/
 
 ## 34. Revision history
 
