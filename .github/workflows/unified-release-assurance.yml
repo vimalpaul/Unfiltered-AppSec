@@ -166,12 +166,16 @@ jobs:
           PACKAGE_COUNT="$(python3 -c 'import json; print(len(json.load(open("dist/build/evidence/sbom.spdx.json", encoding="utf-8")).get("packages", [])))')"
           if [ "${PACKAGE_COUNT}" -gt 0 ]; then
             grype sbom:dist/build/evidence/sbom.spdx.json -o json > dist/build/evidence/sca-results.json
+            grype db status
             python3 implementations/13-software-supply-chain-security/sca/validate_grype_report.py \
               --report dist/build/evidence/sca-results.json
             python3 - <<'PY'
           import json
           from pathlib import Path
           report = json.loads(Path("dist/build/evidence/sca-results.json").read_text(encoding="utf-8"))
+          database_status = report.get("db", {}).get("status", {})
+          print("Grype database status from scan report:")
+          print(json.dumps(database_status, indent=2, sort_keys=True))
           status = {
               "scan_status": "completed_report_only",
               "scanner": report.get("descriptor", {}).get("name"),
@@ -187,7 +191,7 @@ jobs:
           }
           database = status["database"]
           if database["valid"] is not True or not database["schema_version"] or not database["built_at"]:
-              raise SystemExit("Grype report does not contain valid database integrity and freshness metadata")
+              raise SystemExit("Grype database metadata rejected: " + json.dumps(database, sort_keys=True))
           Path("dist/build/evidence/sca-status.json").write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
           PY
           else
