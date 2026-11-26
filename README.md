@@ -65,7 +65,7 @@ Geographic scope is global. Dedicated workstreams will cover India and Middle Ea
 | 10 | Cloud-Native Application Security | Cloud IAM, workload identity, containers, Kubernetes, serverless, IaC, CI/CD and runtime | Draft baseline and lab pack created |
 | 11 | Distributed Systems and Integration Security | Workload identity, service authorization, service mesh, Kafka/RabbitMQ, events, replay, idempotency, sagas, webhooks and partner integrations | Draft baseline and lab pack created |
 | 12 | AI and LLM Application Security | Prompt injection, RAG, vector security, tool calling, agents, MCP, model supply chain, privacy and AI operations | Draft baseline and lab pack created |
-| 13 | Software Supply Chain Security | Repository and dependency security, CI/CD, SBOM, SCA/VEX, SLSA provenance, signing, artifact verification and supplier assurance | Draft engineering baseline, lab pack and executable CI/SBOM/SCA/VEX validation baseline created |
+| 13 | Software Supply Chain Security | Repository and dependency security, CI/CD, SBOM, SCA/VEX, SLSA provenance, signing, artifact verification and supplier assurance | Draft engineering baseline and lab pack, plus executable CI/SBOM/SCA/VEX, SLSA provenance and Cosign signing prototypes created |
 | 14 | Security Verification and Assessment | SAST, DAST, IAST, SCA, manual testing, penetration tests and assurance | Planned |
 | 15 | Vulnerability Management and PSIRT | Intake, triage, severity, disclosure, remediation, patching and product advisories | Planned |
 | 16 | AppSec Operations and Incident Response | Security telemetry, detection, incident handling, forensics and recovery | Planned |
