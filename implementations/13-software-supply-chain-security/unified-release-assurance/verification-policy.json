@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "policy_name": "Unfiltered AppSec Unified Release Assurance - synthetic demonstration",
+  "release_classification": "synthetic-training-fixture",
+  "source": {
+    "repository": "vimalpaul/Unfiltered-AppSec",
+    "ref": "refs/heads/main",
+    "workflow": ".github/workflows/unified-release-assurance.yml"
+  },
+  "provenance": {
+    "signer_workflow": "vimalpaul/Unfiltered-AppSec/.github/workflows/unified-release-assurance.yml",
+    "oidc_issuer": "https://token.actions.githubusercontent.com",
+    "predicate_type": "https://slsa.dev/provenance/v1"
+  },
+  "cosign": {
+    "certificate_identity": "https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/unified-release-assurance.yml@refs/heads/main",
+    "oidc_issuer": "https://token.actions.githubusercontent.com"
+  },
+  "sbom": {
+    "accepted_formats": ["CycloneDX 1.7", "SPDX 2.3"],
+    "required_generation_scope": "extracted-release-artifact"
+  },
+  "sca": {
+    "scanner": "Grype",
+    "mode": "report-only-demonstration",
+    "allow_empty_inventory_for_demo": true,
+    "empty_inventory_disposition": "not_evaluated_no_package_records",
+    "production_threshold_enforced": false
+  },
+  "evidence": {
+    "required": ["sbom", "sca", "slsa_provenance", "cosign_signature"],
+    "require_same_artifact_sha256": true,
+    "require_same_workflow_run_and_attempt": true,
+    "require_evidence_file_digest": true,
+    "reject_path_traversal": true
+  },
+  "decision": {
+    "success": "DEMO_PASS_NOT_FOR_PRODUCTION",
+    "promotion_authorized": false,
+    "production_release_enabled": false
+  },
+  "limitations": [
+    "The policy file is a policy input, not a cryptographic trust root.",
+    "GitHub CLI and Cosign perform cryptographic verification before the policy engine consumes their successful results.",
+    "The SCA scan is report-only and an empty package inventory is explicitly not treated as a vulnerability-free result.",
+    "This workflow builds a synthetic training fixture and must not be connected to a production deployment environment.",
+    "No SLSA Build L2 or L3 claim is made."
+  ]
+}
