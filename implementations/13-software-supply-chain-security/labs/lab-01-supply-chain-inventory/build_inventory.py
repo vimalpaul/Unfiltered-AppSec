@@ -42,18 +42,18 @@ def validate_inventory(data: Any) -> dict[str, Any]:
     require(isinstance(data, dict), "inventory root must be an object")
     required = {"schema_version", "inventory_id", "product", "revision", "scope",
                 "assets", "relationships", "risks"}
-    require(required.issubset(data), f"missing top-level fields: {sorted(required - set(data))}")
+    require(set(data) == required, f"top-level fields must be exactly: {sorted(required)}")
     require(data["schema_version"] == "1.0", "unsupported schema_version")
     require(nonempty(data["inventory_id"]) and ID_PATTERN.fullmatch(data["inventory_id"]),
             "inventory_id must be a stable uppercase identifier")
     product = data["product"]
-    require(isinstance(product, dict), "product must be an object")
+    require(isinstance(product, dict) and set(product) == {"name", "description", "owner"}, "product must contain exactly name, description and owner")
     for field in ("name", "description", "owner"):
         require(nonempty(product.get(field)), f"product.{field} is required")
     require(isinstance(data["revision"], str) and re.fullmatch(r"[0-9a-f]{7,64}", data["revision"]),
             "revision must be a hexadecimal source revision")
     scope = data["scope"]
-    require(isinstance(scope, dict), "scope must be an object")
+    require(isinstance(scope, dict) and set(scope) == {"environment", "discovery_method", "limitations"}, "scope must contain exactly environment, discovery_method and limitations")
     require(scope.get("environment") in {"synthetic-lab", "test", "staging", "production"},
             "scope.environment is invalid")
     require(nonempty(scope.get("discovery_method")), "scope.discovery_method is required")
@@ -82,7 +82,7 @@ def validate_inventory(data: Any) -> dict[str, Any]:
                     f"{prefix}.criticality is invalid for {asset_id}")
             require(asset["trust_zone"] in TRUST_ZONES,
                     f"{prefix}.trust_zone is invalid for {asset_id}")
-            require(isinstance(asset["evidence_refs"], list)
+            require(isinstance(asset["evidence_refs"], list) and bool(asset["evidence_refs"])
                     and all(nonempty(ref) for ref in asset["evidence_refs"]),
                     f"{prefix}.evidence_refs must contain non-empty references")
             require(isinstance(asset["attributes"], dict), f"{prefix}.attributes must be an object")
@@ -94,6 +94,8 @@ def validate_inventory(data: Any) -> dict[str, Any]:
             index[asset_id] = asset
 
     require(bool(index), "inventory must contain at least one asset")
+    mermaid_ids = [re.sub(r"[^A-Za-z0-9_]", "_", asset_id) for asset_id in index]
+    require(len(mermaid_ids) == len(set(mermaid_ids)), "asset identifiers collide after Mermaid node normalization")
     relationships = data["relationships"]
     require(isinstance(relationships, list), "relationships must be an array")
     relationship_ids: set[str] = set()
@@ -137,8 +139,11 @@ def validate_inventory(data: Any) -> dict[str, Any]:
                 f"{risk_id} status is invalid")
 
     normalized = json.loads(json.dumps(data, sort_keys=True))
+    connected = {endpoint for rel in relationships for endpoint in (rel["from"], rel["to"])}
+    unconnected = sorted(set(index) - connected)
     normalized["summary"] = {
         "asset_count": len(index),
+        "unconnected_asset_ids": unconnected,
         "asset_category_count": len(CATEGORIES),
         "relationship_count": len(relationships),
         "trust_boundary_crossings": sum(1 for rel in relationships if rel["crosses_trust_boundary"]),
@@ -207,7 +212,8 @@ def generate_outputs(data: dict[str, Any], output_dir: Path) -> dict[str, str]:
         f'- Relationships: **{summary["relationship_count"]}**',
         f'- Trust-boundary crossings: **{summary["trust_boundary_crossings"]}**',
         f'- Critical assets: **{summary["critical_asset_count"]}**',
-        f'- Risk scenarios: **{summary["risk_count"]}**', "",
+        f'- Risk scenarios: **{summary["risk_count"]}**',
+        f'- Unconnected assets: **{len(summary["unconnected_asset_ids"])}**', "",
         "## Limitations", "",
         *[f'- {item}' for item in normalized["scope"]["limitations"]],
         "- Counts measure supplied records, not completeness of a real environment.",
