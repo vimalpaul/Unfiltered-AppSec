@@ -33,7 +33,7 @@ The data-flow map is a directed relationship graph. A relationship marked crosse
 
 ## 4. Prerequisites
 
-- Python 3.10 or later; standard library only.
+- Python 3.12.16 for the reproducible reference environment; standard library only. The CI workflow installs this exact patch release using a SHA-pinned setup action.
 - A local clone or exported copy of this repository.
 - No Docker daemon, cloud subscription, GitHub token or network access is required.
 - Use the supplied synthetic fixture; do not add customer or production data.
@@ -44,8 +44,7 @@ The data-flow map is a directed relationship graph. A relationship marked crosse
 - fixtures/synthetic-product-inventory.json — synthetic product and asset graph.
 - build_inventory.py — validation, normalization and deterministic evidence generator.
 - tests/test_build_inventory.py — positive and negative unit tests.
-- outputs/reference/ — checked-in reference outputs generated from the fixture.
-- outputs/reference/SHA256SUMS — integrity hashes for the reference outputs.
+- outputs/generated/ — local generated outputs (created by the command; not committed by default).
 
 ## 6. Execution procedure
 
@@ -112,7 +111,7 @@ No persistent infrastructure or credentials are created. Remove the generated ou
 
 ## 11. Limitations and next maturity gate
 
-This lab is an inventory-modeling exercise, not automated discovery. The schema does not connect to GitHub, cloud control planes, package managers, registries or CMDBs. Mermaid source generation is tested; rendering is not tested by the Python unit tests. Independent learner reproduction and practitioner review are still required before the lab can be marked independently validated.
+This lab is an inventory-modeling exercise, not automated discovery. The JSON Schema is supplied as the normative interchange contract; the standard-library validator enforces the lab's critical semantic and graph invariants but is not a full JSON Schema implementation. The schema does not connect to GitHub, cloud control planes, package managers, registries or CMDBs. Mermaid source generation is tested; rendering is not tested by the Python unit tests. Independent learner reproduction and practitioner review are still required before the lab can be marked independently validated.
 
 ## 12. Traceability
 
