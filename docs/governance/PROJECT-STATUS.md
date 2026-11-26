@@ -4,7 +4,7 @@
 |---|---|
 | Document ID | UAPPSEC-GOV-004 |
 | Status | Active tracking record |
-| Version | 0.2 |
+| Version | 0.3 |
 | Owner | Unfiltered AppSec maintainers |
 | Created | 2026-11-18 |
 | Last reviewed | 2026-11-26 |
