@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "lab_id": "UAPPSEC-13-LAB-01",
+  "runner": "ubuntu-24.04",
+  "python": "3.12.16",
+  "dependencies": "Python standard library only",
+  "github_actions": {
+    "setup-python": {
+      "version": "v7.0.0",
+      "commit": "5fda3b95a4ea91299a34e894583c3862153e4b97"
+    },
+    "upload-artifact": {
+      "version": "v4.6.2",
+      "commit": "ea165f8d65b6e75b540449e92b4886f43607fa02"
+    }
+  }
+}
