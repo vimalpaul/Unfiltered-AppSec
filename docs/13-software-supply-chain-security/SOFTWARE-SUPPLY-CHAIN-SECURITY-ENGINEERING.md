@@ -852,3 +852,4 @@ For each production release retain:
 | 0.3 | 2026-11-20 | Clarify VEX status semantics, OpenVEX requirements and implementation profile |
 | 0.4 | 2026-11-20 | Add executable VEX validator profile and link SSC-C-008 / SSC-T-011 implementation evidence |
 | 0.5 | 2026-11-20 | Add isolated GitHub signed SLSA build-provenance implementation profile |
+| 0.6 | 2026-11-26 | Record successful synthetic signed provenance workflow and negative verification evidence |
