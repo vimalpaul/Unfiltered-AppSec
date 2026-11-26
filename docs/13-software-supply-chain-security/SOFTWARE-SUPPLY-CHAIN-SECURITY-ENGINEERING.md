@@ -997,3 +997,4 @@ For each production release retain:
 | 0.8 | 2026-11-26 | Add Cosign execution evidence and Lab 15 implementation cross-reference |
 | 0.9 | 2026-11-26 | Pin Cosign v3.1.6 and add its release verification reference |
 | 1.0 | 2026-11-26 | Add unified release assurance architecture, evidence invariants, trust-domain model, failure analysis and SSC-T-036–SSC-T-040 traceability |
+| 1.1 | 2026-11-26 | Record successful end-to-end synthetic release-assurance workflow, digest binding, cryptographic verification and negative-test evidence |
