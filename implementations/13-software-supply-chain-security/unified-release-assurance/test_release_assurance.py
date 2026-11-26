@@ -31,6 +31,11 @@ class ReleaseAssuranceTests(unittest.TestCase):
         self.artifact.write_bytes(b"synthetic release fixture")
         self.evidence_root = self.root / "evidence"
         self.evidence_root.mkdir()
+        self.db_status_file = self.evidence_root / "grype-db-status.txt"
+        self.db_status_file.write_text("Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-26T06:22:34Z\\nStatus: valid\\n", encoding="utf-8")
+        self.db_status = {"schema_version": "v6.1.10", "built_at": "2026-11-26T06:22:34Z",
+                          "valid": True, "status_path": "grype-db-status.txt",
+                          "status_sha256": digest(self.db_status_file)}
         self.files = {}
         for name, content in {
             "sbom.json": b'{"bomFormat":"CycloneDX","specVersion":"1.7"}',
