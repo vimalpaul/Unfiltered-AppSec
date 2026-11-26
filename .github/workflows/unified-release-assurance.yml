@@ -166,15 +166,28 @@ jobs:
           PACKAGE_COUNT="$(python3 -c 'import json; print(len(json.load(open("dist/build/evidence/sbom.spdx.json", encoding="utf-8")).get("packages", [])))')"
           if [ "${PACKAGE_COUNT}" -gt 0 ]; then
             grype sbom:dist/build/evidence/sbom.spdx.json -o json > dist/build/evidence/sca-results.json
-            grype db status
+            grype db status | tee dist/build/evidence/grype-db-status.txt
             python3 implementations/13-software-supply-chain-security/sca/validate_grype_report.py \
               --report dist/build/evidence/sca-results.json
             python3 - <<'PY'
           import json
           from pathlib import Path
           report = json.loads(Path("dist/build/evidence/sca-results.json").read_text(encoding="utf-8"))
-          database_status = report.get("db", {}).get("status", {})
-          print("Grype database status from scan report:")
+          database_text = Path("dist/build/evidence/grype-db-status.txt").read_text(encoding="utf-8")
+          database_fields = {}
+          for line in database_text.splitlines():
+              if ":" in line:
+                  key, value = line.split(":", 1)
+                  database_fields[key.strip().lower()] = value.strip()
+          database_status = {
+              "schema_version": database_fields.get("schema"),
+              "built_at": database_fields.get("built"),
+              "valid": database_fields.get("status", "").lower() == "valid",
+              "status_path": "build/evidence/grype-db-status.txt",
+              "status_sha256": __import__("hashlib").sha256(
+                  Path("dist/build/evidence/grype-db-status.txt").read_bytes()).hexdigest(),
+          }
+          print("Grype database status evidence:")
           print(json.dumps(database_status, indent=2, sort_keys=True))
           status = {
               "scan_status": "completed_report_only",
@@ -183,11 +196,7 @@ jobs:
               "match_count": len(report.get("matches", [])),
               "threshold_enforced": False,
               "disposition": "report_only_no_release_threshold",
-              "database": {
-                  "schema_version": report.get("db", {}).get("status", {}).get("schemaVersion"),
-                  "built_at": report.get("db", {}).get("status", {}).get("built"),
-                  "valid": report.get("db", {}).get("status", {}).get("valid"),
-              },
+              "database": database_status,
           }
           database = status["database"]
           if database["valid"] is not True or not database["schema_version"] or not database["built_at"]:
