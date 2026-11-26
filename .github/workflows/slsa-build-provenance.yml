@@ -125,12 +125,31 @@ jobs:
           for key, value in summary.items():
               print(f"- {key}: {value}")
           PY
-          python3 implementations/13-software-supply-chain-security/provenance/verify_build_metadata.py \
-            --artifact dist/unfiltered-appsec-demo.tar.gz \
-            --metadata dist/build-metadata.json \
-            --repository "${REPOSITORY}" \
-            --revision "${EVENT_SHA}" \
-            --workflow "${EXPECTED_BUILD_WORKFLOW}"
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          artifact = Path("dist/unfiltered-appsec-demo.tar.gz")
+          metadata = json.loads(Path("dist/build-metadata.json").read_text(encoding="utf-8"))
+          digest = hashlib.sha256(artifact.read_bytes()).hexdigest()
+          expected = {
+              "source_repository": os.environ["REPOSITORY"],
+              "source_revision": os.environ["EVENT_SHA"],
+              "build_workflow": os.environ["EXPECTED_BUILD_WORKFLOW"],
+              "artifact_name": artifact.name,
+              "artifact_kind": "synthetic-training-fixture",
+          }
+          for key, value in expected.items():
+              if metadata.get(key) != value:
+                  raise SystemExit(f"metadata mismatch for {key}: expected {value!r}")
+          if metadata.get("artifact_sha256") != digest:
+              raise SystemExit("artifact SHA-256 does not match build metadata")
+          if len(digest) != 64:
+              raise SystemExit("invalid SHA-256 digest")
+          print(f"Verified artifact SHA-256: {digest}")
+          print("Verified source repository, exact event commit and expected build workflow.")
+          PY
 
       - name: Generate signed SLSA build provenance
         id: attest
