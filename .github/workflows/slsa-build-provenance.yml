@@ -163,7 +163,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           EVENT_SHA: ${{ github.sha }}
-          EXPECTED_ARTIFACT_SHA256: ${{ steps.attest.outputs.subject-digest }}
           ARTIFACT: dist/unfiltered-appsec-demo.tar.gz
           ATTESTATION_BUNDLE: ${{ steps.attest.outputs.bundle-path }}
         run: |
@@ -188,7 +187,8 @@ jobs:
           result = json.loads(Path("dist/attestation-verification.json").read_text(encoding="utf-8"))
           if not isinstance(result, list) or not result:
               raise SystemExit("no verified attestation records returned")
-          expected_digest = os.environ["EXPECTED_ARTIFACT_SHA256"]
+          metadata = json.loads(Path("dist/build-metadata.json").read_text(encoding="utf-8"))
+          expected_digest = metadata["artifact_sha256"]
           verified = 0
           for item in result:
               verification = item.get("verificationResult", {})
