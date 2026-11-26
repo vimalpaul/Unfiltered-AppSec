@@ -25,7 +25,8 @@
     "mode": "report-only-demonstration",
     "allow_empty_inventory_for_demo": true,
     "empty_inventory_disposition": "not_evaluated_no_package_records",
-    "production_threshold_enforced": false
+    "production_threshold_enforced": false,
+    "max_database_age_hours": 72
   },
   "evidence": {
     "required": ["sbom", "sca", "slsa_provenance", "cosign_signature"],
