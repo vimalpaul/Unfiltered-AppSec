@@ -745,7 +745,7 @@ For each lab capture:
 
 **Objective:** Assess build provenance, hosted-builder trust, signature verification and Build L3 isolation requirements.
 
-**Prerequisites:** Dedicated hosted or disposable CI builder, synthetic artifact and lab signing identity.
+**Prerequisites:** Dedicated hosted or disposable CI builder, synthetic artifact and lab signing identity. The repository includes an executable synthetic GitHub Actions exercise at [SLSA provenance implementation](../../implementations/13-software-supply-chain-security/provenance/README.md); use its run as a starting evidence sample, not as independent lab validation.
 
 ### Procedure
 
@@ -764,7 +764,7 @@ For each lab capture:
 
 **Expected result:** Build provenance is tied to the artifact digest and expected builder; higher-level claims are made only when the hosted platform and isolation requirements are evidenced.
 
-**Evidence:** Provenance statement, signature bundle, builder documentation, isolation test, secret-access policy and digest verification.
+**Evidence:** Provenance statement, signature bundle, builder documentation, isolation test, secret-access policy and digest verification. For the repository exercise, retain the workflow run, signed bundle, signer-workflow verification output, exact source commit and negative tamper/wrong-signer test logs.
 
 **Teardown:** Revoke lab signing identity and destroy builder resources.
 
