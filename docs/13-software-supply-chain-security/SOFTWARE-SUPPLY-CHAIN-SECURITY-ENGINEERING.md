@@ -596,6 +596,139 @@ Select tools based on ecosystem support, integration, accuracy, licensing, data 
 
 Tool output is evidence for triage, not a substitute for threat modeling, source review, release verification or incident response.
 
+### 27.1 Unified release assurance composition
+
+The unified release assurance pattern composes the previously separate source, inventory, vulnerability, provenance and signature checks into one evidence decision. It is a consumer-side verification pattern: each producer creates an evidence object, an independent verifier authenticates the relevant cryptographic statement, and a policy engine checks that all evidence describes the same release subject.
+
+#### 27.1.1 Assurance objective and invariants
+
+The release subject is an immutable artifact identified by a cryptographic digest, not a mutable tag, filename or workflow run label. Let:
+
+- (D_A) be the SHA-256 digest recomputed from the downloaded artifact bytes.
+- (D_B) be the SHA-256 digest of the SBOM document.
+- (D_S) be the SHA-256 digest of the SCA report or explicit scan-disposition record.
+- (D_P) be the digest of the signed provenance bundle.
+- (D_C) be the digest of the Cosign signature bundle.
+
+The policy must enforce the following invariants:
+
+1. The artifact bytes supplied to every verifier produce the same (D_A).
+2. The SBOM record identifies (D_A) as the release subject and its own document digest is (D_B).
+3. The SCA record identifies (D_A), identifies (D_B) as the exact SBOM input, and records scanner/database context and disposition.
+4. The authenticated provenance statement identifies (D_A) as a subject and binds it to the expected source repository, immutable revision, build definition and builder identity.
+5. The Cosign signature verifies over the exact artifact bytes whose digest is (D_A), using an explicitly allow-listed certificate identity and OIDC issuer.
+6. Every evidence record is associated with the same workflow run and attempt, preventing accidental mixing of evidence from different executions.
+7. Missing, malformed, stale-by-policy, mismatched or untrusted evidence produces a rejection, not a warning-only pass.
+8. A demonstration decision cannot be interpreted as production promotion authorization.
+
+The SBOM document digest and artifact digest are different identities. The SCA report must identify the exact SBOM document it scanned; the SBOM must separately identify the artifact whose contents it inventories. A digest copied into a JSON manifest is not proof of cryptographic binding by itself. The workflow must establish the relationship through generation from the artifact and, for production use, a signed attestation or equivalent authenticated subject relationship.
+
+#### 27.1.2 Reference trust-domain architecture
+
+```mermaid
+flowchart TB
+  SRC["Approved source revision"] --> BUILD["Build job: contents:read only"]
+  BUILD --> ART["Immutable artifact + SHA-256"]
+  ART --> INV["Safe extraction / package inventory"]
+  INV --> SBOM["Syft: CycloneDX + SPDX"]
+  SBOM --> SCA["Grype: report + database context"]
+  ART --> ATTEST["Attestation job: OIDC + attestations:write"]
+  ATTEST --> SLSA["GitHub-signed SLSA provenance"]
+  ART --> SIGN["Signing job: OIDC only"]
+  SIGN --> SIG["Cosign signature bundle"]
+  ART --> VERIFY["Read-only policy job"]
+  SBOM --> VERIFY
+  SCA --> VERIFY
+  SLSA --> VERIFY
+  SIG --> VERIFY
+  VERIFY --> DECIDE{"Digest, identity and policy valid?"}
+  DECIDE -->|"No"| REJECT["Reject and retain evidence"]
+  DECIDE -->|"Yes"| DEMO["Demonstration pass only"]
+```
+
+The build job must not receive `id-token: write`, `attestations: write`, production credentials or deployment authority. Attestation and signing jobs receive only the permissions needed for their operation and do not execute repository build scripts after crossing the trust boundary. The final verifier has read-only permissions and performs the cryptographic checks again against the downloaded artifact before evaluating the evidence manifest.
+
+This separation reduces the opportunity for untrusted build steps to misuse signing authority. It does not independently prove builder isolation, prevent compromise of a trusted workflow, or establish a SLSA Build level.
+
+#### 27.1.3 Evidence contract
+
+| Evidence record | Mandatory fields | Validation authority | Failure condition |
+|---|---|---|---|
+| Artifact | Name, kind, SHA-256, source revision | Recompute from downloaded bytes | Digest or identity mismatch |
+| SBOM | Format/version, document SHA-256, artifact subject digest, generation scope, package count | Syft plus SBOM structural/schema validator | Missing document, unsupported format, incomplete or mismatched subject |
+| SCA | Scanner/version, database status, report digest, SBOM document digest, artifact subject digest, match count/disposition | Grype plus report validator and release policy | Wrong SBOM input, missing scan, stale/unknown database where policy forbids it, unreviewed threshold breach |
+| SLSA provenance | Predicate type, subject digest, source repository/ref/revision, builder and workflow identity, authenticated bundle | GitHub CLI attestation verification | Untrusted signer, issuer, source, builder or subject |
+| Cosign | Signature bundle, artifact digest, certificate identity, OIDC issuer and source claims | Cosign `verify-blob` | Digest, identity, issuer or source claim mismatch |
+
+The evidence manifest is an index and decision input. It must retain references and digests for original evidence rather than replacing the original SBOM, scan report, provenance bundle or signature bundle. The policy engine validates structure and consistency after cryptographic verification; it must not claim to implement Sigstore cryptography itself.
+
+#### 27.1.4 Decision logic
+
+| Condition | Decision |
+|---|---|
+| All required evidence is present, authenticated, digest-consistent and within policy | Eligible for the next policy stage |
+| Artifact digest differs between stages | Reject |
+| SBOM subject or SCA-to-SBOM linkage differs | Reject |
+| Provenance is missing, malformed or from an unapproved builder/workflow | Reject |
+| Cosign identity or issuer is not allow-listed | Reject |
+| Evidence comes from another run/attempt or another source revision | Reject |
+| Required vulnerability disposition is missing or prohibited by policy | Reject |
+| Empty package inventory is recorded as zero vulnerabilities | Reject |
+| Evidence cannot be retrieved or verified | Reject |
+
+A policy result is not automatically a deployment authorization. A production decision also requires product-specific risk thresholds, VEX disposition, approved exceptions, release approval, deployment-boundary verification, revocation handling and rollback readiness.
+
+#### 27.1.5 Empty inventory and scan disposition
+
+An empty SBOM package list is not proof that an artifact has no vulnerabilities. It can indicate that the artifact contains no recognized packages, that the artifact type is unsupported, that extraction or cataloging failed, or that the inventory scope is incomplete. The evidence record must distinguish:
+
+- `completed`: scanner ran against a non-empty, validated inventory.
+- `not_run_no_package_records`: scanner was deliberately not run because no package records were present.
+- `failed`: scanner execution or report validation failed.
+- `unknown`: scan status cannot be established.
+
+Only the first state can support a vulnerability-match count. The second must have a null match count and an explicit not-evaluated disposition. Production policy must define whether an empty inventory is plausible and acceptable for each artifact type.
+
+#### 27.1.6 Implementation and verification procedure
+
+1. Resolve the approved source revision and verify required repository review controls.
+2. Build once. Compute SHA-256 from the completed artifact and transfer the exact bytes between jobs.
+3. Inventory the artifact or its safely extracted contents. Record extraction rules, Syft version, SBOM formats, package count and document digests.
+4. Validate SBOM structure and schema. Reconcile package inventory with the artifact and document any unsupported component types.
+5. Run SCA against the exact SBOM document. Record scanner version, vulnerability database status/build time, report digest, match count and policy disposition.
+6. Generate authenticated provenance for the exact artifact. Verify the expected repository, source ref, immutable source digest, signer workflow, OIDC issuer, predicate type and builder restrictions.
+7. Sign the same artifact with the approved keyless identity. Verify the exact artifact, certificate identity, issuer and source claims.
+8. In a separate read-only job, download the artifact and all evidence. Recompute all file digests; repeat provenance and signature verification.
+9. Construct the evidence manifest from verifier outputs, not from user-supplied assertions. Bind every record to the same artifact digest and workflow run/attempt.
+10. Run the policy engine. Reject missing, altered, mismatched, cross-run, untrusted or invalid evidence.
+11. Retain the complete evidence package, decision report, workflow run URL, source commit and policy version.
+12. For production adaptation, add product-specific VEX, severity thresholds, exception approval, protected deployment environments and deployment-time signature/attestation verification.
+
+#### 27.1.7 Threats and failure modes
+
+| Threat / failure | Attack or failure path | Required control and evidence |
+|---|---|---|
+| Artifact substitution | Replace artifact after SBOM, scan or signing | Recompute digest at each trust boundary; compare every subject |
+| Evidence splicing | Combine clean SCA from one run with signed artifact from another | Enforce run ID/attempt and source revision consistency |
+| SBOM laundering | Attach a valid but unrelated SBOM | Bind SBOM to artifact digest; verify generation scope and provenance |
+| Scanner bypass | Skip SCA and write a zero-match record | Distinguish scan completion from not-run/failed/unknown |
+| Signer confusion | Accept a valid signature from an unrelated workflow | Exact certificate identity, issuer and workflow allow-list |
+| Provenance confusion | Accept trusted signature with untrusted source/build definition | Verify predicate, source revision, builder and workflow claims |
+| Manifest tampering | Change evidence status to verified | Generate manifest only after cryptographic verifier success; hash original evidence |
+| Policy downgrade | Relax required evidence or identity in policy | Protect policy changes with independent review and versioned policy digest |
+| Workflow compromise | Modify workflow to attest/sign attacker-controlled content | Protected workflow ownership, independent review, minimal permissions, environment and ruleset governance |
+| Evidence expiry/loss | Attestation or workflow artifact no longer retrievable | Durable access-controlled evidence retention and periodic retrieval tests |
+
+#### 27.1.8 Operational ownership and metrics
+
+The product security or release assurance owner owns the evidence contract and policy. Build engineering owns artifact reproducibility and inventory generation. The vulnerability management owner owns SCA and VEX dispositions. The platform/security engineering owner owns OIDC trust, signing identities and verifier maintenance. The release authority approves production exceptions and promotion. These roles should be assigned explicitly in the product's RACI.
+
+Useful measures include percentage of releases with complete evidence, percentage of SBOMs bound to immutable artifact digests, SCA scan coverage, stale vulnerability database rate, provenance verification failure rate, untrusted signer rejection count, evidence retrieval success, policy exception age and deployment-time verification coverage. A high pass rate alone is not a security outcome; monitor false acceptance and inventory completeness as well.
+
+#### 27.1.9 Demonstration boundary
+
+The repository's initial unified workflow uses a synthetic training archive. Its successful result is `DEMO_PASS_NOT_FOR_PRODUCTION`, with `promotion_authorized: false`. The Grype path is report-only and explicitly records an empty inventory as not evaluated where no package records exist. No SLSA Build L2/L3 claim, production assurance claim or production release gate is made.
+
 ## 28. Standards and framework mapping
 
 | Source | Relevant coverage | Application in this chapter | Mapping caveat |
@@ -747,6 +880,11 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-T-033 | Attempt protected-branch change without two trusted reviewers | Change is blocked by technical enforcement |
 | SSC-T-034 | Verify Build L3 isolation between concurrent/untrusted runs | Runs cannot influence one another and signing secrets are inaccessible to user-defined steps |
 | SSC-T-035 | Validate CISA 2026 SBOM metadata and generation context | Required component hashes, licenses, tool identity and generation context are present or documented as unavailable |
+| SSC-T-036 | Verify the unified release SBOM subject digest equals the downloaded artifact digest | Exact SHA-256 equality; mismatched SBOM subject is rejected |
+| SSC-T-037 | Verify SCA report identifies the exact SBOM document and artifact subject | SBOM document SHA-256 and artifact SHA-256 both match; cross-linked evidence is rejected |
+| SSC-T-038 | Remove or mismatch required release evidence | Policy engine fails closed and emits no promotion authorization |
+| SSC-T-039 | Mix evidence from different workflow runs or attempts | Cross-run evidence is rejected |
+| SSC-T-040 | Represent an empty package inventory as vulnerability-free | Policy rejects false clean disposition; scan remains not evaluated |
 
 ## 30. Detection catalogue
 
@@ -780,6 +918,7 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-D-026 | Source provenance missing or control-continuity claim cannot be verified | Block source-level assurance claim and investigate repository control gap |
 | SSC-D-027 | Build isolation or signing-secret boundary is violated | Stop affected builds, revoke credentials and quarantine artifacts |
 | SSC-D-028 | SBOM lacks required metadata or generation context | Quarantine release evidence and regenerate/validate SBOM |
+| SSC-D-029 | Artifact, SBOM, SCA, provenance or signature digest differs across release stages | Reject promotion, preserve all evidence and investigate evidence splicing or artifact substitution |
 
 ## 31. Minimum release evidence package
 
