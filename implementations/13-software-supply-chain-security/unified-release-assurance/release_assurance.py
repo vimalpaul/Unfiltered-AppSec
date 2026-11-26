@@ -115,7 +115,8 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
     require(sbom.get("status") == "verified", "SBOM evidence is not verified")
     require(sbom.get("subject_sha256") == actual_artifact_digest,
             "SBOM is not bound to the exact release artifact digest")
-    require(sbom.get("generation_scope") == "extracted-release-artifact",
+    required_scope = policy.get("sbom", {}).get("required_generation_scope", "extracted-release-artifact")
+    require(sbom.get("generation_scope") == required_scope,
             "SBOM was not generated from the extracted release artifact")
     accepted_formats = policy.get("sbom", {}).get("accepted_formats", ["CycloneDX 1.7", "SPDX 2.3"])
     require(sbom.get("format") in accepted_formats, "unsupported SBOM format")
@@ -132,7 +133,7 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
     sca_digest = verify_evidence_file(evidence_root, sca, "SCA report")
     sca_status = sca.get("scan_status")
     if package_count == 0:
-        require(policy.get("allow_empty_inventory_for_demo") is True,
+        require(policy.get("sca", {}).get("allow_empty_inventory_for_demo") is True,
                 "empty SBOM inventory is not permitted by policy")
         require(sca_status == "not_run_no_package_records",
                 "empty inventory must be explicitly recorded as not scanned")
