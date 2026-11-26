@@ -19,6 +19,36 @@ class InventoryValidationTests(unittest.TestCase):
         self.assertEqual(result["summary"]["relationship_count"], 11)
         self.assertEqual(result["summary"]["trust_boundary_crossings"], 8)
         self.assertEqual(result["summary"]["risk_count"], 5)
+        self.assertEqual(result["summary"]["unconnected_asset_ids"], [])
+
+    def test_schema_contract_is_valid_json_and_matches_validator_categories(self):
+        schema_path = Path(__file__).parents[1] / "inventory.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
+        self.assertEqual(set(schema["properties"]["assets"]["properties"]), set(self.data["assets"]))
+        self.assertEqual(set(schema["required"]), {"schema_version", "inventory_id", "product", "revision",
+                         "scope", "assets", "relationships", "risks"})
+
+    def test_schema_asset_contract_requires_owner_and_evidence(self):
+        schema_path = Path(__file__).parents[1] / "inventory.schema.json"
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        required = schema["$defs"]["assetList"]["items"]["required"]
+        self.assertIn("owner", required)
+        self.assertIn("evidence_refs", required)
+
+    def test_empty_evidence_references_are_rejected(self):
+        data = copy.deepcopy(self.data)
+        data["assets"]["suppliers"][0]["evidence_refs"] = []
+        with self.assertRaisesRegex(InventoryError, "evidence_refs must contain"):
+            validate_inventory(data)
+
+    def test_mermaid_identifier_collision_is_rejected(self):
+        data = copy.deepcopy(self.data)
+        asset = copy.deepcopy(data["assets"]["dependencies"][0])
+        asset["id"] = "DEP_001"
+        data["assets"]["dependencies"].append(asset)
+        with self.assertRaisesRegex(InventoryError, "collide after Mermaid"):
+            validate_inventory(data)
 
     def test_duplicate_asset_identifier_is_rejected(self):
         data = copy.deepcopy(self.data)
@@ -116,8 +146,8 @@ class InventoryValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as output:
             generate_outputs(self.data, Path(output))
             graph = (Path(output) / "trust-boundary-map.mmd").read_text(encoding="utf-8")
-            self.assertIn("-.->|declares-dependency|", graph)
-            self.assertIn("-->|governed-by|", graph)
+            self.assertIn("SRC_REPO_001 -.->|declares-dependency| DEP_001", graph)
+            self.assertIn("SRC_REPO_001 -->|governed-by| SRC_CTRL_001", graph)
 
     def test_outputs_include_separate_registers(self):
         with tempfile.TemporaryDirectory() as output:
