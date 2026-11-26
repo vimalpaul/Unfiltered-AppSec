@@ -162,6 +162,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+          EXPECTED_ARTIFACT_SHA256: ${{ steps.attest.outputs.subject-digest }}
           ARTIFACT: dist/unfiltered-appsec-demo.tar.gz
           ATTESTATION_BUNDLE: ${{ steps.attest.outputs.bundle-path }}
         run: |
@@ -170,14 +172,51 @@ jobs:
           gh attestation verify "${ARTIFACT}" \
             --repo "${REPOSITORY}" \
             --signer-workflow "${EXPECTED_SIGNER_WORKFLOW}" \
-            | tee dist/attestation-verification.txt
+            --source-ref refs/heads/main \
+            --source-digest "${EVENT_SHA}" \
+            --cert-oidc-issuer https://token.actions.githubusercontent.com \
+            --predicate-type https://slsa.dev/provenance/v1 \
+            --deny-self-hosted-runners \
+            --format json > dist/attestation-verification.json
+          test -s dist/attestation-verification.json
           test -s "${ATTESTATION_BUNDLE}"
           cp "${ATTESTATION_BUNDLE}" dist/sigstore-attestation-bundle.json
-          echo "## Cryptographic provenance verification" >> "${GITHUB_STEP_SUMMARY}"
-          echo "- Repository: ${REPOSITORY}" >> "${GITHUB_STEP_SUMMARY}"
-          echo "- Signer workflow: ${EXPECTED_SIGNER_WORKFLOW}" >> "${GITHUB_STEP_SUMMARY}"
-          echo "- Subject: ${ARTIFACT}" >> "${GITHUB_STEP_SUMMARY}"
-          echo "- Bundle: retained in workflow evidence artifact" >> "${GITHUB_STEP_SUMMARY}"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          result = json.loads(Path("dist/attestation-verification.json").read_text(encoding="utf-8"))
+          if not isinstance(result, list) or not result:
+              raise SystemExit("no verified attestation records returned")
+          expected_digest = os.environ["EXPECTED_ARTIFACT_SHA256"]
+          verified = 0
+          for item in result:
+              verification = item.get("verificationResult", {})
+              statement = verification.get("statement", {})
+              if statement.get("predicateType") != "https://slsa.dev/provenance/v1":
+                  raise SystemExit("unexpected predicate type")
+              subjects = statement.get("subject", [])
+              if not any(subject.get("digest", {}).get("sha256") == expected_digest for subject in subjects):
+                  raise SystemExit("verified statement does not bind the expected artifact digest")
+              predicate = statement.get("predicate", {})
+              builder_id = predicate.get("runDetails", {}).get("builder", {}).get("id")
+              build_type = predicate.get("buildDefinition", {}).get("buildType")
+              if not builder_id or not build_type:
+                  raise SystemExit("provenance is missing builder identity or build type")
+              verified += 1
+              print(f"Verified builder: {builder_id}")
+              print(f"Verified build type: {build_type}")
+          summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          with summary.open("a", encoding="utf-8") as stream:
+              stream.write("## Cryptographic provenance verification\\n")
+              stream.write(f"- Repository: {os.environ['REPOSITORY']}\\n")
+              stream.write(f"- Signer workflow: {os.environ['EXPECTED_SIGNER_WORKFLOW']}\\n")
+              stream.write(f"- Source revision: {os.environ['EVENT_SHA']}\\n")
+              stream.write(f"- Subject SHA-256: {expected_digest}\\n")
+              stream.write(f"- Verified attestations: {verified}\\n")
+              stream.write("- OIDC issuer, hosted-runner policy, SLSA predicate and signer workflow were constrained by GitHub CLI.\\n")
+              stream.write("- Bundle and JSON verification result retained as workflow evidence.\\n")
+          PY
 
       - name: Negative test — reject modified artifact
         shell: bash
@@ -216,6 +255,26 @@ jobs:
             echo "- Wrong signer workflow: rejected as expected." >> "${GITHUB_STEP_SUMMARY}"
           fi
 
+      - name: Negative test — reject incorrect source revision
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          WRONG_SOURCE_DIGEST="0000000000000000000000000000000000000000"
+          if gh attestation verify dist/unfiltered-appsec-demo.tar.gz \
+            --repo "${REPOSITORY}" \
+            --signer-workflow "${EXPECTED_SIGNER_WORKFLOW}" \
+            --source-ref refs/heads/main \
+            --source-digest "${WRONG_SOURCE_DIGEST}"; then
+            echo "ERROR: artifact unexpectedly verified for an incorrect source revision" >&2
+            exit 1
+          else
+            echo "Expected rejection: source commit does not match the approved revision."
+            echo "- Incorrect source revision: rejected as expected." >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
       - name: Upload provenance evidence
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -224,6 +283,6 @@ jobs:
             dist/unfiltered-appsec-demo.tar.gz
             dist/build-metadata.json
             dist/sigstore-attestation-bundle.json
-            dist/attestation-verification.txt
+            dist/attestation-verification.json
           if-no-files-found: error
           retention-days: 14
