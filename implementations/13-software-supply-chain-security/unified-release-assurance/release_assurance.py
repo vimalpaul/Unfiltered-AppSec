@@ -72,7 +72,9 @@ def verify_evidence_file(root: Path, record: dict[str, Any], label: str) -> str:
     return actual
 
 
-def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact_path: Path, evidence_root: Path,\n                      expected_source_revision: str | None = None, expected_run_id: str | None = None,\n                      expected_run_attempt: str | None = None) -> dict[str, Any]:
+def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact_path: Path, evidence_root: Path,
+                      expected_source_revision: str | None = None, expected_run_id: str | None = None,
+                      expected_run_attempt: str | None = None) -> dict[str, Any]:
     require(manifest.get("schema_version") == 1, "unsupported manifest schema_version")
     require(policy.get("schema_version") == 1, "unsupported policy schema_version")
 
@@ -95,8 +97,14 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
         require(source.get(field) == expected_source.get(field), f"source {field} is not allow-listed")
     revision = source.get("revision", "")
     require(isinstance(revision, str) and GIT_SHA_RE.fullmatch(revision), "source revision must be a full Git SHA")
+    if expected_source_revision is not None:
+        require(revision == expected_source_revision, "manifest source revision differs from the workflow event SHA")
     require(manifest.get("run_id") not in (None, ""), "workflow run_id is required")
     require(manifest.get("run_attempt") not in (None, ""), "workflow run_attempt is required")
+    if expected_run_id is not None:
+        require(str(manifest["run_id"]) == str(expected_run_id), "manifest run_id differs from the current workflow run")
+    if expected_run_attempt is not None:
+        require(str(manifest["run_attempt"]) == str(expected_run_attempt), "manifest run_attempt differs from the current workflow attempt")
 
     require(artifact_path.is_file(), "release artifact is missing")
     actual_artifact_digest = sha256_file(artifact_path)
