@@ -6,7 +6,9 @@ on:
     paths:
       - 'implementations/13-software-supply-chain-security/provenance/build_demo_artifact.py'
       - 'implementations/13-software-supply-chain-security/provenance/verify_build_metadata.py'
-      - 'implementations/13-software-supply-chain-security/signing/**'
+      - 'implementations/13-software-supply-chain-security/signing/test_signing.py'
+      - 'implementations/13-software-supply-chain-security/signing/verification-policy.json'
+      - 'implementations/13-software-supply-chain-security/signing/cosign-release-pin.json'
       - '.github/workflows/cosign-artifact-signing.yml'
   workflow_dispatch:
 
