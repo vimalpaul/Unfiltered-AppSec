@@ -656,7 +656,7 @@ This separation reduces the opportunity for untrusted build steps to misuse sign
 |---|---|---|---|
 | Artifact | Name, kind, SHA-256, source revision | Recompute from downloaded bytes | Digest or identity mismatch |
 | SBOM | Format/version, document SHA-256, artifact subject digest, generation scope, package count | Syft plus SBOM structural/schema validator | Missing document, unsupported format, incomplete or mismatched subject |
-| SCA | Scanner/version, database status, report digest, SBOM document digest, artifact subject digest, match count/disposition | Grype plus report validator and release policy | Wrong SBOM input, missing scan, stale/unknown database where policy forbids it, unreviewed threshold breach |
+| SCA | Scanner/version, database schema/status/build time, hashed database-status record, report digest, SBOM document digest, artifact subject digest, match count/disposition | Grype report validator, `grype db status` evidence and release policy | Wrong SBOM input, missing scan, invalid database, database older than 72 hours, altered status evidence, unreviewed threshold breach |
 | SLSA provenance | Predicate type, subject digest, source repository/ref/revision, builder and workflow identity, authenticated bundle | GitHub CLI attestation verification | Untrusted signer, issuer, source, builder or subject |
 | Cosign | Signature bundle, artifact digest, certificate identity, OIDC issuer and source claims | Cosign `verify-blob` | Digest, identity, issuer or source claim mismatch |
 
@@ -695,7 +695,7 @@ Only the first state can support a vulnerability-match count. The second must ha
 2. Build once. Compute SHA-256 from the completed artifact and transfer the exact bytes between jobs.
 3. Inventory the artifact or its safely extracted contents. Record extraction rules, Syft version, SBOM formats, package count and document digests.
 4. Validate SBOM structure and schema. Reconcile package inventory with the artifact and document any unsupported component types.
-5. Run SCA against the exact SBOM document. Record scanner version, vulnerability database status/build time, report digest, match count and policy disposition.
+5. Run SCA against the exact SBOM document. Record scanner version, vulnerability database schema/status/build time, hashed `grype db status` output, report digest, match count and policy disposition. Reject an invalid database or a database older than the configured 72-hour maximum.
 6. Generate authenticated provenance for the exact artifact. Verify the expected repository, source ref, immutable source digest, signer workflow, OIDC issuer, predicate type and builder restrictions.
 7. Sign the same artifact with the approved keyless identity. Verify the exact artifact, certificate identity, issuer and source claims.
 8. In a separate read-only job, download the artifact and all evidence. Recompute all file digests; repeat provenance and signature verification.
@@ -885,6 +885,7 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-T-038 | Remove or mismatch required release evidence | Policy engine fails closed and emits no promotion authorization |
 | SSC-T-039 | Mix evidence from different workflow runs or attempts | Cross-run evidence is rejected |
 | SSC-T-040 | Represent an empty package inventory as vulnerability-free | Policy rejects false clean disposition; scan remains not evaluated |
+| SSC-T-041 | Verify Grype database status, schema, build-time freshness and status-file integrity | Invalid or older-than-72-hour database and modified status evidence are rejected |
 
 ## 30. Detection catalogue
 
@@ -919,6 +920,7 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-D-027 | Build isolation or signing-secret boundary is violated | Stop affected builds, revoke credentials and quarantine artifacts |
 | SSC-D-028 | SBOM lacks required metadata or generation context | Quarantine release evidence and regenerate/validate SBOM |
 | SSC-D-029 | Artifact, SBOM, SCA, provenance or signature digest differs across release stages | Reject promotion, preserve all evidence and investigate evidence splicing or artifact substitution |
+| SSC-D-030 | Grype database is invalid/stale or its status evidence is missing, altered or inconsistent | Reject SCA evidence; refresh the vulnerability database, regenerate the report and retain the verified status record |
 
 ## 31. Minimum release evidence package
 
@@ -998,3 +1000,4 @@ For each production release retain:
 | 0.9 | 2026-11-26 | Pin Cosign v3.1.6 and add its release verification reference |
 | 1.0 | 2026-11-26 | Add unified release assurance architecture, evidence invariants, trust-domain model, failure analysis and SSC-T-036–SSC-T-040 traceability |
 | 1.1 | 2026-11-26 | Record successful end-to-end synthetic release-assurance workflow, digest binding, cryptographic verification and negative-test evidence |
+| 1.2 | 2026-11-26 | Add Grype database validity, status-file digest and 72-hour freshness requirements; add SSC-T-041 and SSC-D-030 |
