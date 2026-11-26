@@ -38,6 +38,21 @@ def nonempty(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
+def validate_sensitive_values(value: Any, prefix: str) -> None:
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            field_path = f"{prefix}.{key}"
+            if SENSITIVE_KEY.search(str(key)):
+                require(isinstance(nested, str)
+                        and nested.startswith(("vault://", "secret-manager://", "key-vault://")),
+                        f"{field_path} must be an opaque secret-manager reference, never a secret value")
+            else:
+                validate_sensitive_values(nested, field_path)
+    elif isinstance(value, list):
+        for position, nested in enumerate(value):
+            validate_sensitive_values(nested, f"{prefix}[{position}]")
+
+
 def validate_inventory(data: Any) -> dict[str, Any]:
     require(isinstance(data, dict), "inventory root must be an object")
     required = {"schema_version", "inventory_id", "product", "revision", "scope",
@@ -69,6 +84,7 @@ def validate_inventory(data: Any) -> dict[str, Any]:
         for position, asset in enumerate(records):
             prefix = f"assets.{category}[{position}]"
             require(isinstance(asset, dict), f"{prefix} must be an object")
+            require(set(asset) == {"id", "name", "owner", "criticality", "trust_zone", "source", "evidence_refs", "attributes"}, f"{prefix} has unsupported fields")
             for field in ("id", "name", "owner", "criticality", "trust_zone", "source",
                           "evidence_refs", "attributes"):
                 require(field in asset, f"{prefix}.{field} is required")
@@ -86,11 +102,7 @@ def validate_inventory(data: Any) -> dict[str, Any]:
                     and all(nonempty(ref) for ref in asset["evidence_refs"]),
                     f"{prefix}.evidence_refs must contain non-empty references")
             require(isinstance(asset["attributes"], dict), f"{prefix}.attributes must be an object")
-            for key, value in asset["attributes"].items():
-                if SENSITIVE_KEY.search(str(key)):
-                    require(isinstance(value, str)
-                            and value.startswith(("vault://", "secret-manager://", "key-vault://")),
-                            f"{prefix}.attributes.{key} must be an opaque secret-manager reference, never a secret value")
+            validate_sensitive_values(asset["attributes"], f"{prefix}.attributes")
             index[asset_id] = asset
 
     require(bool(index), "inventory must contain at least one asset")
@@ -102,6 +114,7 @@ def validate_inventory(data: Any) -> dict[str, Any]:
     for position, rel in enumerate(relationships):
         prefix = f"relationships[{position}]"
         require(isinstance(rel, dict), f"{prefix} must be an object")
+        require(set(rel).issubset({"id", "from", "to", "relationship", "crosses_trust_boundary", "notes"}), f"{prefix} has unsupported fields")
         for field in ("id", "from", "to", "relationship", "crosses_trust_boundary"):
             require(field in rel, f"{prefix}.{field} is required")
         rel_id = rel["id"]
@@ -122,6 +135,7 @@ def validate_inventory(data: Any) -> dict[str, Any]:
     for position, risk in enumerate(risks):
         prefix = f"risks[{position}]"
         require(isinstance(risk, dict), f"{prefix} must be an object")
+        require(set(risk) == {"id", "asset_id", "scenario", "likelihood", "impact", "treatment", "owner", "status"}, f"{prefix} has unsupported fields")
         for field in ("id", "asset_id", "scenario", "likelihood", "impact",
                       "treatment", "owner", "status"):
             require(field in risk, f"{prefix}.{field} is required")
