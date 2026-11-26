@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Lab ID | UAPPSEC-13-LAB-01 |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Executable synthetic lab baseline; independent learner reproduction pending |
 | Control mapping | SSC-C-001 |
 | Test mapping | SSC-T-042 |
@@ -129,3 +129,4 @@ This lab is an inventory-modeling exercise, not automated discovery. The JSON Sc
 | Version | Date | Change |
 |---|---|---|
 | 1.0 | 2026-11-26 | First executable synthetic asset-inventory lab baseline |
+| 1.1 | 2026-11-26 | Pin Python and runner environment, retain CI evidence, add schema consistency and graph-integrity checks; 22 tests pass |
