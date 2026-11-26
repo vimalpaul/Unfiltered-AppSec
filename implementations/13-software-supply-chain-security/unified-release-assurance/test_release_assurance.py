@@ -186,7 +186,7 @@ class ReleaseAssuranceTests(unittest.TestCase):
         with self.assertRaisesRegex(PolicyError, "must not be described as vulnerability-free"):
             self.validate()
 
-    def test_non-demo_release_classification_is_rejected(self):
+    def test_non_demo_release_classification_is_rejected(self):
         self.manifest["release_classification"] = "production"
         with self.assertRaisesRegex(PolicyError, "does not match policy"):
             self.validate()
