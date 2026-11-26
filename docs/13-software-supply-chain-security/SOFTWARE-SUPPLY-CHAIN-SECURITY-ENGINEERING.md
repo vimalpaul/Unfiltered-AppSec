@@ -842,6 +842,7 @@ For each production release retain:
 28. PCI DSS v4.0.1: https://www.pcisecuritystandards.org/document_library/
 29. EU Cyber Resilience Act: https://eur-lex.europa.eu/eli/reg/2024/2847/oj
 30. OWASP SAMM: https://owaspsamm.org/
+31. Cosign v3.1.6 release and binary assets: https://github.com/sigstore/cosign/releases/tag/v3.1.6
 
 ## 34. Revision history
 
@@ -855,3 +856,4 @@ For each production release retain:
 | 0.6 | 2026-11-26 | Record successful synthetic signed provenance workflow and negative verification evidence |
 | 0.7 | 2026-11-26 | Add successful Cosign keyless artifact-signing prototype and verification profile |
 | 0.8 | 2026-11-26 | Add Cosign execution evidence and Lab 15 implementation cross-reference |
+| 0.9 | 2026-11-26 | Pin Cosign v3.1.6 and add its release verification reference |
