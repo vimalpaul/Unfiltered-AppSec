@@ -4,7 +4,7 @@
 |---|---|
 | Document ID | UAPPSEC-13-LAB-001 |
 | Status | Draft lab specifications |
-| Version | 0.4 |
+| Version | 0.6 |
 | Owner | Unfiltered AppSec maintainers |
 | Created | 2026-11-19 |
 | Review due | 2027-02-19 |
