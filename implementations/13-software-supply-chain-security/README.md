@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Status | Initial implementation baseline — not production assurance |
-| Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation, signed SLSA build provenance prototype and release evidence policy |
-| Safety | No production credentials, signing keys or deployment access; only pinned Syft/Grype scanner binaries are downloaded and SHA-256 checked |
+| Status | Executable prototype baseline — not production assurance |
+| Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation, signed SLSA provenance, Cosign keyless artifact signing and release evidence policy |
+| Safety | No production credentials, long-lived signing keys or deployment access; Syft, Grype and Cosign are version/digest pinned, and Cosign's Sigstore release bundle is verified |
 | Related engineering baseline | [Chapter 13 engineering](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md) |
 | Related labs | [Chapter 13 lab pack](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-LAB-PACK.md) |
 
@@ -53,7 +53,7 @@ python -m unittest discover -s tests -v
 
 The manifest excludes the `.git` directory and the manifest output itself. It records repository-relative file paths, byte sizes and SHA-256 digests. It refuses symbolic links and paths that resolve outside the selected root. It is an integrity inventory, **not an SPDX or CycloneDX SBOM**.
 
-## 5. CI trust model
+## 5. Workflow trust model
 
 The workflow:
 - runs on pull requests and pushes to `main`;
