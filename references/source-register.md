@@ -6,7 +6,7 @@
 | Status | Initial source catalogue |
 | Version | 0.1 |
 | Owner | Unfiltered AppSec maintainers |
-| Last reviewed | 2026-11-18 |
+| Last reviewed | 2026-11-26 |
 | Classification | Public |
 
 This register indexes authoritative sources referenced by the initial AppSec chapters. Evidence grades are claim-specific. The register must be updated when a source changes status or edition.
