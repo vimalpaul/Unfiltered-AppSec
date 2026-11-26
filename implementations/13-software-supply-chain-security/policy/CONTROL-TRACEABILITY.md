@@ -14,7 +14,8 @@ This is a deliberately narrow implementation slice. The VEX assets below impleme
 | `vex/validate_openvex.py` and `vex/test_validate_openvex.py` | Partial implementation of SSC-C-008; executable negative test for SSC-T-011; validate core OpenVEX v0.2.0 fields and apply conservative release policy | [VEX workflow 44764156909](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44764156909); 10 policy tests and synthetic document validation passed | Full official schema/JSON-LD validation, VEX signing, real finding mapping, product release enforcement and independent approval workflow |
 | `vex/decision-record-template.json` | Capture scanner, product, artifact, component, exploitability, evidence, remediation, approval and lifecycle context | Versioned internal case template | No real product case has been populated or approved |
 | `provenance/build_demo_artifact.py`, `provenance/verify_build_metadata.py` and `provenance/test_provenance.py` | Build a deterministic synthetic artifact; bind source repository/revision and SHA-256; reject digest/source/workflow mismatches | Eight unit tests in the isolated build job; metadata check repeated before attestation | Metadata is not signed provenance; no production application or complete dependency graph is built |
-| `.github/workflows/slsa-build-provenance.yml` | Partial implementation of SSC-C-011, SSC-C-012 and SSC-C-013; executable evidence for SSC-T-016 (provenance generation), SSC-T-017 (artifact tampering) and SSC-T-019 (untrusted signer); generate signed SLSA provenance in a separate job, verify subject/source/signer, reject tampering | [Successful run 45790878803](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790878803); attestation [72577521](https://github.com/vimalpaul/Unfiltered-AppSec/attestations/72577521); evidence artifact `15103185028`; eight unit tests and three negative tests passed | No SLSA Build L2/L3 claim; no SSC-T-018 direct artifact-signing test, SSC-T-020 deployment enforcement, production artifact, hardened builder assessment or complete materials capture |
+| `.github/workflows/slsa-build-provenance.yml` | Partial implementation of SSC-C-011, SSC-C-012 and SSC-C-013; executable evidence for SSC-T-016 (provenance generation), SSC-T-017 (artifact tampering) and SSC-T-019 (untrusted signer); generate signed SLSA provenance in a separate job, verify subject/source/signer, reject tampering | [Successful run 45790878803](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790878803); attestation [72577521](https://github.com/vimalpaul/Unfiltered-AppSec/attestations/72577521); evidence artifact `15103185028`; eight unit tests and three negative tests passed | No SLSA Build L2/L3 claim; no SSC-T-020 deployment enforcement, production artifact, hardened builder assessment or complete materials capture |
+| `signing/` and `.github/workflows/cosign-artifact-signing.yml` | Partial implementation of SSC-C-012 and SSC-C-013; executable evidence for SSC-T-017 (tamper rejection), SSC-T-018 (approved identity signs exact artifact) and SSC-T-019 (untrusted signer rejection); use Cosign keyless blob signature and verify certificate identity, issuer, repository, ref and source SHA | [Successful run 45791448527](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791448527); Cosign v3.1.6 binary and release bundle verified; two fixture tests and four negative tests passed; evidence artifact `15101489683` | No production release signing, signing-service administration, revocation/recovery exercise, SLSA level claim or deployment gate |
 
 ## Assurance state
 
@@ -41,3 +42,13 @@ This is a deliberately narrow implementation slice. The VEX assets below impleme
 - Independent validation: no.
 - Negative tests: tampered artifact, untrusted signer workflow and incorrect source revision were rejected as expected.
 - SLSA level: not claimed; Build L2/L3 assessment remains open.
+
+
+## Cosign artifact-signing implementation status
+
+- Authored: yes; Cosign v3.1.6 binary/release-bundle pins, keyless signing workflow, verification policy and signing tests are committed.
+- Workflow executed: successful on 2026-11-26; [run 45791448527](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791448527).
+- Artifact digest: `sha256:980a27c8160b2c654b21fec1f5abbe73d6017f3ad8b29755bd55804ed68cc290`.
+- Evidence artifact: `15101489683`; digest `sha256:e8c60302c2c7a8362390aad561f8aaef28454fb197e404e6eeb71481f9cd9d3c`; expiry 2026-12-10.
+- Negative tests: modified blob, wrong certificate identity, wrong OIDC issuer and wrong source revision rejected.
+- Production signing and release enforcement: not implemented.
