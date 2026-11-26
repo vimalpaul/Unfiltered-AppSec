@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "inventory_id": "SYNTHETIC-PRODUCT-001",
+  "product": {
+    "name": "Northstar Demo Service",
+    "description": "Synthetic service used to demonstrate software supply-chain inventory and trust-boundary mapping.",
+    "owner": "Product Security Team"
+  },
+  "revision": "0123456789abcdef0123456789abcdef01234567",
+  "scope": {
+    "environment": "synthetic-lab",
+    "discovery_method": "Manually authored synthetic fixture; no live systems queried.",
+    "limitations": [
+      "Not an inventory of a real organization or production product.",
+      "No cloud account, repository, registry, identity provider or deployment API was queried.",
+      "Dependency list is illustrative and not a complete package lockfile."
+    ]
+  },
+  "assets": {
+    "source_repositories": [
+      {"id":"SRC-REPO-001","name":"northstar-service source","owner":"Application Engineering","criticality":"critical","trust_zone":"source-control","source":"synthetic fixture","evidence_refs":["fixture:source-repository"],"attributes":{"default_branch":"main","visibility":"private-lab","revision":"0123456789abcdef0123456789abcdef01234567"}}
+    ],
+    "source_controls": [
+      {"id":"SRC-CTRL-001","name":"Protected main branch policy","owner":"Platform Engineering","criticality":"high","trust_zone":"source-control","source":"synthetic fixture","evidence_refs":["fixture:branch-policy"],"attributes":{"pull_request_required":true,"independent_approvals":2,"codeowners_required":true}}
+    ],
+    "dependencies": [
+      {"id":"DEP-001","name":"northstar-core 2.4.1","owner":"Application Engineering","criticality":"high","trust_zone":"third-party","source":"synthetic lockfile record","evidence_refs":["fixture:dependency-record"],"attributes":{"ecosystem":"pypi","version":"2.4.1","direct":true,"integrity":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}},
+      {"id":"DEP-002","name":"json-helper 1.8.0","owner":"Application Engineering","criticality":"medium","trust_zone":"third-party","source":"synthetic lockfile record","evidence_refs":["fixture:dependency-record"],"attributes":{"ecosystem":"pypi","version":"1.8.0","direct":false,"integrity":"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}
+    ],
+    "registries": [
+      {"id":"REG-001","name":"Approved internal package proxy","owner":"Platform Engineering","criticality":"high","trust_zone":"third-party","source":"synthetic fixture","evidence_refs":["fixture:registry-policy"],"attributes":{"registry_type":"package-proxy","namespace_policy":"explicit-allow-list","endpoint":"https://packages.lab.invalid"}},
+      {"id":"REG-002","name":"Internal OCI artifact registry","owner":"Release Engineering","criticality":"high","trust_zone":"artifact","source":"synthetic fixture","evidence_refs":["fixture:artifact-registry"],"attributes":{"registry_type":"oci","endpoint":"https://registry.lab.invalid","immutability":"tag-and-digest-policy"}}
+    ],
+    "workflows": [
+      {"id":"WF-001","name":"Build and test workflow","owner":"Platform Engineering","criticality":"critical","trust_zone":"build","source":"synthetic workflow definition","evidence_refs":["fixture:workflow"],"attributes":{"workflow_path":".github/workflows/build.yml","trigger":"pull_request and push","permissions":"contents:read"}}
+    ],
+    "runners": [
+      {"id":"RUN-001","name":"Ephemeral hosted Linux runner","owner":"Platform Engineering","criticality":"high","trust_zone":"build","source":"synthetic workflow definition","evidence_refs":["fixture:runner-config"],"attributes":{"runner_class":"hosted-ephemeral","image":"ubuntu-latest (illustrative)","network_egress":"restricted-lab-policy"}}
+    ],
+    "identities": [
+      {"id":"ID-001","name":"Short-lived build OIDC identity","owner":"Identity Engineering","criticality":"critical","trust_zone":"identity","source":"synthetic workflow trust policy","evidence_refs":["fixture:oidc-policy"],"attributes":{"identity_type":"oidc-workload","audience":"https://identity.lab.invalid","secret_reference":"vault://lab/northstar/build-oidc"}}
+    ],
+    "artifacts": [
+      {"id":"ART-001","name":"northstar-service release archive","owner":"Release Engineering","criticality":"critical","trust_zone":"artifact","source":"synthetic build output","evidence_refs":["fixture:release-artifact"],"attributes":{"format":"tar.gz","digest":"sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","immutable":true}}
+    ],
+    "suppliers": [
+      {"id":"SUP-001","name":"Synthetic hosted source and build provider","owner":"Vendor Management","criticality":"high","trust_zone":"third-party","source":"synthetic supplier register","evidence_refs":["fixture:supplier-assessment"],"attributes":{"service":"source-control-and-ci","assurance_status":"review-required","contract_reference":"SYNTHETIC-CONTRACT-001"}}
+    ],
+    "deployment_targets": [
+      {"id":"DEPLOY-001","name":"Northstar test deployment environment","owner":"Service Operations","criticality":"high","trust_zone":"deployment","source":"synthetic release architecture","evidence_refs":["fixture:deployment-target"],"attributes":{"environment":"test","promotion_requires_digest":true,"production_access":false}}
+    ]
+  },
+  "relationships": [
+    {"id":"REL-001","from":"SRC-REPO-001","to":"SRC-CTRL-001","relationship":"governed-by","crosses_trust_boundary":false},
+    {"id":"REL-002","from":"SRC-REPO-001","to":"DEP-001","relationship":"declares-dependency","crosses_trust_boundary":true},
+    {"id":"REL-003","from":"DEP-001","to":"REG-001","relationship":"resolved-from","crosses_trust_boundary":true},
+    {"id":"REL-004","from":"DEP-002","to":"REG-001","relationship":"resolved-from","crosses_trust_boundary":true},
+    {"id":"REL-005","from":"SRC-REPO-001","to":"WF-001","relationship":"triggers","crosses_trust_boundary":false},
+    {"id":"REL-006","from":"WF-001","to":"RUN-001","relationship":"executes-on","crosses_trust_boundary":true},
+    {"id":"REL-007","from":"RUN-001","to":"ID-001","relationship":"obtains-short-lived-identity","crosses_trust_boundary":true},
+    {"id":"REL-008","from":"WF-001","to":"ART-001","relationship":"produces","crosses_trust_boundary":false},
+    {"id":"REL-009","from":"ART-001","to":"REG-002","relationship":"published-to","crosses_trust_boundary":true},
+    {"id":"REL-010","from":"REG-002","to":"DEPLOY-001","relationship":"promoted-by-digest-to","crosses_trust_boundary":true},
+    {"id":"REL-011","from":"SUP-001","to":"WF-001","relationship":"provides-ci-service-to","crosses_trust_boundary":true}
+  ],
+  "risks": [
+    {"id":"RISK-001","asset_id":"SRC-REPO-001","scenario":"Unauthorized source change reaches the protected release branch.","likelihood":"medium","impact":"critical","treatment":"Require independent review, CODEOWNERS and protected-branch policy.","owner":"Application Engineering","status":"mitigating"},
+    {"id":"RISK-002","asset_id":"DEP-001","scenario":"Dependency resolution substitutes an unapproved package source.","likelihood":"medium","impact":"high","treatment":"Enforce namespace mapping, lockfile integrity and registry allow-list.","owner":"Platform Engineering","status":"open"},
+    {"id":"RISK-003","asset_id":"RUN-001","scenario":"Compromised build step abuses runner access or persists into a later job.","likelihood":"medium","impact":"critical","treatment":"Use ephemeral isolated runners and separate build from signing permissions.","owner":"Platform Engineering","status":"mitigating"},
+    {"id":"RISK-004","asset_id":"ID-001","scenario":"Over-broad OIDC trust conditions permit an unintended workflow to obtain identity.","likelihood":"low","impact":"critical","treatment":"Constrain repository, workflow, ref, event and audience claims.","owner":"Identity Engineering","status":"open"},
+    {"id":"RISK-005","asset_id":"ART-001","scenario":"Artifact is replaced between build, publication and deployment.","likelihood":"medium","impact":"critical","treatment":"Bind attestations, signatures and promotion to immutable artifact digest.","owner":"Release Engineering","status":"mitigating"}
+  ]
+}
