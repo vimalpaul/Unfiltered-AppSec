@@ -191,8 +191,7 @@ class ReleaseAssuranceTests(unittest.TestCase):
         self.manifest["evidence"]["sbom"]["package_count"] = 1
         sca.update(scan_status="completed_report_only", match_count=0,
                    disposition="report_only_no_release_threshold", threshold_enforced=False,
-                   database={"schema_version": "v6.1.10", "built_at": "2026-11-26T06:22:34Z",
-                             "valid": True})
+                   database=self.db_status)
         self.files["sca.json"].write_text('{"matches": []}', encoding="utf-8")
         sca["sha256"] = digest(self.files["sca.json"])
         result = self.validate()
@@ -201,21 +200,40 @@ class ReleaseAssuranceTests(unittest.TestCase):
     def test_invalid_grype_database_is_rejected(self):
         self.manifest["evidence"]["sbom"]["package_count"] = 1
         sca = self.manifest["evidence"]["sca"]
+        invalid_db = dict(self.db_status, valid=False)
+        invalid_content = "Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-26T06:22:34Z\\nStatus: invalid\\n"
+        self.db_status_file.write_text(invalid_content, encoding="utf-8")
+        invalid_db["status_sha256"] = digest(self.db_status_file)
         sca.update(scan_status="completed_report_only", match_count=0,
                    disposition="report_only_no_release_threshold", threshold_enforced=False,
-                   database={"schema_version": "v6.1.10", "built_at": "2026-11-26T06:22:34Z",
-                             "valid": False})
+                   database=invalid_db)
         with self.assertRaisesRegex(PolicyError, "database is not valid"):
             self.validate()
 
     def test_stale_grype_database_is_rejected(self):
         self.manifest["evidence"]["sbom"]["package_count"] = 1
         sca = self.manifest["evidence"]["sca"]
+        stale_content = "Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-20T06:22:34Z\\nStatus: valid\\n"
+        self.db_status_file.write_text(stale_content, encoding="utf-8")
+        stale_db = dict(self.db_status, built_at="2026-11-20T06:22:34Z",
+                        status_sha256=digest(self.db_status_file))
         sca.update(scan_status="completed_report_only", match_count=0,
                    disposition="report_only_no_release_threshold", threshold_enforced=False,
-                   database={"schema_version": "v6.1.10", "built_at": "2026-11-20T06:22:34Z",
-                             "valid": True})
+                   database=stale_db)
         with self.assertRaisesRegex(PolicyError, "database is stale"):
+            self.validate()
+
+    def test_grype_database_status_file_tampering_is_rejected(self):
+        self.manifest["evidence"]["sbom"]["package_count"] = 1
+        sca = self.manifest["evidence"]["sca"]
+        sca.update(scan_status="completed_report_only", match_count=0,
+                   disposition="report_only_no_release_threshold", threshold_enforced=False,
+                   database=self.db_status)
+        self.db_status_file.write_text("Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-26T06:22:34Z\\nStatus: valid\\n",
+                                       encoding="utf-8")
+        self.db_status_file.write_text("Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-26T06:22:34Z\\nStatus: corrupt\\n",
+                                       encoding="utf-8")
+        with self.assertRaisesRegex(PolicyError, "evidence file digest mismatch"):
             self.validate()
 
     def test_non_demo_release_classification_is_rejected(self):
