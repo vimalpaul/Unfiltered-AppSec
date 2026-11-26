@@ -772,8 +772,8 @@ For each lab capture:
 
 **Lab ID:** SSC-LAB-028  
 **Related controls:** SSC-C-007, SSC-C-008, SSC-C-011, SSC-C-012, SSC-C-013  
-**Related tests:** SSC-T-017, SSC-T-018, SSC-T-019, SSC-T-029, SSC-T-036, SSC-T-037, SSC-T-038, SSC-T-039, SSC-T-040  
-**Related detections:** SSC-D-012, SSC-D-013, SSC-D-014, SSC-D-022, SSC-D-029  
+**Related tests:** SSC-T-017, SSC-T-018, SSC-T-019, SSC-T-029, SSC-T-036, SSC-T-037, SSC-T-038, SSC-T-039, SSC-T-040, SSC-T-041  
+**Related detections:** SSC-D-012, SSC-D-013, SSC-D-014, SSC-D-022, SSC-D-029, SSC-D-030  
 **Difficulty:** Advanced  
 **Environment:** GitHub Actions, GitHub artifact attestations, GitHub CLI, Syft, Grype, Cosign and Python 3.10+  
 **Classification:** Synthetic training exercise; no production release or deployment
@@ -874,6 +874,7 @@ sequenceDiagram
 | Artifact identity | SHA-256 in build metadata, manifest and final downloaded artifact | All identical |
 | SBOM binding | SBOM record subject digest and generation scope | Exact artifact digest and extracted-artifact scope |
 | SCA linkage | SCA subject digest and SBOM document digest | Both point to the exact artifact and SBOM document |
+| SCA database | `grype db status` record, schema, build time, validity and status-file SHA-256 | Status is valid, evidence file digest matches, database age is at most 72 hours |
 | Provenance | GitHub CLI verification result and attestation bundle | Expected signer workflow, issuer, source revision, predicate and artifact subject |
 | Signature | Cosign verification and bundle | Exact artifact, certificate identity and OIDC issuer |
 | Run consistency | Run ID and attempt in every evidence record | All evidence from the same workflow execution |
@@ -895,6 +896,8 @@ The integrated workflow executes cryptographic negative tests. The policy unit t
 | SCA-to-SBOM mismatch | Replace the SBOM document digest in SCA record | Policy engine rejects | SSC-T-037 |
 | Cross-run evidence | Change one evidence run ID or attempt | Policy engine rejects | SSC-T-039 |
 | False clean inventory | Mark no-package state as zero vulnerabilities | Policy engine rejects | SSC-T-040 |
+| Invalid or stale Grype DB | Mark database invalid or use a build timestamp older than 72 hours | Policy engine rejects | SSC-T-041 |
+| DB status tampering | Modify the retained Grype status file without updating its recorded digest | Policy engine rejects | SSC-T-041 |
 | Evidence tampering | Modify a retained evidence file without updating its digest | Policy engine rejects | SSC-T-038 |
 
 The unit tests are not a substitute for the real GitHub and Cosign cryptographic negative tests. Both layers are required.
@@ -1038,3 +1041,4 @@ Suggested training interpretation: 90â€“100 strong independent engineering; 75â€
 | 0.3 | 2026-11-26 | Add Lab 28 for unified release evidence assurance, digest consistency and fail-closed verification |
 | 0.4 | 2026-11-26 | Expand Lab 28 with integrated workflow, run-attempt binding, end-to-end negative cases and evidence retention procedure |
 | 0.5 | 2026-11-26 | Record successful synthetic workflow execution as pre-validation evidence; independent learner reproduction remains pending |
+| 0.6 | 2026-11-26 | Add scanner database validity, status-file integrity and 72-hour freshness test cases to Lab 28 |
