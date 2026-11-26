@@ -4,10 +4,10 @@
 |---|---|
 | Document ID | UAPPSEC-GOV-004 |
 | Status | Active tracking record |
-| Version | 0.1 |
+| Version | 0.2 |
 | Owner | Unfiltered AppSec maintainers |
 | Created | 2026-11-18 |
-| Last reviewed | 2026-11-18 |
+| Last reviewed | 2026-11-26 |
 | Review due | 2026-12-18 |
 | Classification | Public |
 
@@ -20,7 +20,7 @@
 - Starting state: empty repository, no files and no commits
 - GitHub access: read/write/admin permission confirmed through the connected account
 - Existing content preserved: not applicable; initial repository was empty
-- Current milestone: Milestone 11 Software Supply Chain Security engineering, lab specifications and initial executable implementation baseline
+- Current milestone: Milestone 12 — Unified Release Assurance (Chapter 13), following separate synthetic SBOM/SCA, SLSA provenance and Cosign demonstrations
 
 ## 2. Current work state
 
@@ -54,10 +54,11 @@
 | Distributed systems and integration security | Microservices, workload identity, service authorization, service mesh, brokers, events, webhooks, distributed workflows, third-party integrations and telemetry | Draft baseline created | `docs/11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-ENGINEERING.md`; validate broker/service-mesh version profiles, add exact standards traceability and reproduce implementation labs |
 | Distributed systems and integration security labs | Isolated workload identity, mTLS, broker ACL, event integrity, replay, outbox/inbox, saga, webhook, SSRF, resilience and telemetry exercises | Draft lab specifications created | `docs/11-distributed-systems-integration-security/DISTRIBUTED-SYSTEMS-AND-INTEGRATION-SECURITY-LAB-PACK.md`; implement and independently validate pinned environments before marking complete |
 | Software supply-chain implementation | Read-only CI, SHA-256 source manifest, Syft CycloneDX/SPDX SBOM, Grype report-only SCA, OpenVEX validation, synthetic GitHub-signed SLSA provenance and Cosign keyless blob signing | Main-branch baseline, SBOM/SCA, VEX, synthetic provenance and Cosign signing workflows passed; production VEX, product build coverage and release enforcement remain pending | `implementations/13-software-supply-chain-security/README.md`; `.github/workflows/supply-chain-baseline.yml`; `.github/workflows/sbom-generation.yml`; `.github/workflows/vex-validation.yml`; `.github/workflows/slsa-build-provenance.yml`; `.github/workflows/cosign-artifact-signing.yml`; full schema validation, product-level VEX, SCA severity gate, production build provenance, independent builder assessment, production signing governance and deployment controls remain open |
+| Unified release assurance | One-artifact evidence composition for SBOM, SCA, GitHub-signed SLSA provenance and Cosign; fail-closed policy and evidence manifest | Implementation baseline authored; 20 policy-engine unit tests passed in PR CI; end-to-end workflow execution pending | PR [#1](https://github.com/vimalpaul/Unfiltered-AppSec/pull/1); `implementations/13-software-supply-chain-security/unified-release-assurance/`; `.github/workflows/unified-release-assurance.yml`; [baseline run 45810635020](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45810635020); merge and run integrated workflow, retain evidence and record decision |
 | AI and LLM application security | Prompt injection, RAG, vector and embedding security, tool authorization, agents, MCP, model/data supply chain, output handling, privacy and operations | Draft baseline created: 46 test cases and 26 detection scenarios | `docs/12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-ENGINEERING.md`; verify framework editions, provider-specific behavior and exact AI risk-control traceability |
 | AI and LLM application security labs | Isolated prompt injection, cross-tenant RAG, tool/agent, MCP, output, supply-chain, multimodal, privacy and incident-response exercises | Draft specifications created: 30 labs | `docs/12-ai-llm-application-security/AI-AND-LLM-APPLICATION-SECURITY-LAB-PACK.md`; implement and independently validate pinned sandbox environments before marking complete |
-| Software supply chain security | Repository governance, developer endpoints, dependencies, registries, CI/CD, runners, SBOM, SCA/VEX, provenance, signing, containers, releases, suppliers and AI assets | Draft engineering baseline created: 23 controls, 35 tests and 28 detection scenarios | `docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md`; validate the expanded NIST SSDF/SLSA v1.2/CISA 2026 mappings, add platform-specific GitHub/GitLab and cloud workload identity implementation profiles, and reproduce build/provenance/signing controls |
-| Software supply chain security labs | Isolated repository, registry, dependency, SBOM, runner, OIDC, provenance, signing, container, supplier and incident-response exercises | Draft lab specifications created: 27 labs | `docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-LAB-PACK.md`; implement and independently validate pinned environments before marking complete |
+| Software supply chain security | Repository governance, developer endpoints, dependencies, registries, CI/CD, runners, SBOM, SCA/VEX, provenance, signing, containers, releases, suppliers and AI assets | Draft engineering baseline expanded: 23 controls, 40 tests and 29 detection scenarios | `docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md`; validate the expanded NIST SSDF/SLSA v1.2/CISA 2026 mappings, add platform-specific GitHub/GitLab and cloud workload identity implementation profiles, and reproduce build/provenance/signing controls |
+| Software supply chain security labs | Isolated repository, registry, dependency, SBOM, runner, OIDC, provenance, signing, container, supplier and incident-response exercises | Draft lab specifications expanded: 28 labs | `docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-LAB-PACK.md`; implement and independently validate pinned environments before marking complete |
 | Labs and templates | Safe reproducible labs and professional templates | Pending | Build alongside technical chapters |
 | AI agent workflows | Governed automation design and assessment | Pending | Build after core architecture and agent-security content |
 
@@ -82,17 +83,17 @@
 
 ## 4. Next work sequence
 
-1. Implement and independently validate Chapter 13 labs in pinned environments; add executable GitHub/GitLab workflow examples, SLSA v1.2 source/build verification profiles, SBOM schema tests and release-policy examples.
-2. Expand Chapter 12 with the complete numbered OWASP GenAI LLM Top 10 2026 mapping, Agentic Top 10 ASI01–ASI10 test traceability, ACS runtime-control implementation profiles, current MCP security profiles, provider-specific controls, model artifact and dataset provenance, and repeatable evaluation methodology.
-3. Expand Chapter 11 with exact broker-version profiles, service-mesh implementation matrices, protocol-level security requirements and traceable test-to-control mappings.
-4. Expand Chapter 10 with provider-specific identity federation, cloud policy, service configuration and exact CIS/provider framework traceability; validate current editions.
-5. Expand Chapter 09 with exact MASVS control-to-MASWE-to-MASTG v2 test traceability and pinned platform implementation examples.
-6. Expand Chapters 08 and 07 with exact ASVS mappings, cryptographic lifecycle examples and federation implementation profiles.
-7. Expand Chapter 06 with exact ASVS mappings, API contract automation and protocol-version-specific GraphQL/gRPC profiles.
-8. Implement and reproduce the web, API, identity, data, mobile, cloud-native, distributed-systems, AI/LLM, software supply-chain and secure-coding labs in pinned isolated environments.
-9. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
-10. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
-11. Continue standards crosswalks into chapter-specific requirement-to-test mappings.
+1. Complete the unified Chapter 13 release-assurance workflow on main; verify the full GitHub attestation/Cosign chain and policy decision, then retain the evidence package.\n2. Implement and independently validate Chapter 13 labs in pinned environments; add executable GitHub/GitLab workflow examples, SLSA v1.2 source/build verification profiles, SBOM schema tests and release-policy examples.
+3. Expand Chapter 12 with the complete numbered OWASP GenAI LLM Top 10 2026 mapping, Agentic Top 10 ASI01–ASI10 test traceability, ACS runtime-control implementation profiles, current MCP security profiles, provider-specific controls, model artifact and dataset provenance, and repeatable evaluation methodology.
+4. Expand Chapter 11 with exact broker-version profiles, service-mesh implementation matrices, protocol-level security requirements and traceable test-to-control mappings.
+5. Expand Chapter 10 with provider-specific identity federation, cloud policy, service configuration and exact CIS/provider framework traceability; validate current editions.
+6. Expand Chapter 09 with exact MASVS control-to-MASWE-to-MASTG v2 test traceability and pinned platform implementation examples.
+7. Expand Chapters 08 and 07 with exact ASVS mappings, cryptographic lifecycle examples and federation implementation profiles.
+8. Expand Chapter 06 with exact ASVS mappings, API contract automation and protocol-version-specific GraphQL/gRPC profiles.
+9. Implement and reproduce the web, API, identity, data, mobile, cloud-native, distributed-systems, AI/LLM, software supply-chain and secure-coding labs in pinned isolated environments.
+10. Expand India and GCC regulatory research into country- and sector-specific records with applicability decision logic.
+11. Establish reusable inventories, threat-model, assessment, finding, remediation and evidence templates.
+12. Continue standards crosswalks into chapter-specific requirement-to-test mappings.
 ## 5. Continuity rules
 
 When continuing this project:
@@ -166,3 +167,10 @@ The attestation was published to GitHub as ID `72577521` ([attestation](https://
 A separate Cosign keyless artifact-signing workflow has been implemented and executed successfully: [GitHub Actions run 45791994671](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791994671), source commit `e04b39fdf72bc8ee4c51c8a6668cda3db302bcb1`. The build job passed two fixture tests and used `contents: read` only. A separate signing job received `id-token: write`, did not check out or execute repository build scripts, verified the exact artifact metadata, downloaded Cosign v3.1.6 and its Sigstore release bundle, checked both SHA-256 pins, and verified the Cosign binary's release signature against the official release identity.
 
 Cosign then signed the synthetic archive using a short-lived GitHub OIDC identity. The signature was verified against the exact certificate identity, OIDC issuer, repository, source ref, source commit and workflow trigger. Four negative tests rejected a modified artifact, incorrect signer identity, incorrect OIDC issuer and incorrect source revision. The artifact SHA-256 was `efe0d00c0552e89029750baf35b7620842a9a447b188f0d50f25473e8d8c69ac`. Evidence artifact ID `15103446197`, digest `sha256:bf1cc7ac71b2cea025133d660cb25392fe42dd48686c7dfce2140f7795941747`, expires 2026-12-10. This is a synthetic detached-signature demonstration only; production release signing, signing-service governance, revocation/recovery and deployment enforcement remain open.
+
+
+## Chapter 13 unified release assurance checkpoint — 2026-11-26
+
+The unified release assurance implementation has been authored on feature branch `feat/ch13-unified-release-assurance` and proposed in [PR #1](https://github.com/vimalpaul/Unfiltered-AppSec/pull/1). It adds a single synthetic-artifact workflow with separate build/inventory, attestation, signing and read-only policy jobs. The evidence contract binds the SBOM subject to the artifact SHA-256, the SCA report to both the artifact and exact SBOM document, and SLSA/Cosign verification to the same source revision and artifact. The policy validator also checks evidence-file digests, same-run/same-attempt identity, missing evidence, path traversal and explicit empty-inventory semantics. It always returns `DEMO_PASS_NOT_FOR_PRODUCTION` and `promotion_authorized: false`.
+
+The read-only pull-request CI passed on commit `05e4ea5326d11b903ddb8b374ea7f57831f211be`: [run 45810635020](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45810635020). Python compilation succeeded, all 20 unified release-assurance policy unit tests passed, the existing 4 source-integrity tests passed, and the source integrity manifest generation/verification passed. An earlier run exposed an invalid Python test function identifier; it was corrected and the succeeding CI run passed. The end-to-end signed workflow has not yet run on main, so no unified release decision or production assurance claim is recorded. Independent review remains open.

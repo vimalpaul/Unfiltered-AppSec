@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | Executable prototype baseline — not production assurance |
+| Status | Executable prototype baseline — not production assurance; unified release assurance under end-to-end validation |
 | Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation, signed SLSA provenance, Cosign keyless artifact signing and release evidence policy |
 | Safety | No production credentials, long-lived signing keys or deployment access; Syft, Grype and Cosign are version/digest pinned, and Cosign's Sigstore release bundle is verified |
 | Related engineering baseline | [Chapter 13 engineering](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md) |
@@ -31,6 +31,8 @@ It does **not** prove that the application builds securely, that dependencies ar
 - `scripts/release_manifest.py` — generate and verify a deterministic SHA-256 file-integrity manifest.
 - `tests/test_release_manifest.py` — unit tests for path handling, tamper detection and deterministic output.
 - `policy/release-policy.md` — release evidence gates and operational configuration checklist.
+- `unified-release-assurance/` — evidence contract, fail-closed validator, synthetic policy, unit tests and implementation guide.
+- `.github/workflows/unified-release-assurance.yml` — one-run build, SBOM/SCA, signed provenance, Cosign signature and final read-only policy verification.
 
 ## 3. Prerequisites
 
@@ -77,12 +79,31 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 | SCA vulnerability matching | Implemented as a report-only Grype scan of the generated SPDX SBOM; main-branch CI passed with 2 package records and 0 matches | [Run 44757253987](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44757253987); no severity threshold or release gate is enforced |
 | SLSA build provenance | Synthetic artifact, separate build/sign jobs, GitHub Sigstore-signed SLSA provenance, exact signer/source/digest verification and three negative tests passed | [Run 45790878803](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790878803); attestation [72577521](https://github.com/vimalpaul/Unfiltered-AppSec/attestations/72577521); evidence artifact `15103185028` (expires 2026-12-10). Synthetic only; no SLSA level or production assurance claim |
 | Artifact signing / verification | Cosign v3.1.6 keyless blob signing, Sigstore bundle verification and four negative tests passed on a synthetic artifact | [Cosign run 45791994671](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791994671); evidence artifact `15103446197` (expires 2026-12-10); production signing and release integration remain open |
+| Unified release assurance | Evidence contract, fail-closed policy validator, separate build/attestation/signing/read-only verification jobs, 20 policy-engine tests authored | [PR #1](https://github.com/vimalpaul/Unfiltered-AppSec/pull/1); [baseline CI run 45810635020](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45810635020) passed Python compilation, 20 policy tests and 4 source-integrity tests; end-to-end workflow run pending |
 | Container hardening / scanning | Not implemented | Add actual image build, digest pinning, scanning and deployment verification |
 | Branch protection / rulesets | Not verified | Read effective repository rules and test enforcement with an authorized change |
 
 A committed file is not proof that a GitHub setting is enabled. A green workflow is not proof that all supply-chain risks are controlled. Update this table only when the corresponding evidence exists.
 
-## 7. Next implementation increments
+## 7. Unified release assurance
+
+The integrated workflow is [`.github/workflows/unified-release-assurance.yml`](../../../.github/workflows/unified-release-assurance.yml). It builds one deterministic synthetic archive, generates CycloneDX/SPDX inventories from its extracted contents, records a Grype scan or an explicit no-package disposition, generates GitHub-signed SLSA provenance, signs with Cosign, and re-verifies all evidence in a separate read-only policy job.
+
+The policy engine is [`unified-release-assurance/release_assurance.py`](unified-release-assurance/release_assurance.py); its allow-list is [`verification-policy.json`](unified-release-assurance/verification-policy.json), and its negative test suite is [`test_release_assurance.py`](unified-release-assurance/test_release_assurance.py). The implementation checks the exact artifact digest, SBOM subject, SCA-to-SBOM linkage, signer identities, OIDC issuers, source revision, evidence-file digests and same-run/same-attempt consistency.
+
+A successful result is `DEMO_PASS_NOT_FOR_PRODUCTION` and always sets `promotion_authorized: false`. The workflow is synthetic only. The Python validator does not implement cryptographic signature verification; GitHub CLI and Cosign perform those checks before the manifest is evaluated. No production SCA threshold, product VEX gate, deployment verification or SLSA Build level is claimed.
+
+Run the policy-engine unit tests locally:
+
+```bash
+python3 -m unittest discover \
+  -s implementations/13-software-supply-chain-security/unified-release-assurance \
+  -p 'test_*.py' -v
+```
+
+The integrated workflow must be executed successfully on the target branch before its maturity state is upgraded.
+
+## 8. Next implementation increments
 
 1. Add and verify pull-request trigger coverage; review artifact access and retention settings.
 2. Add project-specific build and dependency discovery without assuming a language or package manager.
@@ -92,11 +113,11 @@ A committed file is not proof that a GitHub setting is enabled. A green workflow
 6. Assess GitHub-hosted and self-hosted builders against every applicable SLSA Build requirement; do not infer Build L2/L3 from a successful attestation.
 7. Implement separate artifact signing/verification for actual release outputs, then container and deployment enforcement after the real build/deploy architecture is established.
 
-## 8. Safe-use restrictions
+## 9. Safe-use restrictions
 
 Do not put customer source, private package credentials, production tokens, signing keys, cloud credentials or non-public architecture data in this public repository. Run compromise exercises only against synthetic dependencies and disposable environments.
 
-## 9. SLSA provenance execution evidence
+## 10. SLSA provenance execution evidence
 
 The synthetic SLSA workflow completed successfully on 2026-11-26: [run 45790878803](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790878803), source commit `1a81f191a3a1e8b23962e1ad4a9b90b6694d763c`. The build job passed 8 unit tests, fetched the exact event commit, created a deterministic archive and uploaded it to a separate attestation job. The attestation job verified the metadata and artifact SHA-256 `890a3bb79f8a6695b50a20860ce37404944ef4f21cc1c7ece1386a87eef84909`, generated a GitHub Sigstore-signed SLSA provenance attestation, and verified the signature, repository, signer workflow, source ref, source digest, OIDC issuer, predicate type and hosted-runner requirement with GitHub CLI.
 
@@ -105,7 +126,7 @@ The verified builder identity was `https://github.com/vimalpaul/Unfiltered-AppSe
 The retained evidence artifact is ID `15103185028`, digest `sha256:694058beb9ac19cc9aa8331867de489d90d399e66f49af1171ce7c19809ea87e`, with GitHub retention through 2026-12-10. This is a successful synthetic workflow demonstration, not an independent SLSA assessment, a production application build, or a claim of Build L2/L3.
 
 
-## 10. Cosign artifact-signing execution evidence
+## 11. Cosign artifact-signing execution evidence
 
 The synthetic Cosign workflow completed successfully on 2026-11-26: [run 45791994671](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791994671), source commit `e04b39fdf72bc8ee4c51c8a6668cda3db302bcb1`. The build job passed two signing-fixture tests, fetched the exact event commit, and generated the deterministic synthetic archive. The separate signing job verified the build metadata and archive digest, checked the pinned Cosign v3.1.6 binary and its Sigstore release bundle, and verified the binary using the official release signer identity before installation.
 

@@ -45,6 +45,17 @@ jobs:
           python3 --version
           python3 -m unittest discover -s implementations/13-software-supply-chain-security/tests -v
 
+      - name: Run unified release assurance policy tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile \
+            implementations/13-software-supply-chain-security/unified-release-assurance/release_assurance.py \
+            implementations/13-software-supply-chain-security/unified-release-assurance/test_release_assurance.py
+          python3 -m unittest discover \
+            -s implementations/13-software-supply-chain-security/unified-release-assurance \
+            -p 'test_*.py' -v
+
       - name: Generate and verify source integrity manifest
         shell: bash
         run: |

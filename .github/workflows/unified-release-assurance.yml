@@ -1,0 +1,715 @@
+name: Unified release assurance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'implementations/13-software-supply-chain-security/unified-release-assurance/**'
+      - 'implementations/13-software-supply-chain-security/provenance/build_demo_artifact.py'
+      - 'implementations/13-software-supply-chain-security/sbom/**'
+      - 'implementations/13-software-supply-chain-security/sca/**'
+      - '.github/workflows/unified-release-assurance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unified-release-assurance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-inventory:
+    if: github.ref == 'refs/heads/main'
+    name: Build, inventory and scan (no signing permissions)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    outputs:
+      artifact_name: ${{ steps.names.outputs.artifact_name }}
+    steps:
+      - name: Fetch exact event commit
+        shell: bash
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          EVENT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${REPOSITORY}.git"
+          AUTH="$(printf 'x-access-token:%s' "${GH_READ_TOKEN}" | base64 -w0)"
+          git -c http.extraheader="AUTHORIZATION: basic ${AUTH}" fetch --no-tags --depth=1 origin "${EVENT_SHA}"
+          unset AUTH GH_READ_TOKEN
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${EVENT_SHA}"
+
+      - name: Set run-scoped artifact names
+        id: names
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: echo "artifact_name=ura-build-${RUN_ID}-${RUN_ATTEMPT}" >> "${GITHUB_OUTPUT}"
+
+      - name: Run unified policy validator tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover \
+            -s implementations/13-software-supply-chain-security/unified-release-assurance \
+            -p 'test_*.py' -v
+
+      - name: Build deterministic synthetic release artifact
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+          BUILD_WORKFLOW: .github/workflows/unified-release-assurance.yml
+        run: |
+          set -euo pipefail
+          mkdir -p dist/build/evidence
+          python3 implementations/13-software-supply-chain-security/provenance/build_demo_artifact.py \
+            --output dist/build/unfiltered-appsec-demo.tar.gz \
+            --metadata-output dist/build/build-metadata.json \
+            --repository "${REPOSITORY}" \
+            --revision "${EVENT_SHA}" \
+            --workflow "${BUILD_WORKFLOW}"
+          sha256sum dist/build/unfiltered-appsec-demo.tar.gz
+
+      - name: Safely extract synthetic artifact for inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import tarfile
+          from pathlib import Path, PurePosixPath
+          archive = Path("dist/build/unfiltered-appsec-demo.tar.gz")
+          destination = Path("/tmp/ura-release-root")
+          destination.mkdir(parents=True, exist_ok=True)
+          with tarfile.open(archive, "r:gz") as bundle:
+              members = bundle.getmembers()
+              for member in members:
+                  path = PurePosixPath(member.name)
+                  if path.is_absolute() or ".." in path.parts:
+                      raise SystemExit(f"unsafe archive member: {member.name}")
+                  if not (member.isfile() or member.isdir()):
+                      raise SystemExit(f"non-regular archive member rejected: {member.name}")
+              bundle.extractall(destination, members=members, filter="data")
+          print(f"Safely extracted {len(members)} archive entries.")
+          PY
+
+      - name: Download pinned Syft release
+        shell: bash
+        run: |
+          set -euo pipefail
+          SYFT_VERSION="1.57.1"
+          ARCHIVE="syft_${SYFT_VERSION}_linux_amd64.tar.gz"
+          EXPECTED_SHA256="bf52519eb57f675d47c07d43213cb6dff6449f3d6d1147ff6701ed91f44eef0c"
+          curl --fail --silent --show-error --location \
+            "https://github.com/anchore/syft/releases/download/v${SYFT_VERSION}/${ARCHIVE}" \
+            --output "/tmp/${ARCHIVE}"
+          echo "${EXPECTED_SHA256}  /tmp/${ARCHIVE}" | sha256sum --check
+          mkdir -p /tmp/syft-extract
+          tar -xzf "/tmp/${ARCHIVE}" -C /tmp/syft-extract syft
+          install -m 0755 /tmp/syft-extract/syft /usr/local/bin/syft
+          syft version
+
+      - name: Generate SBOMs from extracted release artifact
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          syft scan dir:/tmp/ura-release-root \
+            --source-name "${REPOSITORY}-release-artifact" \
+            --source-version "${EVENT_SHA}" \
+            -o cyclonedx-json@1.7=dist/build/evidence/sbom.cdx.json \
+            -o spdx-json@2.3=dist/build/evidence/sbom.spdx.json
+          python3 implementations/13-software-supply-chain-security/sbom/validate_sbom.py \
+            --cyclonedx dist/build/evidence/sbom.cdx.json \
+            --spdx dist/build/evidence/sbom.spdx.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          sbom = json.loads(Path("dist/build/evidence/sbom.spdx.json").read_text(encoding="utf-8"))
+          count = len(sbom.get("packages", []))
+          Path("dist/build/evidence/sbom-inventory.json").write_text(
+              json.dumps({"format": "SPDX 2.3", "package_count": count,
+                          "generation_scope": "extracted-release-artifact"}, indent=2) + "\n",
+              encoding="utf-8")
+          print(f"Release artifact SBOM package records: {count}")
+          PY
+
+      - name: Download pinned Grype release
+        shell: bash
+        run: |
+          set -euo pipefail
+          GRYPE_VERSION="0.122.1"
+          ARCHIVE="grype_${GRYPE_VERSION}_linux_amd64.tar.gz"
+          EXPECTED_SHA256="f1ba7e2917ee1395618de20a98da0aa7c0fb1788927797651047c50502a37538"
+          curl --fail --silent --show-error --location \
+            "https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/${ARCHIVE}" \
+            --output "/tmp/${ARCHIVE}"
+          echo "${EXPECTED_SHA256}  /tmp/${ARCHIVE}" | sha256sum --check
+          mkdir -p /tmp/grype-extract
+          tar -xzf "/tmp/${ARCHIVE}" -C /tmp/grype-extract grype
+          install -m 0755 /tmp/grype-extract/grype /usr/local/bin/grype
+          grype version
+
+      - name: Run report-only SCA or record explicit no-package disposition
+        shell: bash
+        run: |
+          set -euo pipefail
+          PACKAGE_COUNT="$(python3 -c 'import json; print(len(json.load(open("dist/build/evidence/sbom.spdx.json", encoding="utf-8")).get("packages", [])))')"
+          if [ "${PACKAGE_COUNT}" -gt 0 ]; then
+            grype sbom:dist/build/evidence/sbom.spdx.json -o json > dist/build/evidence/sca-results.json
+            python3 implementations/13-software-supply-chain-security/sca/validate_grype_report.py \
+              --report dist/build/evidence/sca-results.json
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("dist/build/evidence/sca-results.json").read_text(encoding="utf-8"))
+          status = {
+              "scan_status": "completed_report_only",
+              "scanner": report.get("descriptor", {}).get("name"),
+              "scanner_version": report.get("descriptor", {}).get("version"),
+              "match_count": len(report.get("matches", [])),
+              "threshold_enforced": False,
+              "disposition": "report_only_no_release_threshold",
+          }
+          Path("dist/build/evidence/sca-status.json").write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
+          PY
+          else
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+          status = {
+              "scan_status": "not_run_no_package_records",
+              "scanner": "Grype",
+              "scanner_version": "0.122.1",
+              "match_count": None,
+              "threshold_enforced": False,
+              "disposition": "not_evaluated_no_package_records",
+              "reason": "No package records were identified in this synthetic artifact; this is not a vulnerability-free result."
+          }
+          Path("dist/build/evidence/sca-results.json").write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
+          Path("dist/build/evidence/sca-status.json").write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
+          PY
+          fi
+
+      - name: Upload immutable build and inventory evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ steps.names.outputs.artifact_name }}
+          path: dist/build/
+          if-no-files-found: error
+          retention-days: 14
+
+  attest:
+    if: github.ref == 'refs/heads/main'
+    name: Attest artifact (separate trust domain)
+    needs: build-and-inventory
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    env:
+      EXPECTED_SIGNER_WORKFLOW: vimalpaul/Unfiltered-AppSec/.github/workflows/unified-release-assurance.yml
+    steps:
+      - name: Download exact build artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ needs.build-and-inventory.outputs.artifact_name }}
+          path: dist
+
+      - name: Verify build metadata and exact artifact digest
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          artifact = Path("dist/unfiltered-appsec-demo.tar.gz")
+          metadata = json.loads(Path("dist/build-metadata.json").read_text(encoding="utf-8"))
+          digest = hashlib.sha256(artifact.read_bytes()).hexdigest()
+          expected = {
+              "source_repository": os.environ["REPOSITORY"],
+              "source_revision": os.environ["EVENT_SHA"],
+              "build_workflow": ".github/workflows/unified-release-assurance.yml",
+              "artifact_name": artifact.name,
+              "artifact_kind": "synthetic-training-fixture",
+          }
+          for key, value in expected.items():
+              if metadata.get(key) != value:
+                  raise SystemExit(f"build metadata mismatch: {key}")
+          if metadata.get("artifact_sha256") != digest:
+              raise SystemExit("artifact digest does not match build metadata")
+          print(f"Verified build artifact SHA-256: {digest}")
+          PY
+
+      - name: Generate GitHub-signed SLSA provenance
+        id: attest
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: dist/unfiltered-appsec-demo.tar.gz
+
+      - name: Verify signer workflow, source and subject digest
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+          ATTESTATION_BUNDLE: ${{ steps.attest.outputs.bundle-path }}
+        run: |
+          set -euo pipefail
+          gh attestation verify dist/unfiltered-appsec-demo.tar.gz \
+            --repo "${REPOSITORY}" \
+            --signer-workflow "${EXPECTED_SIGNER_WORKFLOW}" \
+            --source-ref refs/heads/main \
+            --source-digest "${EVENT_SHA}" \
+            --cert-oidc-issuer https://token.actions.githubusercontent.com \
+            --predicate-type https://slsa.dev/provenance/v1 \
+            --deny-self-hosted-runners \
+            --format json > dist/attestation-verification.json
+          test -s "${ATTESTATION_BUNDLE}"
+          cp "${ATTESTATION_BUNDLE}" dist/sigstore-attestation-bundle.json
+          mkdir -p dist/slsa-evidence
+          mv dist/attestation-verification.json dist/slsa-evidence/
+          mv dist/sigstore-attestation-bundle.json dist/slsa-evidence/
+
+      - name: Upload verified provenance evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ura-slsa-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/slsa-evidence/
+          if-no-files-found: error
+          retention-days: 14
+
+  sign:
+    if: github.ref == 'refs/heads/main'
+    name: Sign artifact (separate trust domain)
+    needs: build-and-inventory
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      EXPECTED_CERTIFICATE_IDENTITY: https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/unified-release-assurance.yml@refs/heads/main
+      EXPECTED_OIDC_ISSUER: https://token.actions.githubusercontent.com
+      COSIGN_VERSION: v3.1.6
+      COSIGN_BINARY_SHA256: 318a99ade4156a0c4113aa983b46c0a0830fa7896a096c63121ee47b610a94c6
+      COSIGN_BUNDLE_SHA256: 018f5d1e338d5f360a805fa55d8a18a90243ea8f766f01d21ba0d154c99f7fc6
+    steps:
+      - name: Download exact build artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ needs.build-and-inventory.outputs.artifact_name }}
+          path: dist
+
+      - name: Verify artifact metadata
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          artifact = Path("dist/unfiltered-appsec-demo.tar.gz")
+          metadata = json.loads(Path("dist/build-metadata.json").read_text(encoding="utf-8"))
+          digest = hashlib.sha256(artifact.read_bytes()).hexdigest()
+          expected = {
+              "source_repository": os.environ["REPOSITORY"],
+              "source_revision": os.environ["EVENT_SHA"],
+              "build_workflow": ".github/workflows/unified-release-assurance.yml",
+              "artifact_name": artifact.name,
+              "artifact_kind": "synthetic-training-fixture",
+          }
+          for key, value in expected.items():
+              if metadata.get(key) != value:
+                  raise SystemExit(f"build metadata mismatch: {key}")
+          if metadata.get("artifact_sha256") != digest:
+              raise SystemExit("artifact digest does not match build metadata")
+          PY
+
+      - name: Download and verify pinned Cosign release
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            "https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64" \
+            --output /tmp/cosign-linux-amd64
+          curl --fail --silent --show-error --location \
+            "https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json" \
+            --output /tmp/cosign-linux-amd64.sigstore.json
+          echo "${COSIGN_BINARY_SHA256}  /tmp/cosign-linux-amd64" | sha256sum --check
+          echo "${COSIGN_BUNDLE_SHA256}  /tmp/cosign-linux-amd64.sigstore.json" | sha256sum --check
+          chmod 0755 /tmp/cosign-linux-amd64
+          /tmp/cosign-linux-amd64 verify-blob /tmp/cosign-linux-amd64 \
+            --bundle /tmp/cosign-linux-amd64.sigstore.json \
+            --certificate-identity keyless@projectsigstore.iam.gserviceaccount.com \
+            --certificate-oidc-issuer https://accounts.google.com
+          install -m 0755 /tmp/cosign-linux-amd64 /usr/local/bin/cosign
+          cosign version
+
+      - name: Sign artifact with GitHub OIDC identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          cosign sign-blob --yes \
+            --bundle dist/cosign-signature.sigstore.json \
+            dist/unfiltered-appsec-demo.tar.gz
+
+      - name: Verify exact signer, issuer and source claims
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          cosign verify-blob dist/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}" \
+            --certificate-github-workflow-repository "${REPOSITORY}" \
+            --certificate-github-workflow-ref refs/heads/main \
+            --certificate-github-workflow-sha "${EVENT_SHA}" \
+            --certificate-github-workflow-trigger "${EVENT_NAME}"
+
+      - name: Upload verified signature evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ura-cosign-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/cosign-signature.sigstore.json
+          if-no-files-found: error
+          retention-days: 14
+
+  release-policy:
+    if: github.ref == 'refs/heads/main'
+    name: Verify unified evidence and make release decision
+    needs: [build-and-inventory, attest, sign]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      EXPECTED_SIGNER_WORKFLOW: vimalpaul/Unfiltered-AppSec/.github/workflows/unified-release-assurance.yml
+      EXPECTED_CERTIFICATE_IDENTITY: https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/unified-release-assurance.yml@refs/heads/main
+      EXPECTED_OIDC_ISSUER: https://token.actions.githubusercontent.com
+    steps:
+      - name: Fetch exact event commit
+        shell: bash
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          EVENT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${REPOSITORY}.git"
+          AUTH="$(printf 'x-access-token:%s' "${GH_READ_TOKEN}" | base64 -w0)"
+          git -c http.extraheader="AUTHORIZATION: basic ${AUTH}" fetch --no-tags --depth=1 origin "${EVENT_SHA}"
+          unset AUTH GH_READ_TOKEN
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${EVENT_SHA}"
+
+      - name: Download build, SBOM and SCA evidence
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ needs.build-and-inventory.outputs.artifact_name }}
+          path: dist/build
+
+      - name: Download SLSA evidence
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ura-slsa-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/slsa
+
+      - name: Download Cosign evidence
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ura-cosign-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/cosign
+
+      - name: Re-verify SLSA provenance in the policy job
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          gh attestation verify dist/build/unfiltered-appsec-demo.tar.gz \
+            --repo "${REPOSITORY}" \
+            --signer-workflow "${EXPECTED_SIGNER_WORKFLOW}" \
+            --source-ref refs/heads/main \
+            --source-digest "${EVENT_SHA}" \
+            --cert-oidc-issuer "${EXPECTED_OIDC_ISSUER}" \
+            --predicate-type https://slsa.dev/provenance/v1 \
+            --deny-self-hosted-runners \
+            --format json > dist/slsa/policy-verification.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path("dist/slsa/policy-verification.json").read_text(encoding="utf-8"))
+          if not isinstance(result, list) or not result:
+              raise SystemExit("no verified GitHub attestation returned")
+          for item in result:
+              statement = item.get("verificationResult", {}).get("statement", {})
+              if statement.get("predicateType") != "https://slsa.dev/provenance/v1":
+                  raise SystemExit("unexpected provenance predicate")
+          print(f"GitHub CLI returned {len(result)} verified SLSA attestation(s).")
+          PY
+
+      - name: Install pinned Cosign verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            "https://github.com/sigstore/cosign/releases/download/v3.1.6/cosign-linux-amd64" \
+            --output /tmp/cosign-linux-amd64
+          curl --fail --silent --show-error --location \
+            "https://github.com/sigstore/cosign/releases/download/v3.1.6/cosign-linux-amd64.sigstore.json" \
+            --output /tmp/cosign-linux-amd64.sigstore.json
+          echo "318a99ade4156a0c4113aa983b46c0a0830fa7896a096c63121ee47b610a94c6  /tmp/cosign-linux-amd64" | sha256sum --check
+          echo "018f5d1e338d5f360a805fa55d8a18a90243ea8f766f01d21ba0d154c99f7fc6  /tmp/cosign-linux-amd64.sigstore.json" | sha256sum --check
+          chmod 0755 /tmp/cosign-linux-amd64
+          /tmp/cosign-linux-amd64 verify-blob /tmp/cosign-linux-amd64 \
+            --bundle /tmp/cosign-linux-amd64.sigstore.json \
+            --certificate-identity keyless@projectsigstore.iam.gserviceaccount.com \
+            --certificate-oidc-issuer https://accounts.google.com
+          install -m 0755 /tmp/cosign-linux-amd64 /usr/local/bin/cosign
+
+      - name: Re-verify Cosign signature in the policy job
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          cosign verify-blob dist/build/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}" \
+            --certificate-github-workflow-repository "${REPOSITORY}" \
+            --certificate-github-workflow-ref refs/heads/main \
+            --certificate-github-workflow-sha "${EVENT_SHA}" \
+            --certificate-github-workflow-trigger "${EVENT_NAME}"
+
+      - name: Negative test — reject tampered artifact
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          cp dist/build/unfiltered-appsec-demo.tar.gz dist/tampered-demo.tar.gz
+          printf '\nTAMPERED AFTER SIGNING\n' >> dist/tampered-demo.tar.gz
+          if gh attestation verify dist/tampered-demo.tar.gz --repo "${REPOSITORY}" \
+            --signer-workflow "${EXPECTED_SIGNER_WORKFLOW}"; then
+            echo "ERROR: tampered artifact passed provenance verification" >&2
+            exit 1
+          fi
+          if cosign verify-blob dist/tampered-demo.tar.gz \
+            --bundle dist/cosign/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}"; then
+            echo "ERROR: tampered artifact passed Cosign verification" >&2
+            exit 1
+          fi
+          echo "Expected rejection: tampered artifact rejected by both verifiers."
+
+      - name: Negative test — reject untrusted SLSA signer workflow
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if gh attestation verify dist/build/unfiltered-appsec-demo.tar.gz --repo "${REPOSITORY}" \
+            --signer-workflow "vimalpaul/Unfiltered-AppSec/.github/workflows/untrusted.yml"; then
+            echo "ERROR: untrusted SLSA signer unexpectedly verified" >&2
+            exit 1
+          fi
+          echo "Expected rejection: untrusted SLSA signer workflow rejected."
+
+      - name: Negative test — reject wrong Cosign identity and issuer
+        shell: bash
+        run: |
+          set -euo pipefail
+          if cosign verify-blob dist/build/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign/cosign-signature.sigstore.json \
+            --certificate-identity "https://example.invalid/untrusted-workflow" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}"; then
+            echo "ERROR: untrusted Cosign identity unexpectedly verified" >&2
+            exit 1
+          fi
+          if cosign verify-blob dist/build/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "https://example.invalid/issuer"; then
+            echo "ERROR: untrusted OIDC issuer unexpectedly verified" >&2
+            exit 1
+          fi
+          echo "Expected rejection: wrong signer identity and issuer rejected."
+
+      - name: Negative test — reject incorrect source revision
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          WRONG_SOURCE_DIGEST="0000000000000000000000000000000000000000"
+          if gh attestation verify dist/build/unfiltered-appsec-demo.tar.gz \
+            --repo "${REPOSITORY}" \
+            --signer-workflow "${EXPECTED_SIGNER_WORKFLOW}" \
+            --source-ref refs/heads/main \
+            --source-digest "${WRONG_SOURCE_DIGEST}"; then
+            echo "ERROR: wrong source revision passed provenance verification" >&2
+            exit 1
+          fi
+          if cosign verify-blob dist/build/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}" \
+            --certificate-github-workflow-repository "${REPOSITORY}" \
+            --certificate-github-workflow-ref refs/heads/main \
+            --certificate-github-workflow-sha "${WRONG_SOURCE_DIGEST}"; then
+            echo "ERROR: wrong source revision passed Cosign verification" >&2
+            exit 1
+          fi
+          echo "Expected rejection: wrong source revision rejected by both verifiers."
+
+      - name: Create unified release evidence manifest
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          root = Path("dist")
+          artifact = root / "build/unfiltered-appsec-demo.tar.gz"
+          sbom = root / "build/evidence/sbom.cdx.json"
+          sca = root / "build/evidence/sca-results.json"
+          slsa = root / "slsa/sigstore-attestation-bundle.json"
+          cosign = root / "cosign/cosign-signature.sigstore.json"
+          def sha(path):
+              return hashlib.sha256(path.read_bytes()).hexdigest()
+          def record(path, **fields):
+              return {"path": path.relative_to(root).as_posix(), "sha256": sha(path),
+                      "run_id": os.environ["RUN_ID"], "run_attempt": os.environ["RUN_ATTEMPT"], **fields}
+          metadata = json.loads((root / "build/build-metadata.json").read_text(encoding="utf-8"))
+          inventory = json.loads((root / "build/evidence/sbom-inventory.json").read_text(encoding="utf-8"))
+          sca_status = json.loads((root / "build/evidence/sca-status.json").read_text(encoding="utf-8"))
+          artifact_digest = sha(artifact)
+          if metadata["artifact_sha256"] != artifact_digest:
+              raise SystemExit("final artifact digest differs from build metadata")
+          manifest = {
+              "schema_version": 1,
+              "release_id": f"synthetic-{os.environ['RUN_ID']}-{os.environ['RUN_ATTEMPT']}",
+              "release_classification": "synthetic-training-fixture",
+              "created_at": datetime.now(timezone.utc).isoformat(),
+              "run_id": os.environ["RUN_ID"],
+              "run_attempt": os.environ["RUN_ATTEMPT"],
+              "source": {
+                  "repository": os.environ["REPOSITORY"],
+                  "ref": "refs/heads/main",
+                  "revision": os.environ["EVENT_SHA"],
+                  "workflow": ".github/workflows/unified-release-assurance.yml"
+              },
+              "artifact": {
+                  "name": artifact.name,
+                  "sha256": artifact_digest,
+                  "kind": "synthetic-training-fixture"
+              },
+              "evidence": {
+                  "sbom": record(sbom, status="verified", subject_sha256=artifact_digest,
+                      generation_scope=inventory["generation_scope"], format="CycloneDX 1.7",
+                      package_count=inventory["package_count"]),
+                  "sca": record(sca, subject_sha256=artifact_digest, sbom_sha256=sha(sbom),
+                      scanner="Grype", scanner_version=sca_status["scanner_version"],
+                      scan_status=sca_status["scan_status"], match_count=sca_status["match_count"],
+                      threshold_enforced=False, disposition=sca_status["disposition"]),
+                  "slsa_provenance": record(slsa, status="verified", subject_sha256=artifact_digest,
+                      verification_method="gh-attestation-verify",
+                      signer_workflow="vimalpaul/Unfiltered-AppSec/.github/workflows/unified-release-assurance.yml",
+                      oidc_issuer="https://token.actions.githubusercontent.com",
+                      predicate_type="https://slsa.dev/provenance/v1",
+                      source_repository=os.environ["REPOSITORY"], source_ref="refs/heads/main",
+                      source_revision=os.environ["EVENT_SHA"]),
+                  "cosign_signature": record(cosign, status="verified", subject_sha256=artifact_digest,
+                      verification_method="cosign-verify-blob",
+                      signer_identity="https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/unified-release-assurance.yml@refs/heads/main",
+                      oidc_issuer="https://token.actions.githubusercontent.com",
+                      source_repository=os.environ["REPOSITORY"], source_ref="refs/heads/main",
+                      source_revision=os.environ["EVENT_SHA"])
+              }
+          }
+          (root / "release-evidence-manifest.json").write_text(
+              json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(f"Created manifest for {manifest['release_id']} and artifact {artifact_digest}")
+          PY
+
+      - name: Enforce unified release evidence policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 implementations/13-software-supply-chain-security/unified-release-assurance/release_assurance.py validate \
+            --manifest dist/release-evidence-manifest.json \
+            --policy implementations/13-software-supply-chain-security/unified-release-assurance/verification-policy.json \
+            --artifact dist/build/unfiltered-appsec-demo.tar.gz \
+            --evidence-root dist \
+            --output dist/release-decision.json \
+            --expected-source-revision "${{ github.sha }}" \
+            --expected-run-id "${{ github.run_id }}" \
+            --expected-run-attempt "${{ github.run_attempt }}"
+
+      - name: Publish decision summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' >> "${GITHUB_STEP_SUMMARY}"
+          import json
+          from pathlib import Path
+          report = json.loads(Path("dist/release-decision.json").read_text(encoding="utf-8"))
+          print("## Unified release assurance decision")
+          print(f"- Decision: **{report['policy_decision']}**")
+          print(f"- Artifact SHA-256: `{report['artifact']['sha256']}`")
+          print("- Evidence: SBOM, SCA disposition, SLSA provenance and Cosign signature verified.")
+          print("- All evidence records reference the same artifact digest and workflow run.")
+          print("- Production promotion authorized: **No**")
+          PY
+
+      - name: Upload complete unified release evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ura-release-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            dist/release-evidence-manifest.json
+            dist/release-decision.json
+            dist/build/unfiltered-appsec-demo.tar.gz
+            dist/build/build-metadata.json
+            dist/build/evidence/
+            dist/slsa/
+            dist/cosign/
+          if-no-files-found: error
+          retention-days: 14
