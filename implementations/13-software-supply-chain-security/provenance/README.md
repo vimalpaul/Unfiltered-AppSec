@@ -112,15 +112,15 @@ A successful attestation is not itself proof of a SLSA level. Level claims requi
 
 ## 7. Execution evidence — 2026-11-26
 
-The workflow passed on source commit `e5866e3eb3b61acc7712a9f1e6e0bf840410ee46`: [GitHub Actions run 45790540789](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790540789).
+The workflow passed on source commit `1a81f191a3a1e8b23962e1ad4a9b90b6694d763c`: [GitHub Actions run 45790878803](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790878803).
 
 - Synthetic artifact: `unfiltered-appsec-demo.tar.gz`
-- Artifact SHA-256: `63deae5867135ecd02c5bda8e5b9868926edd4ad0c0280dff2fa39da2c830e32`
+- Artifact SHA-256: `890a3bb79f8a6695b50a20860ce37404944ef4f21cc1c7ece1386a87eef84909`
 - Verified builder: `https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/slsa-build-provenance.yml@refs/heads/main`
 - Build type: `https://actions.github.io/buildtypes/workflow/v1`
-- Attestation: [GitHub attestation 72576926](https://github.com/vimalpaul/Unfiltered-AppSec/attestations/72576926)
-- Sigstore Rekor log index: `4122722229`
-- Evidence artifact: ID `15102935476`, digest `sha256:cd0515bdaeff513037e20127dc21d52a42642105864ec4c2ba2a99cd3410d6ee`, expires 2026-12-10.
+- Attestation: [GitHub attestation 72577521](https://github.com/vimalpaul/Unfiltered-AppSec/attestations/72577521)
+- Sigstore Rekor log index: `4122760007`
+- Evidence artifact: ID `15103185028`, digest `sha256:694058beb9ac19cc9aa8331867de489d90d399e66f49af1171ce7c19809ea87e`, expires 2026-12-10.
 - Negative tests: tampered subject, incorrect signer workflow and incorrect source revision were all rejected.
 
 The successful run establishes that this synthetic workflow produced and verified a signed provenance attestation. It does not establish a SLSA Build level, a production application build, complete materials capture, independent validation or deployment enforcement.
