@@ -1,0 +1,269 @@
+name: Cosign artifact signing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'implementations/13-software-supply-chain-security/provenance/build_demo_artifact.py'
+      - 'implementations/13-software-supply-chain-security/provenance/verify_build_metadata.py'
+      - 'implementations/13-software-supply-chain-security/signing/**'
+      - '.github/workflows/cosign-artifact-signing.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cosign-artifact-signing-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    name: Build synthetic artifact (no signing permissions)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      artifact_name: ${{ steps.name.outputs.artifact_name }}
+    steps:
+      - name: Fetch exact event commit
+        shell: bash
+        env:
+          GH_READ_TOKEN: ${{ github.token }}
+          EVENT_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://github.com/${REPOSITORY}.git"
+          AUTH="$(printf 'x-access-token:%s' "${GH_READ_TOKEN}" | base64 -w0)"
+          git -c http.extraheader="AUTHORIZATION: basic ${AUTH}" fetch --no-tags --depth=1 origin "${EVENT_SHA}"
+          unset AUTH GH_READ_TOKEN
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "${EVENT_SHA}"
+
+      - name: Set artifact transfer name
+        id: name
+        shell: bash
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: echo "artifact_name=cosign-demo-build-${RUN_ID}-${RUN_ATTEMPT}" >> "${GITHUB_OUTPUT}"
+
+      - name: Run Cosign fixture tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover \
+            -s implementations/13-software-supply-chain-security/signing \
+            -p 'test_*.py' -v
+
+      - name: Build deterministic synthetic artifact
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+          BUILD_WORKFLOW: .github/workflows/cosign-artifact-signing.yml
+        run: |
+          set -euo pipefail
+          python3 implementations/13-software-supply-chain-security/provenance/build_demo_artifact.py \
+            --output dist/unfiltered-appsec-demo.tar.gz \
+            --metadata-output dist/build-metadata.json \
+            --repository "${REPOSITORY}" \
+            --revision "${EVENT_SHA}" \
+            --workflow "${BUILD_WORKFLOW}"
+
+      - name: Upload artifact to isolated signing job
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ steps.name.outputs.artifact_name }}
+          path: |
+            dist/unfiltered-appsec-demo.tar.gz
+            dist/build-metadata.json
+          if-no-files-found: error
+          retention-days: 7
+
+  sign-and-verify:
+    if: github.ref == 'refs/heads/main'
+    name: Sign and verify (separate trust domain)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      EXPECTED_CERTIFICATE_IDENTITY: https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/cosign-artifact-signing.yml@refs/heads/main
+      EXPECTED_OIDC_ISSUER: https://token.actions.githubusercontent.com
+      EXPECTED_BUILD_WORKFLOW: .github/workflows/cosign-artifact-signing.yml
+      COSIGN_VERSION: v3.1.6
+      COSIGN_BINARY_SHA256: 318a99ade4156a0c4113aa983b46c0a0830fa7896a096c63121ee47b610a94c6
+      COSIGN_BUNDLE_SHA256: 018f5d1e338d5f360a805fa55d8a18a90243ea8f766f01d21ba0d154c99f7fc6
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ needs.build.outputs.artifact_name }}
+          path: dist
+
+      - name: Verify source metadata and exact artifact digest
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          artifact = Path("dist/unfiltered-appsec-demo.tar.gz")
+          metadata = json.loads(Path("dist/build-metadata.json").read_text(encoding="utf-8"))
+          digest = hashlib.sha256(artifact.read_bytes()).hexdigest()
+          expected = {
+              "source_repository": os.environ["REPOSITORY"],
+              "source_revision": os.environ["EVENT_SHA"],
+              "build_workflow": os.environ["EXPECTED_BUILD_WORKFLOW"],
+              "artifact_name": artifact.name,
+              "artifact_kind": "synthetic-training-fixture",
+          }
+          for key, value in expected.items():
+              if metadata.get(key) != value:
+                  raise SystemExit(f"metadata mismatch for {key}: expected {value!r}")
+          if metadata.get("artifact_sha256") != digest:
+              raise SystemExit("artifact SHA-256 does not match build metadata")
+          print(f"Verified synthetic artifact SHA-256: {digest}")
+          PY
+
+      - name: Download pinned Cosign and its Sigstore release bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            "https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64" \
+            --output /tmp/cosign-linux-amd64
+          curl --fail --silent --show-error --location \
+            "https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json" \
+            --output /tmp/cosign-linux-amd64.sigstore.json
+          echo "${COSIGN_BINARY_SHA256}  /tmp/cosign-linux-amd64" | sha256sum --check
+          echo "${COSIGN_BUNDLE_SHA256}  /tmp/cosign-linux-amd64.sigstore.json" | sha256sum --check
+          chmod 0755 /tmp/cosign-linux-amd64
+          /tmp/cosign-linux-amd64 verify-blob /tmp/cosign-linux-amd64 \
+            --bundle /tmp/cosign-linux-amd64.sigstore.json \
+            --certificate-identity keyless@projectsigstore.iam.gserviceaccount.com \
+            --certificate-oidc-issuer https://accounts.google.com
+          install -m 0755 /tmp/cosign-linux-amd64 /usr/local/bin/cosign
+          cosign version
+
+      - name: Sign synthetic artifact using GitHub OIDC identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          cosign sign-blob --yes \
+            --bundle dist/cosign-signature.sigstore.json \
+            dist/unfiltered-appsec-demo.tar.gz
+
+      - name: Verify exact blob, signer, issuer and GitHub source claims
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+          EVENT_SHA: ${{ github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          cosign verify-blob dist/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}" \
+            --certificate-github-workflow-repository "${REPOSITORY}" \
+            --certificate-github-workflow-ref refs/heads/main \
+            --certificate-github-workflow-sha "${EVENT_SHA}" \
+            --certificate-github-workflow-trigger "${EVENT_NAME}"
+          echo "## Cosign blob signature verification" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- Signer identity: ${EXPECTED_CERTIFICATE_IDENTITY}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- OIDC issuer: ${EXPECTED_OIDC_ISSUER}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- Source commit: ${EVENT_SHA}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- Source ref: refs/heads/main" >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Negative test — reject modified blob
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp dist/unfiltered-appsec-demo.tar.gz dist/tampered-demo.tar.gz
+          printf '\nTAMPERED AFTER SIGNING\n' >> dist/tampered-demo.tar.gz
+          if cosign verify-blob dist/tampered-demo.tar.gz \
+            --bundle dist/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}"; then
+            echo "ERROR: modified blob unexpectedly verified" >&2
+            exit 1
+          else
+            echo "Expected rejection: modified blob digest does not match the signature."
+            echo "- Modified blob: rejected as expected." >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Negative test — reject incorrect signer identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          WRONG_IDENTITY="https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/untrusted-workflow.yml@refs/heads/main"
+          if cosign verify-blob dist/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign-signature.sigstore.json \
+            --certificate-identity "${WRONG_IDENTITY}" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}"; then
+            echo "ERROR: blob unexpectedly verified for an untrusted signer identity" >&2
+            exit 1
+          else
+            echo "Expected rejection: signer identity is not allow-listed."
+            echo "- Incorrect signer identity: rejected as expected." >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Negative test — reject incorrect OIDC issuer
+        shell: bash
+        run: |
+          set -euo pipefail
+          if cosign verify-blob dist/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer https://example.invalid/issuer; then
+            echo "ERROR: blob unexpectedly verified for an untrusted OIDC issuer" >&2
+            exit 1
+          else
+            echo "Expected rejection: OIDC issuer is not trusted."
+            echo "- Incorrect OIDC issuer: rejected as expected." >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Negative test — reject incorrect source revision
+        shell: bash
+        env:
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          WRONG_SHA="0000000000000000000000000000000000000000"
+          if cosign verify-blob dist/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}" \
+            --certificate-github-workflow-repository "${REPOSITORY}" \
+            --certificate-github-workflow-ref refs/heads/main \
+            --certificate-github-workflow-sha "${WRONG_SHA}"; then
+            echo "ERROR: blob unexpectedly verified for an incorrect source revision" >&2
+            exit 1
+          else
+            echo "Expected rejection: source revision claim does not match."
+            echo "- Incorrect source revision: rejected as expected." >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Upload Cosign signing evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: cosign-signing-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            dist/unfiltered-appsec-demo.tar.gz
+            dist/build-metadata.json
+            dist/cosign-signature.sigstore.json
+          if-no-files-found: error
+          retention-days: 14
