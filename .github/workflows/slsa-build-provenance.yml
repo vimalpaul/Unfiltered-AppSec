@@ -4,7 +4,10 @@ on:
   push:
     branches: [main]
     paths:
-      - 'implementations/13-software-supply-chain-security/provenance/**'
+      - 'implementations/13-software-supply-chain-security/provenance/build_demo_artifact.py'
+      - 'implementations/13-software-supply-chain-security/provenance/verify_build_metadata.py'
+      - 'implementations/13-software-supply-chain-security/provenance/test_provenance.py'
+      - 'implementations/13-software-supply-chain-security/provenance/verification-policy.json'
       - '.github/workflows/slsa-build-provenance.yml'
   workflow_dispatch:
 
