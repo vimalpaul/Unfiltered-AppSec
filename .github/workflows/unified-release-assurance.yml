@@ -678,9 +678,9 @@ jobs:
             --policy implementations/13-software-supply-chain-security/unified-release-assurance/verification-policy.json \
             --artifact dist/build/unfiltered-appsec-demo.tar.gz \
             --evidence-root dist \
-            --output dist/release-decision.json \\
-            --expected-source-revision "${{ github.sha }}" \\
-            --expected-run-id "${{ github.run_id }}" \\
+            --output dist/release-decision.json \
+            --expected-source-revision "${{ github.sha }}" \
+            --expected-run-id "${{ github.run_id }}" \
             --expected-run-attempt "${{ github.run_attempt }}"
 
       - name: Publish decision summary
