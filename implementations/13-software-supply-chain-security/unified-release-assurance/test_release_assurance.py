@@ -93,7 +93,9 @@ class ReleaseAssuranceTests(unittest.TestCase):
         self.temp.cleanup()
 
     def validate(self):
-        return validate_manifest(self.manifest, self.policy, self.artifact, self.evidence_root)
+        return validate_manifest(self.manifest, self.policy, self.artifact, self.evidence_root,
+                                 expected_source_revision=REVISION, expected_run_id="123456",
+                                 expected_run_attempt="1")
 
     def assert_rejected(self, mutate, expected):
         mutate()
@@ -150,6 +152,19 @@ class ReleaseAssuranceTests(unittest.TestCase):
     def test_wrong_source_revision_is_rejected(self):
         self.assert_rejected(lambda: self.manifest["evidence"]["slsa_provenance"].update(
             source_revision="b" * 40), "source_revision mismatch")
+
+    def test_manifest_must_match_current_event_sha(self):
+        self.manifest["source"]["revision"] = "b" * 40
+        with self.assertRaisesRegex(PolicyError, "manifest source revision differs"):
+            validate_manifest(self.manifest, self.policy, self.artifact, self.evidence_root,
+                              expected_source_revision=REVISION, expected_run_id="123456",
+                              expected_run_attempt="1")
+
+    def test_manifest_must_match_current_run_attempt(self):
+        with self.assertRaisesRegex(PolicyError, "manifest run_attempt differs"):
+            validate_manifest(self.manifest, self.policy, self.artifact, self.evidence_root,
+                              expected_source_revision=REVISION, expected_run_id="123456",
+                              expected_run_attempt="2")
 
     def test_evidence_file_tampering_is_rejected(self):
         self.files["cosign.json"].write_bytes(b"tampered bundle")
