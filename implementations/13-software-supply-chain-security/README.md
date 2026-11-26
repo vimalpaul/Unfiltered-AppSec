@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Status | Initial implementation baseline — not production assurance |
-| Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation and release evidence policy prototype |
+| Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation, signed SLSA build provenance prototype and release evidence policy |
 | Safety | No production credentials, signing keys or deployment access; only pinned Syft/Grype scanner binaries are downloaded and SHA-256 checked |
 | Related engineering baseline | [Chapter 13 engineering](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-ENGINEERING.md) |
 | Related labs | [Chapter 13 lab pack](../../docs/13-software-supply-chain-security/SOFTWARE-SUPPLY-CHAIN-SECURITY-LAB-PACK.md) |
@@ -26,6 +26,7 @@ It does **not** prove that the application builds securely, that dependencies ar
 - `sbom/` — Syft version/digest record, SBOM scope notes, validator and validator unit tests.
 - `sca/` — Grype version/digest record, report validator and SCA unit tests.
 - `vex/` — OpenVEX v0.2.0 core validator, synthetic fixtures, policy tests, internal decision-record template and production-record intake directory.
+- `provenance/` — deterministic synthetic artifact builder, metadata/digest verifier, unit tests, expected verification policy and GitHub signed provenance workflow.
 - `scripts/release_manifest.py` — generate and verify a deterministic SHA-256 file-integrity manifest.
 - `tests/test_release_manifest.py` — unit tests for path handling, tamper detection and deterministic output.
 - `policy/release-policy.md` — release evidence gates and operational configuration checklist.
@@ -73,7 +74,7 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 | SPDX/CycloneDX SBOM | Implemented for this repository filesystem using pinned Syft 1.57.1; CI passed and uploaded two SBOM formats | [Run 44755935644](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44755935644); actual product-release SBOM and full schema validation remain open |
 | VEX disposition | OpenVEX v0.2.0 core validator, not-affected justification checks, affected action-statement checks and conservative release-gate prototype; CI passed | [VEX run 44764156909](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44764156909); no production VEX record exists and full official schema/JSON-LD validation is not implemented |
 | SCA vulnerability matching | Implemented as a report-only Grype scan of the generated SPDX SBOM; main-branch CI passed with 2 package records and 0 matches | [Run 44757253987](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44757253987); no severity threshold or release gate is enforced |
-| SLSA provenance / attestations | Not implemented | Select supported builder and verify attestation subject, source and builder identity |
+| SLSA build provenance | Synthetic artifact, isolated attestation job, GitHub Sigstore attestation and exact signer/digest verification workflow authored; execution pending | [Implementation guide](provenance/README.md); require successful run, signed bundle, CLI verification and negative tests before marking executed; no SLSA level claim |
 | Artifact signing / verification | Not implemented | Establish trust policy, sign in a controlled test environment and verify negative cases |
 | Container hardening / scanning | Not implemented | Add actual image build, digest pinning, scanning and deployment verification |
 | Branch protection / rulesets | Not verified | Read effective repository rules and test enforcement with an authorized change |
