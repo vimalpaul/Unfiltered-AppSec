@@ -32,7 +32,7 @@ class ReleaseAssuranceTests(unittest.TestCase):
         self.evidence_root = self.root / "evidence"
         self.evidence_root.mkdir()
         self.db_status_file = self.evidence_root / "grype-db-status.txt"
-        self.db_status_file.write_text("Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-26T06:22:34Z\\nStatus: valid\\n", encoding="utf-8")
+        self.db_status_file.write_text("Path: /tmp/grype.db\nSchema: v6.1.10\nBuilt: 2026-11-26T06:22:34Z\nStatus: valid\n", encoding="utf-8")
         self.db_status = {"schema_version": "v6.1.10", "built_at": "2026-11-26T06:22:34Z",
                           "valid": True, "status_path": "grype-db-status.txt",
                           "status_sha256": digest(self.db_status_file)}
@@ -206,7 +206,7 @@ class ReleaseAssuranceTests(unittest.TestCase):
         self.manifest["evidence"]["sbom"]["package_count"] = 1
         sca = self.manifest["evidence"]["sca"]
         invalid_db = dict(self.db_status, valid=False)
-        invalid_content = "Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-26T06:22:34Z\\nStatus: invalid\\n"
+        invalid_content = "Path: /tmp/grype.db\nSchema: v6.1.10\nBuilt: 2026-11-26T06:22:34Z\nStatus: invalid\n"
         self.db_status_file.write_text(invalid_content, encoding="utf-8")
         invalid_db["status_sha256"] = digest(self.db_status_file)
         sca.update(scan_status="completed_report_only", match_count=0,
@@ -218,7 +218,7 @@ class ReleaseAssuranceTests(unittest.TestCase):
     def test_stale_grype_database_is_rejected(self):
         self.manifest["evidence"]["sbom"]["package_count"] = 1
         sca = self.manifest["evidence"]["sca"]
-        stale_content = "Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-20T06:22:34Z\\nStatus: valid\\n"
+        stale_content = "Path: /tmp/grype.db\nSchema: v6.1.10\nBuilt: 2026-11-20T06:22:34Z\nStatus: valid\n"
         self.db_status_file.write_text(stale_content, encoding="utf-8")
         stale_db = dict(self.db_status, built_at="2026-11-20T06:22:34Z",
                         status_sha256=digest(self.db_status_file))
@@ -234,9 +234,9 @@ class ReleaseAssuranceTests(unittest.TestCase):
         sca.update(scan_status="completed_report_only", match_count=0,
                    disposition="report_only_no_release_threshold", threshold_enforced=False,
                    database=self.db_status)
-        self.db_status_file.write_text("Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-26T06:22:34Z\\nStatus: valid\\n",
+        self.db_status_file.write_text("Path: /tmp/grype.db\nSchema: v6.1.10\nBuilt: 2026-11-26T06:22:34Z\nStatus: valid\n",
                                        encoding="utf-8")
-        self.db_status_file.write_text("Path: /tmp/grype.db\\nSchema: v6.1.10\\nBuilt: 2026-11-26T06:22:34Z\\nStatus: corrupt\\n",
+        self.db_status_file.write_text("Path: /tmp/grype.db\nSchema: v6.1.10\nBuilt: 2026-11-26T06:22:34Z\nStatus: corrupt\n",
                                        encoding="utf-8")
         with self.assertRaisesRegex(PolicyError, "evidence file digest mismatch"):
             self.validate()
