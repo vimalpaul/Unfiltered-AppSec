@@ -231,6 +231,9 @@ def main() -> int:
     validate.add_argument("--artifact", type=Path, required=True)
     validate.add_argument("--evidence-root", type=Path, required=True)
     validate.add_argument("--output", type=Path, required=True)
+    validate.add_argument("--expected-source-revision", required=True)
+    validate.add_argument("--expected-run-id", required=True)
+    validate.add_argument("--expected-run-attempt", required=True)
     args = parser.parse_args()
 
     try:
@@ -239,6 +242,9 @@ def main() -> int:
             load_json(args.policy),
             args.artifact,
             args.evidence_root,
+            expected_source_revision=args.expected_source_revision,
+            expected_run_id=args.expected_run_id,
+            expected_run_attempt=args.expected_run_attempt,
         )
     except PolicyError as exc:
         print(f"RELEASE POLICY REJECTED: {exc}", file=sys.stderr)
