@@ -1,0 +1,13 @@
+{
+  "version": "v3.1.6",
+  "release_url": "https://github.com/sigstore/cosign/releases/tag/v3.1.6",
+  "asset": "cosign-linux-amd64",
+  "asset_sha256": "318a99ade4156a0c4113aa983b46c0a0830fa7896a096c63121ee47b610a94c6",
+  "bundle_asset": "cosign-linux-amd64.sigstore.json",
+  "bundle_sha256": "018f5d1e338d5f360a805fa55d8a18a90243ea8f766f01d21ba0d154c99f7fc6",
+  "release_signer_identity": "keyless@projectsigstore.iam.gserviceaccount.com",
+  "release_oidc_issuer": "https://accounts.google.com",
+  "architecture": "linux-amd64",
+  "pin_source": "GitHub release asset metadata retrieved 2026-11-26",
+  "verification_note": "SHA-256 pins are checked first; the downloaded Cosign binary then verifies its own Sigstore release bundle."
+}
