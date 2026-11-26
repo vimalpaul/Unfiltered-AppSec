@@ -4,7 +4,7 @@
 |---|---|
 | Document ID | UAPPSEC-13-ENG-001 |
 | Status | Draft engineering baseline |
-| Version | 1.2 |
+| Version | 1.3 |
 | Owner | Unfiltered AppSec maintainers |
 | Created | 2026-11-19 |
 | Review due | 2027-02-19 |
@@ -886,6 +886,7 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-T-039 | Mix evidence from different workflow runs or attempts | Cross-run evidence is rejected |
 | SSC-T-040 | Represent an empty package inventory as vulnerability-free | Policy rejects false clean disposition; scan remains not evaluated |
 | SSC-T-041 | Verify Grype database status, schema, build-time freshness and status-file integrity | Invalid or older-than-72-hour database and modified status evidence are rejected |
+| SSC-T-042 | Validate supply-chain asset inventory coverage, ownership, evidence references and relationship graph integrity | Duplicate IDs, missing ownership/evidence, invalid trust zones, inline secrets and dangling relationships are rejected; trust boundaries are represented deterministically |
 
 ## 30. Detection catalogue
 
@@ -921,6 +922,7 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-D-028 | SBOM lacks required metadata or generation context | Quarantine release evidence and regenerate/validate SBOM |
 | SSC-D-029 | Artifact, SBOM, SCA, provenance or signature digest differs across release stages | Reject promotion, preserve all evidence and investigate evidence splicing or artifact substitution |
 | SSC-D-030 | Grype database is invalid/stale or its status evidence is missing, altered or inconsistent | Reject SCA evidence; refresh the vulnerability database, regenerate the report and retain the verified status record |
+| SSC-D-031 | Critical supply-chain asset has no accountable owner/evidence reference, or a declared dependency/build/artifact relationship is orphaned or points to an unknown asset | Treat the inventory as incomplete; identify the missing owner/source record, correct the graph and require security review before relying on the inventory |
 
 ## 31. Minimum release evidence package
 
@@ -1001,3 +1003,4 @@ For each production release retain:
 | 1.0 | 2026-11-26 | Add unified release assurance architecture, evidence invariants, trust-domain model, failure analysis and SSC-T-036–SSC-T-040 traceability |
 | 1.1 | 2026-11-26 | Record successful end-to-end synthetic release-assurance workflow, digest binding, cryptographic verification and negative-test evidence |
 | 1.2 | 2026-11-26 | Add Grype database validity, status-file digest and 72-hour freshness requirements; add SSC-T-041 and SSC-D-030 |
+| 1.3 | 2026-11-26 | Add Lab 01 executable supply-chain asset inventory implementation, SSC-T-042 and SSC-D-031 traceability |
