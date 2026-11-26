@@ -3,8 +3,8 @@
 | Field | Value |
 |---|---|
 | Document ID | UAPPSEC-13-LAB-001 |
-| Status | Draft lab specifications |
-| Version | 0.6 |
+| Status | Draft specifications; Lab 01 executable synthetic baseline validated in CI; independent learner reproduction pending |
+| Version | 0.7 |
 | Owner | Unfiltered AppSec maintainers |
 | Created | 2026-11-19 |
 | Review due | 2027-02-19 |
@@ -108,6 +108,8 @@ For each lab capture:
 **Evidence:** Inventory, dependency graph, workflow map and risk register.
 
 **Teardown:** No infrastructure required.
+
+**Executable implementation:** [Lab 01 implementation pack](../../implementations/13-software-supply-chain-security/labs/lab-01-supply-chain-inventory/README.md). The synthetic fixture, schema contract, deterministic evidence generator and 22 positive/negative unit tests passed in [GitHub Actions run 45820873366](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45820873366). The workflow used Ubuntu 24.04 and Python 3.12.16, generated 12 assets across 10 categories, 11 relationships, 8 trust-boundary crossings and 5 risk scenarios, reproduced outputs byte-for-byte and verified their SHA-256 checksums. Retained evidence artifact [15118071703](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45820873366/artifacts/15118071703), digest `sha256:30854a27dc7c7fa69071a22177b05ba3e8af9fb0601d43bec2ae959a1e52da2f`, expires 2026-12-10. This validates the synthetic exercise and generator, not completeness of any real environment. Independent learner reproduction and Mermaid rendering remain pending.
 
 ## 6. Lab 02 — Branch protection and code-owner review
 
@@ -1042,3 +1044,4 @@ Suggested training interpretation: 90–100 strong independent engineering; 75�
 | 0.4 | 2026-11-26 | Expand Lab 28 with integrated workflow, run-attempt binding, end-to-end negative cases and evidence retention procedure |
 | 0.5 | 2026-11-26 | Record successful synthetic workflow execution as pre-validation evidence; independent learner reproduction remains pending |
 | 0.6 | 2026-11-26 | Add scanner database validity, status-file integrity and 72-hour freshness test cases to Lab 28 |
+| 0.7 | 2026-11-26 | Add Lab 01 executable inventory generator, pinned CI environment and retained evidence run |
