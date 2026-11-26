@@ -13,6 +13,8 @@ This is a deliberately narrow implementation slice. The VEX assets below impleme
 | `sca/validate_grype_report.py` and `sca/test_validate_grype_report.py` | Check Grype report structure before evidence retention | Three unit tests and successful scan validation | Finding correctness, exploitability, reachability and independent review |
 | `vex/validate_openvex.py` and `vex/test_validate_openvex.py` | Partial implementation of SSC-C-008; executable negative test for SSC-T-011; validate core OpenVEX v0.2.0 fields and apply conservative release policy | [VEX workflow 44764156909](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44764156909); 10 policy tests and synthetic document validation passed | Full official schema/JSON-LD validation, VEX signing, real finding mapping, product release enforcement and independent approval workflow |
 | `vex/decision-record-template.json` | Capture scanner, product, artifact, component, exploitability, evidence, remediation, approval and lifecycle context | Versioned internal case template | No real product case has been populated or approved |
+| `provenance/build_demo_artifact.py`, `provenance/verify_build_metadata.py` and `provenance/test_provenance.py` | Build a deterministic synthetic artifact; bind source repository/revision and SHA-256; reject digest/source/workflow mismatches | Eight unit tests in the isolated build job; metadata check repeated before attestation | Metadata is not signed provenance; no production application or complete dependency graph is built |
+| `.github/workflows/slsa-build-provenance.yml` | Split build and signing jobs; only attestation job receives OIDC and attestation write permissions; create and verify GitHub-signed SLSA provenance | Pending first successful workflow run; expected evidence includes Sigstore bundle, exact signer-workflow verification, and negative tests for tampered artifact and wrong signer | No SLSA Build L2/L3 claim; no production artifact, hardened builder assessment, complete materials capture or deployment gate |
 
 ## Assurance state
 
@@ -28,3 +30,13 @@ This is a deliberately narrow implementation slice. The VEX assets below impleme
 
 
 - VEX validation workflow: successful on commit `5361f1b15979812e6ce7a471523a1e84d209ba56`; [run 44764156909](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/44764156909). The job passed all 10 unit tests, validated the explicitly synthetic OpenVEX example, and confirmed that no production VEX record currently exists. This is CI evidence for the validator only; no product-level VEX decision was made.
+
+
+## SLSA provenance implementation status
+
+- Authored: yes; deterministic synthetic artifact builder, metadata verifier, unit tests, verification policy and isolated signing workflow are committed.
+- Action pin: `actions/attest` v4.2.2 at full commit `1e69f48acb82d1966a394da916b4c1698aa569d6`; upload/download actions are pinned to full commit SHAs.
+- Build/sign separation: build job has `contents: read`; attestation job alone has `id-token: write` and `attestations: write`, and does not check out or execute repository build scripts.
+- Workflow executed: pending; update this record only after reviewing run logs and the attestation evidence artifact.
+- Independent validation: no.
+- SLSA level: not claimed.
