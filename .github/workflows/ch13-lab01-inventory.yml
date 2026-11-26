@@ -74,7 +74,7 @@ jobs:
           python "${LAB_DIR}/build_inventory.py" --input "${LAB_DIR}/fixtures/synthetic-product-inventory.json" --output-dir /tmp/lab01-output-b
           diff -ru /tmp/lab01-output-a /tmp/lab01-output-b
           (cd /tmp/lab01-output-a && sha256sum --check SHA256SUMS)
-          python3 - <<'PY' >> "${GITHUB_STEP_SUMMARY}"
+          python - <<'PY' >> "${GITHUB_STEP_SUMMARY}"
           import json
           from pathlib import Path
           summary = json.loads(Path("/tmp/lab01-output-a/inventory.normalized.json").read_text(encoding="utf-8"))
