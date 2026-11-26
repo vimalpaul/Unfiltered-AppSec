@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Document ID | UAPPSEC-SSC-IMPL-001 |
-| Version | 0.3 |
+| Version | 0.4 |
 | Last updated | 2026-11-26 |
 | Status | Executable synthetic prototype baseline; unified release assurance workflow passed; not production assurance |
 | Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation, signed SLSA provenance, Cosign keyless artifact signing, unified release evidence manifest, Grype DB status integrity/freshness and fail-closed policy |
@@ -83,6 +83,7 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 | SLSA build provenance | Synthetic artifact, separate build/sign jobs, GitHub Sigstore-signed SLSA provenance, exact signer/source/digest verification and three negative tests passed | [Run 45790878803](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790878803); attestation [72577521](https://github.com/vimalpaul/Unfiltered-AppSec/attestations/72577521); evidence artifact `15103185028` (expires 2026-12-10). Synthetic only; no SLSA level or production assurance claim |
 | Artifact signing / verification | Cosign v3.1.6 keyless blob signing, Sigstore bundle verification and four negative tests passed on a synthetic artifact | [Cosign run 45791994671](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791994671); evidence artifact `15103446197` (expires 2026-12-10); production signing and release integration remain open |
 | Unified release assurance | End-to-end synthetic workflow passed: same artifact digest across SBOM, report-only SCA, GitHub-signed SLSA provenance and Cosign; separate read-only policy gate; Grype DB status integrity/freshness; 24 policy-engine unit tests | [Run 45812113513](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45812113513); artifact SHA-256 `e92d4105dee7765ff3a6ba48bf1f85809deeadd54677c3bb7f32a8cf9562e563`; evidence artifact [15113456957](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45812113513/artifacts/15113456957), digest `sha256:3442cfca22a3d63f6f9e2793358a91b4197488cc9fdb7ca381724add2c7fa5e0`; decision `DEMO_PASS_NOT_FOR_PRODUCTION`, promotion false |
+| Lab 01 — supply-chain inventory | Synthetic inventory fixture, schema contract, semantic validation, deterministic JSON/CSV/Mermaid/Markdown generation, 22 unit/negative tests, Python 3.12.16 and Ubuntu 24.04 pinned CI, SHA-256-verified retained evidence | [Run 45820873366](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45820873366); artifact [15118071703](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45820873366/artifacts/15118071703), digest `sha256:30854a27dc7c7fa69071a22177b05ba3e8af9fb0601d43bec2ae959a1e52da2f`; independent learner reproduction pending |
 | Container hardening / scanning | Not implemented | Add actual image build, digest pinning, scanning and deployment verification |
 | Branch protection / rulesets | Not verified | Read effective repository rules and test enforcement with an authorized change |
 
@@ -144,10 +145,18 @@ Cosign signed the archive using a short-lived GitHub OIDC identity and created `
 This demonstrates a detached signature over a synthetic file. It is not a production signing deployment, key-management assessment, SLSA level claim or release gate.
 
 
-## 12. Revision history
+## 12. Lab 01 execution evidence
+
+Lab 01 is implemented at [labs/lab-01-supply-chain-inventory](labs/lab-01-supply-chain-inventory/README.md). It validates a synthetic inventory fixture and generates normalized JSON, asset/relationship/risk CSVs, a Mermaid trust-boundary map, an assessment summary and SHA-256 checksums. The workflow is [ch13-lab01-inventory.yml](../../../.github/workflows/ch13-lab01-inventory.yml); its runner and Python patch release are pinned, third-party actions are SHA-pinned, and the token is read-only.
+
+The refined pull-request workflow passed in [run 45820873366](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45820873366) on commit `beeacf7c0891edac1267425bc1f7bc3e51287daa`. Python 3.12.16 executed 22 tests successfully. The synthetic fixture contained 12 assets, 11 relationships, 8 trust-boundary crossings and 5 risk scenarios. Two independent generations were byte-identical and all generated-file checksums verified. Evidence artifact [15118071703](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45820873366/artifacts/15118071703), digest `sha256:30854a27dc7c7fa69071a22177b05ba3e8af9fb0601d43bec2ae959a1e52da2f`, expires 2026-12-10. The implementation remains synthetic; independent learner reproduction, Mermaid rendering and practitioner review are not complete.
+
+## 13. Revision history
 
 | Version | Date | Change | Evidence / status |
 |---|---|---|---|
 | 0.1 | 2026-11-20 | Initial read-only CI, source integrity manifest, SBOM/SCA and VEX implementation baseline | Earlier workflow evidence recorded in this document |
 | 0.2 | 2026-11-26 | Add SLSA v1.2 synthetic provenance and Cosign v3.1.6 keyless artifact-signing implementations | Successful runs 45790878803 and 45791994671 |
 | 0.3 | 2026-11-26 | Add unified release assurance, Grype database status evidence, 72-hour freshness policy and fail-closed release decision | Successful run 45812113513; decision DEMO_PASS_NOT_FOR_PRODUCTION |
+
+| 0.4 | 2026-11-26 | Add executable Lab 01 inventory implementation, pinned CI and retained evidence | Successful run 45820873366; 22 tests passed |
