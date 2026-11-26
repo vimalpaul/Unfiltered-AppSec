@@ -31,6 +31,8 @@ It does **not** prove that the application builds securely, that dependencies ar
 - `scripts/release_manifest.py` — generate and verify a deterministic SHA-256 file-integrity manifest.
 - `tests/test_release_manifest.py` — unit tests for path handling, tamper detection and deterministic output.
 - `policy/release-policy.md` — release evidence gates and operational configuration checklist.
+- `unified-release-assurance/` — evidence contract, fail-closed validator, synthetic policy, unit tests and implementation guide.
+- `.github/workflows/unified-release-assurance.yml` — one-run build, SBOM/SCA, signed provenance, Cosign signature and final read-only policy verification.
 
 ## 3. Prerequisites
 
@@ -82,7 +84,25 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 
 A committed file is not proof that a GitHub setting is enabled. A green workflow is not proof that all supply-chain risks are controlled. Update this table only when the corresponding evidence exists.
 
-## 7. Next implementation increments
+## 7. Unified release assurance
+
+The integrated workflow is [`.github/workflows/unified-release-assurance.yml`](../../../.github/workflows/unified-release-assurance.yml). It builds one deterministic synthetic archive, generates CycloneDX/SPDX inventories from its extracted contents, records a Grype scan or an explicit no-package disposition, generates GitHub-signed SLSA provenance, signs with Cosign, and re-verifies all evidence in a separate read-only policy job.
+
+The policy engine is [`unified-release-assurance/release_assurance.py`](unified-release-assurance/release_assurance.py); its allow-list is [`verification-policy.json`](unified-release-assurance/verification-policy.json), and its negative test suite is [`test_release_assurance.py`](unified-release-assurance/test_release_assurance.py). The implementation checks the exact artifact digest, SBOM subject, SCA-to-SBOM linkage, signer identities, OIDC issuers, source revision, evidence-file digests and same-run/same-attempt consistency.
+
+A successful result is `DEMO_PASS_NOT_FOR_PRODUCTION` and always sets `promotion_authorized: false`. The workflow is synthetic only. The Python validator does not implement cryptographic signature verification; GitHub CLI and Cosign perform those checks before the manifest is evaluated. No production SCA threshold, product VEX gate, deployment verification or SLSA Build level is claimed.
+
+Run the policy-engine unit tests locally:
+
+```bash
+python3 -m unittest discover \
+  -s implementations/13-software-supply-chain-security/unified-release-assurance \
+  -p 'test_*.py' -v
+```
+
+The integrated workflow must be executed successfully on the target branch before its maturity state is upgraded.
+
+## 8. Next implementation increments
 
 1. Add and verify pull-request trigger coverage; review artifact access and retention settings.
 2. Add project-specific build and dependency discovery without assuming a language or package manager.
@@ -92,11 +112,11 @@ A committed file is not proof that a GitHub setting is enabled. A green workflow
 6. Assess GitHub-hosted and self-hosted builders against every applicable SLSA Build requirement; do not infer Build L2/L3 from a successful attestation.
 7. Implement separate artifact signing/verification for actual release outputs, then container and deployment enforcement after the real build/deploy architecture is established.
 
-## 8. Safe-use restrictions
+## 9. Safe-use restrictions
 
 Do not put customer source, private package credentials, production tokens, signing keys, cloud credentials or non-public architecture data in this public repository. Run compromise exercises only against synthetic dependencies and disposable environments.
 
-## 9. SLSA provenance execution evidence
+## 10. SLSA provenance execution evidence
 
 The synthetic SLSA workflow completed successfully on 2026-11-26: [run 45790878803](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45790878803), source commit `1a81f191a3a1e8b23962e1ad4a9b90b6694d763c`. The build job passed 8 unit tests, fetched the exact event commit, created a deterministic archive and uploaded it to a separate attestation job. The attestation job verified the metadata and artifact SHA-256 `890a3bb79f8a6695b50a20860ce37404944ef4f21cc1c7ece1386a87eef84909`, generated a GitHub Sigstore-signed SLSA provenance attestation, and verified the signature, repository, signer workflow, source ref, source digest, OIDC issuer, predicate type and hosted-runner requirement with GitHub CLI.
 
@@ -105,7 +125,7 @@ The verified builder identity was `https://github.com/vimalpaul/Unfiltered-AppSe
 The retained evidence artifact is ID `15103185028`, digest `sha256:694058beb9ac19cc9aa8331867de489d90d399e66f49af1171ce7c19809ea87e`, with GitHub retention through 2026-12-10. This is a successful synthetic workflow demonstration, not an independent SLSA assessment, a production application build, or a claim of Build L2/L3.
 
 
-## 10. Cosign artifact-signing execution evidence
+## 11. Cosign artifact-signing execution evidence
 
 The synthetic Cosign workflow completed successfully on 2026-11-26: [run 45791994671](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791994671), source commit `e04b39fdf72bc8ee4c51c8a6668cda3db302bcb1`. The build job passed two signing-fixture tests, fetched the exact event commit, and generated the deterministic synthetic archive. The separate signing job verified the build metadata and archive digest, checked the pinned Cosign v3.1.6 binary and its Sigstore release bundle, and verified the binary using the official release signer identity before installation.
 
