@@ -169,6 +169,19 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
                 "Grype database schema version is required")
         built_at = database.get("built_at")
         require(isinstance(built_at, str), "Grype database build timestamp is required")
+        status_path = database.get("status_path")
+        status_sha = database.get("status_sha256")
+        status_file = resolve_evidence_file(evidence_root, status_path)
+        verify_evidence_file(evidence_root, {"path": status_path, "sha256": status_sha}, "Grype database status")
+        status_fields = {}
+        for line in status_file.read_text(encoding="utf-8").splitlines():
+            if ":" in line:
+                key, value = line.split(":", 1)
+                status_fields[key.strip().lower()] = value.strip()
+        require(status_fields.get("status", "").lower() == "valid", "Grype database status file is not valid")
+        require(status_fields.get("schema") == database["schema_version"],
+                "Grype database schema does not match status evidence")
+        require(status_fields.get("built") == built_at, "Grype database build time does not match status evidence")
         try:
             database_time = datetime.fromisoformat(built_at.replace("Z", "+00:00"))
         except ValueError as exc:
@@ -178,7 +191,8 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
         age_seconds = (manifest_time - database_time).total_seconds()
         require(age_seconds >= 0, "Grype database build timestamp is in the future")
         require(age_seconds <= max_age_hours * 3600, "Grype vulnerability database is stale")
-        database_evidence = {"schema_version": database["schema_version"], "built_at": built_at, "valid": True}
+        database_evidence = {"schema_version": database["schema_version"], "built_at": built_at,
+                             "valid": True, "status_sha256": status_sha}
 
     provenance = evidence["slsa_provenance"]
     require(provenance.get("status") == "verified", "SLSA provenance was not verified")
