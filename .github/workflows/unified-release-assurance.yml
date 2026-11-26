@@ -565,6 +565,34 @@ jobs:
           fi
           echo "Expected rejection: wrong signer identity and issuer rejected."
 
+      - name: Negative test — reject incorrect source revision
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          WRONG_SOURCE_DIGEST="0000000000000000000000000000000000000000"
+          if gh attestation verify dist/build/unfiltered-appsec-demo.tar.gz \
+            --repo "${REPOSITORY}" \
+            --signer-workflow "${EXPECTED_SIGNER_WORKFLOW}" \
+            --source-ref refs/heads/main \
+            --source-digest "${WRONG_SOURCE_DIGEST}"; then
+            echo "ERROR: wrong source revision passed provenance verification" >&2
+            exit 1
+          fi
+          if cosign verify-blob dist/build/unfiltered-appsec-demo.tar.gz \
+            --bundle dist/cosign/cosign-signature.sigstore.json \
+            --certificate-identity "${EXPECTED_CERTIFICATE_IDENTITY}" \
+            --certificate-oidc-issuer "${EXPECTED_OIDC_ISSUER}" \
+            --certificate-github-workflow-repository "${REPOSITORY}" \
+            --certificate-github-workflow-ref refs/heads/main \
+            --certificate-github-workflow-sha "${WRONG_SOURCE_DIGEST}"; then
+            echo "ERROR: wrong source revision passed Cosign verification" >&2
+            exit 1
+          fi
+          echo "Expected rejection: wrong source revision rejected by both verifiers."
+
       - name: Create unified release evidence manifest
         shell: bash
         env:
@@ -650,7 +678,10 @@ jobs:
             --policy implementations/13-software-supply-chain-security/unified-release-assurance/verification-policy.json \
             --artifact dist/build/unfiltered-appsec-demo.tar.gz \
             --evidence-root dist \
-            --output dist/release-decision.json
+            --output dist/release-decision.json \\
+            --expected-source-revision "${{ github.sha }}" \\
+            --expected-run-id "${{ github.run_id }}" \\
+            --expected-run-attempt "${{ github.run_attempt }}"
 
       - name: Publish decision summary
         shell: bash
