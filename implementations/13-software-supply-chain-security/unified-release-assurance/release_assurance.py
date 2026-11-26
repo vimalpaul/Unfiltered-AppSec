@@ -140,6 +140,14 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
     require(isinstance(sca.get("scanner_version"), str) and sca["scanner_version"], "SCA scanner version is required")
     sca_digest = verify_evidence_file(evidence_root, sca, "SCA report")
     sca_status = sca.get("scan_status")
+    created_at = manifest.get("created_at")
+    require(isinstance(created_at, str), "manifest created_at timestamp is required")
+    try:
+        manifest_time = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise PolicyError("manifest created_at is not ISO-8601") from exc
+    require(manifest_time.tzinfo is not None, "manifest created_at must include a timezone")
+    database_evidence = None
     if package_count == 0:
         require(policy.get("sca", {}).get("allow_empty_inventory_for_demo") is True,
                 "empty SBOM inventory is not permitted by policy")
@@ -154,6 +162,23 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
                 "SCA match_count must be a non-negative integer")
         require(sca.get("threshold_enforced") is False,
                 "this demonstration does not implement a production severity threshold")
+        database = sca.get("database")
+        require(isinstance(database, dict), "completed SCA evidence must include database metadata")
+        require(database.get("valid") is True, "Grype vulnerability database is not valid")
+        require(isinstance(database.get("schema_version"), str) and database["schema_version"],
+                "Grype database schema version is required")
+        built_at = database.get("built_at")
+        require(isinstance(built_at, str), "Grype database build timestamp is required")
+        try:
+            database_time = datetime.fromisoformat(built_at.replace("Z", "+00:00"))
+        except ValueError as exc:
+            raise PolicyError("Grype database build timestamp is not ISO-8601") from exc
+        require(database_time.tzinfo is not None, "Grype database build timestamp must include a timezone")
+        max_age_hours = policy.get("sca", {}).get("max_database_age_hours", 72)
+        age_seconds = (manifest_time - database_time).total_seconds()
+        require(age_seconds >= 0, "Grype database build timestamp is in the future")
+        require(age_seconds <= max_age_hours * 3600, "Grype vulnerability database is stale")
+        database_evidence = {"schema_version": database["schema_version"], "built_at": built_at, "valid": True}
 
     provenance = evidence["slsa_provenance"]
     require(provenance.get("status") == "verified", "SLSA provenance was not verified")
@@ -194,14 +219,6 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
         require((str(record.get("run_id")), str(record.get("run_attempt"))) == run_identity,
                 f"{label} evidence comes from a different workflow run or attempt")
 
-    created_at = manifest.get("created_at")
-    require(isinstance(created_at, str), "manifest created_at timestamp is required")
-    try:
-        parsed = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-    except ValueError as exc:
-        raise PolicyError("manifest created_at is not ISO-8601") from exc
-    require(parsed.tzinfo is not None, "manifest created_at must include a timezone")
-
     return {
         "schema_version": 1,
         "release_id": release_id,
@@ -213,7 +230,7 @@ def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact
             "sbom": {"status": "verified", "sha256": sbom_digest, "format": sbom["format"],
                      "package_count": package_count},
             "sca": {"status": sca_status, "sha256": sca_digest, "match_count": sca.get("match_count"),
-                    "disposition": sca["disposition"]},
+                    "disposition": sca["disposition"], "database": database_evidence},
             "slsa_provenance": {"status": "verified", "bundle_sha256": provenance_digest,
                                 "signer_workflow": provenance["signer_workflow"]},
             "cosign_signature": {"status": "verified", "bundle_sha256": signature_digest,
