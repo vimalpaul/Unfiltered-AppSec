@@ -72,7 +72,7 @@ def verify_evidence_file(root: Path, record: dict[str, Any], label: str) -> str:
     return actual
 
 
-def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact_path: Path, evidence_root: Path) -> dict[str, Any]:
+def validate_manifest(manifest: dict[str, Any], policy: dict[str, Any], artifact_path: Path, evidence_root: Path,\n                      expected_source_revision: str | None = None, expected_run_id: str | None = None,\n                      expected_run_attempt: str | None = None) -> dict[str, Any]:
     require(manifest.get("schema_version") == 1, "unsupported manifest schema_version")
     require(policy.get("schema_version") == 1, "unsupported policy schema_version")
 
