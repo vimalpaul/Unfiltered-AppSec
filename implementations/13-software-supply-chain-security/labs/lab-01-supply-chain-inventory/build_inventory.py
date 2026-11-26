@@ -194,10 +194,10 @@ def generate_outputs(data: dict[str, Any], output_dir: Path) -> dict[str, str]:
     graph = ["flowchart LR"]
     for asset in assets:
         label = f'{asset["asset_id"]} — {asset["name"]}'.replace('"', "'").replace("\n", " ")
-        graph.append(f'  {asset["asset_id"]}["{label}"]')
+        graph.append(f'  {asset["asset_id"].replace("-", "_")}["{label}"]')
     for rel in normalized["relationships"]:
         edge = "-.->|" if rel["crosses_trust_boundary"] else "-->|"
-        graph.append(f'  {rel["from"]} {edge}{rel["relationship"]}| {rel["to"]}')
+        graph.append(f'  {rel["from"].replace("-", "_")} {edge}{rel["relationship"]}| {rel["to"].replace("-", "_")}')
     outputs["trust-boundary-map.mmd"] = "\n".join(graph) + "\n"
 
     summary = normalized["summary"]
