@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "policy_name": "Unfiltered-AppSec synthetic Cosign blob signature verifier",
+  "artifact": {
+    "name": "unfiltered-appsec-demo.tar.gz",
+    "digest_algorithm": "sha256",
+    "kind": "synthetic-training-fixture"
+  },
+  "cosign": {
+    "version": "v3.1.6",
+    "release_asset_sha256": "318a99ade4156a0c4113aa983b46c0a0830fa7896a096c63121ee47b610a94c6",
+    "release_bundle_sha256": "018f5d1e338d5f360a805fa55d8a18a90243ea8f766f01d21ba0d154c99f7fc6",
+    "release_signer_identity": "keyless@projectsigstore.iam.gserviceaccount.com",
+    "release_oidc_issuer": "https://accounts.google.com"
+  },
+  "signer": {
+    "certificate_identity": "https://github.com/vimalpaul/Unfiltered-AppSec/.github/workflows/cosign-artifact-signing.yml@refs/heads/main",
+    "oidc_issuer": "https://token.actions.githubusercontent.com",
+    "repository": "vimalpaul/Unfiltered-AppSec",
+    "source_ref": "refs/heads/main",
+    "source_revision": "must_equal_workflow_event_github_sha"
+  },
+  "verification": {
+    "require_exact_blob_digest": true,
+    "require_sigstore_bundle": true,
+    "require_exact_certificate_identity": true,
+    "require_exact_oidc_issuer": true,
+    "require_repository_ref_sha_and_trigger_claims": true,
+    "reject_tampered_blob": true,
+    "reject_untrusted_identity": true
+  },
+  "limitations": [
+    "This policy is exercised against a synthetic artifact only.",
+    "This file is a human-readable expectation record and is not itself a cryptographic trust root.",
+    "The Cosign binary checksum pin and its Sigstore release bundle are both checked before signing begins."
+  ]
+}
