@@ -23,7 +23,7 @@ concurrency:
 jobs:
   validate-synthetic-inventory:
     name: Validate fixture and reproduce evidence
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -44,11 +44,17 @@ jobs:
           git checkout --detach FETCH_HEAD
           test "$(git rev-parse HEAD)" = "${EVENT_SHA}"
 
+      - name: Set up pinned Python 3.12.16
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.16'
+
       - name: Record runtime versions
         shell: bash
         run: |
           set -euo pipefail
-          python3 --version
+          python --version
+          python -c 'import sys; assert sys.version_info[:3] == (3, 12, 16), sys.version'
           git --version
 
       - name: Run Lab 01 unit and negative tests
@@ -56,16 +62,16 @@ jobs:
         run: |
           set -euo pipefail
           LAB_DIR="implementations/13-software-supply-chain-security/labs/lab-01-supply-chain-inventory"
-          python3 -m py_compile "${LAB_DIR}/build_inventory.py" "${LAB_DIR}/tests/test_build_inventory.py"
-          PYTHONPATH="${LAB_DIR}" python3 -m unittest discover -s "${LAB_DIR}/tests" -p 'test_*.py' -v
+          python -m py_compile "${LAB_DIR}/build_inventory.py" "${LAB_DIR}/tests/test_build_inventory.py"
+          PYTHONPATH="${LAB_DIR}" python -m unittest discover -s "${LAB_DIR}/tests" -p 'test_*.py' -v
 
       - name: Generate evidence twice and verify deterministic output
         shell: bash
         run: |
           set -euo pipefail
           LAB_DIR="implementations/13-software-supply-chain-security/labs/lab-01-supply-chain-inventory"
-          python3 "${LAB_DIR}/build_inventory.py" --input "${LAB_DIR}/fixtures/synthetic-product-inventory.json" --output-dir /tmp/lab01-output-a
-          python3 "${LAB_DIR}/build_inventory.py" --input "${LAB_DIR}/fixtures/synthetic-product-inventory.json" --output-dir /tmp/lab01-output-b
+          python "${LAB_DIR}/build_inventory.py" --input "${LAB_DIR}/fixtures/synthetic-product-inventory.json" --output-dir /tmp/lab01-output-a
+          python "${LAB_DIR}/build_inventory.py" --input "${LAB_DIR}/fixtures/synthetic-product-inventory.json" --output-dir /tmp/lab01-output-b
           diff -ru /tmp/lab01-output-a /tmp/lab01-output-b
           (cd /tmp/lab01-output-a && sha256sum --check SHA256SUMS)
           python3 - <<'PY' >> "${GITHUB_STEP_SUMMARY}"
@@ -86,3 +92,11 @@ jobs:
           print("Outputs reproduced byte-for-byte in two independent directories; checksums verified.")
           print("Synthetic fixture only; this run does not discover or attest real product assets.")
           PY
+
+      - name: Retain generated lab evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ch13-lab01-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/lab01-output-a/
+          if-no-files-found: error
+          retention-days: 14
