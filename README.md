@@ -65,7 +65,7 @@ Geographic scope is global. Dedicated workstreams will cover India and Middle Ea
 | 10 | Cloud-Native Application Security | Cloud IAM, workload identity, containers, Kubernetes, serverless, IaC, CI/CD and runtime | Draft baseline and lab pack created |
 | 11 | Distributed Systems and Integration Security | Workload identity, service authorization, service mesh, Kafka/RabbitMQ, events, replay, idempotency, sagas, webhooks and partner integrations | Draft baseline and lab pack created |
 | 12 | AI and LLM Application Security | Prompt injection, RAG, vector security, tool calling, agents, MCP, model supply chain, privacy and AI operations | Draft baseline and lab pack created |
-| 13 | Software Supply Chain Security | Repository and dependency security, CI/CD, SBOM, SCA/VEX, SLSA provenance, signing, artifact verification and supplier assurance | Draft engineering baseline and lab pack, plus executable CI/SBOM/SCA/VEX, SLSA provenance and Cosign signing prototypes created |
+| 13 | Software Supply Chain Security | Repository and dependency security, CI/CD, SBOM, SCA/VEX, SLSA provenance, signing, artifact verification and supplier assurance | Engineering baseline and 28-lab specification pack; executable CI/SBOM/SCA/VEX, SLSA, Cosign and unified release assurance prototypes; Lab 01 synthetic inventory implementation passed pinned CI; remaining labs and independent review open |
 | 14 | Security Verification and Assessment | SAST, DAST, IAST, SCA, manual testing, penetration tests and assurance | Planned |
 | 15 | Vulnerability Management and PSIRT | Intake, triage, severity, disclosure, remediation, patching and product advisories | Planned |
 | 16 | AppSec Operations and Incident Response | Security telemetry, detection, incident handling, forensics and recovery | Planned |
@@ -114,6 +114,7 @@ Detailed scope and dependencies are maintained in [REPOSITORY-ARCHITECTURE-AND-R
 - [13. Software Supply Chain Security SLSA Provenance Implementation](implementations/13-software-supply-chain-security/provenance/README.md)
 - [13. Software Supply Chain Security Cosign Signing Implementation](implementations/13-software-supply-chain-security/signing/README.md)
 - [13. Unified Release Assurance Implementation](implementations/13-software-supply-chain-security/unified-release-assurance/README.md)
+- [13. Lab 01 — Supply-chain Asset Inventory Implementation](implementations/13-software-supply-chain-security/labs/lab-01-supply-chain-inventory/README.md)
 - [07. Identity and Access Security](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY.md)
 - [07. Identity and Access Security Lab Pack](docs/07-identity-access-security/IDENTITY-AND-ACCESS-SECURITY-LAB-PACK.md)
 - [04. Secure Coding Lab Pack](docs/04-secure-coding/SECURE-CODING-LAB-PACK.md)
