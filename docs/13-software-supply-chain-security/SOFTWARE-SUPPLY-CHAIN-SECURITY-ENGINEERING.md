@@ -854,3 +854,4 @@ For each production release retain:
 | 0.5 | 2026-11-20 | Add isolated GitHub signed SLSA build-provenance implementation profile |
 | 0.6 | 2026-11-26 | Record successful synthetic signed provenance workflow and negative verification evidence |
 | 0.7 | 2026-11-26 | Add successful Cosign keyless artifact-signing prototype and verification profile |
+| 0.8 | 2026-11-26 | Add Cosign execution evidence and Lab 15 implementation cross-reference |
