@@ -430,7 +430,7 @@ Before promotion, installation or deployment:
 9. Record verification result and policy version.
 10. Fail closed for protected production releases when required evidence is absent or invalid.
 
-A valid signature proves control of a signing identity for a particular digest; it does not prove the artifact is benign or the source is trustworthy.
+A valid signature proves control of a signing identity for a particular digest; it does not prove the artifact is benign or the source is trustworthy. The repository's synthetic implementation uses Cosign v3.1.6 keyless blob signing and is documented in [the Chapter 13 Cosign signing implementation](../../implementations/13-software-supply-chain-security/signing/README.md). Its signing job is separated from the build job, and verification constrains the certificate identity, issuer, repository, ref and source revision. This is a prototype, not production signing governance or a release gate.
 
 ## 17. Container and image supply-chain security
 
@@ -853,3 +853,4 @@ For each production release retain:
 | 0.4 | 2026-11-20 | Add executable VEX validator profile and link SSC-C-008 / SSC-T-011 implementation evidence |
 | 0.5 | 2026-11-20 | Add isolated GitHub signed SLSA build-provenance implementation profile |
 | 0.6 | 2026-11-26 | Record successful synthetic signed provenance workflow and negative verification evidence |
+| 0.7 | 2026-11-26 | Add successful Cosign keyless artifact-signing prototype and verification profile |
