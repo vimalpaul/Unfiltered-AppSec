@@ -85,12 +85,12 @@ The release checksum pin is an integrity check against the recorded release meta
 
 ## 8. Execution evidence — 2026-11-26
 
-The workflow passed: [GitHub Actions run 45791448527](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791448527), source commit `938755922771e67543d847a3951a471d25f4d166`.
+The workflow passed: [GitHub Actions run 45791994671](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791994671), source commit `e04b39fdf72bc8ee4c51c8a6668cda3db302bcb1`.
 
 - Cosign version: `v3.1.6`
-- Synthetic artifact SHA-256: `980a27c8160b2c654b21fec1f5abbe73d6017f3ad8b29755bd55804ed68cc290`
-- Evidence artifact ID: `15101489683`
-- Evidence artifact digest: `sha256:e8c60302c2c7a8362390aad561f8aaef28454fb197e404e6eeb71481f9cd9d3c`
+- Synthetic artifact SHA-256: `efe0d00c0552e89029750baf35b7620842a9a447b188f0d50f25473e8d8c69ac`
+- Evidence artifact ID: `15103446197`
+- Evidence artifact digest: `sha256:bf1cc7ac71b2cea025133d660cb25392fe42dd48686c7dfce2140f7795941747`
 - Evidence retention: through 2026-12-10.
 
 The signing job verified the pinned Cosign binary and its official Sigstore release bundle, signed the synthetic archive with GitHub OIDC, and verified the signature against the exact workflow certificate identity, issuer, repository, ref, source SHA and event trigger. Four negative tests rejected a modified blob, wrong signer identity, wrong OIDC issuer and wrong source revision.
