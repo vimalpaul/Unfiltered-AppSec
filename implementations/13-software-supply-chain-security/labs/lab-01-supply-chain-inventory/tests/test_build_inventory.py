@@ -104,6 +104,18 @@ class InventoryValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(InventoryError, "opaque secret-manager reference"):
             validate_inventory(data)
 
+    def test_nested_inline_credential_is_rejected(self):
+        data = copy.deepcopy(self.data)
+        data["assets"]["workflows"][0]["attributes"]["auth"] = {"nested": {"client_secret": "plain-text"}}
+        with self.assertRaisesRegex(InventoryError, "opaque secret-manager reference"):
+            validate_inventory(data)
+
+    def test_unconnected_asset_is_reported(self):
+        data = copy.deepcopy(self.data)
+        data["relationships"] = [rel for rel in data["relationships"] if rel["from"] != "SUP-001" and rel["to"] != "SUP-001"]
+        result = validate_inventory(data)
+        self.assertEqual(result["summary"]["unconnected_asset_ids"], ["SUP-001"])
+
     def test_secret_reference_uri_is_accepted(self):
         self.assertEqual(validate_inventory(self.data)["summary"]["asset_count"], 12)
 
