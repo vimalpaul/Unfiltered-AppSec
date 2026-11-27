@@ -1,0 +1,8 @@
+# Synthetic owners; fictional names.
+/.github/workflows/** @northstar/platform-engineering @northstar/security-engineering
+/.github/CODEOWNERS @northstar/platform-engineering
+/package-lock.json @northstar/application-security
+/requirements*.txt @northstar/application-security
+/requirements.lock @northstar/application-security
+/Dockerfile @northstar/platform-engineering
+/release/** @northstar/release-engineering

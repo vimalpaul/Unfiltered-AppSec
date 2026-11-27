@@ -1,0 +1,18 @@
+{
+  "repository": "northstar/branch-governance-lab",
+  "branch": "main",
+  "branch_protection": {
+    "required_status_checks": {"strict": true, "contexts": ["policy-tests", "build-and-test"]},
+    "enforce_admins": {"enabled": true},
+    "required_pull_request_reviews": {
+      "dismiss_stale_reviews": true,
+      "require_code_owner_reviews": true,
+      "required_approving_review_count": 2,
+      "bypass_pull_request_allowances": {"users": [], "teams": [], "apps": []}
+    },
+    "allow_force_pushes": {"enabled": false},
+    "allow_deletions": {"enabled": false}
+  },
+  "codeowners_path": ".github/CODEOWNERS",
+  "codeowners_text": "# Synthetic fixture only\n/.github/workflows/** @northstar/platform-engineering @northstar/security-engineering\n/.github/CODEOWNERS @northstar/platform-engineering\n/package-lock.json @northstar/application-security\n/requirements*.txt @northstar/application-security\n/requirements.lock @northstar/application-security\n/Dockerfile @northstar/platform-engineering\n/release/** @northstar/release-engineering\n"
+}
