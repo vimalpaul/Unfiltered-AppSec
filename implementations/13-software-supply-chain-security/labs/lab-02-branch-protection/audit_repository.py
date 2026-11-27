@@ -15,7 +15,7 @@ from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parent
 POLICY_PATH = ROOT / "policy.json"
-EMAIL = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+OWNER = re.compile(r"^@[A-Za-z0-9-]+(?:/[A-Za-z0-9_.-]+)?$")
 
 
 class AuditError(ValueError):
@@ -134,7 +134,7 @@ def parse_codeowners(text: str) -> list[dict[str, Any]]:
         if len(parts) < 2:
             raise AuditError(f"CODEOWNERS line {number} has no owner")
         pattern, owners = parts[0], parts[1:]
-        if pattern.startswith("!") or not all(owner.startswith("@") or EMAIL.fullmatch(owner) for owner in owners):
+        if pattern.startswith("!") or not all(OWNER.fullmatch(owner) for owner in owners):
             raise AuditError(f"CODEOWNERS line {number} has unsupported pattern or invalid owner")
         rules.append({"line": number, "pattern": pattern, "owners": owners, "regex": glob_regex(pattern)})
     if not rules:
