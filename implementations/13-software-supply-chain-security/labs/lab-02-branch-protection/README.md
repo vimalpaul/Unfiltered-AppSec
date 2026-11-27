@@ -3,11 +3,11 @@
 | Field | Value |
 |---|---|
 | Lab ID | UAPPSEC-13-LAB-02 |
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Offline policy auditor and synthetic CI baseline; live disposable-repository exercise pending |
 | Control mapping | SSC-C-003, SSC-C-004 |
-| Test mapping | SSC-T-002, SSC-T-003 |
-| Detection mapping | SSC-D-002 |
+| Test mapping | SSC-T-002, SSC-T-003, SSC-T-043 |
+| Detection mapping | SSC-D-002, SSC-D-032 |
 | Safety | Live auditor is GET-only; it does not change repository settings |
 
 ## 1. Objective
@@ -192,3 +192,4 @@ The matcher implements the constrained glob subset used by this lab, not every G
 | Version | Date | Change | Evidence / status |
 |---|---|---|---|
 | 1.0 | 2026-11-27 | Initial offline policy auditor, read-only live GitHub audit, synthetic fixture and negative tests | CI validation pending; live disposable-repository exercise pending |
+| 1.1 | 2026-11-27 | Refine CODEOWNERS owner syntax and comments-only file validation; 28 tests pass; add evidence links and traceability | Successful run 45950352054; live disposable-repository exercise pending |
