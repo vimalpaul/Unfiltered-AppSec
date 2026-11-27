@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "UAPPSEC-13-LAB-02",
+  "minimum_approving_reviews": 2,
+  "dismiss_stale_reviews": true,
+  "require_code_owner_reviews": true,
+  "require_strict_status_checks": true,
+  "require_admin_enforcement": true,
+  "allow_bypass_actors": false,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "codeowners_locations": [".github/CODEOWNERS", "CODEOWNERS", "docs/CODEOWNERS"],
+  "sensitive_paths": [
+    ".github/workflows/build.yml",
+    ".github/workflows/release.yml",
+    ".github/CODEOWNERS",
+    "package-lock.json",
+    "requirements.lock",
+    "Dockerfile",
+    "release/manifest.json"
+  ]
+}

@@ -1,0 +1,66 @@
+name: Chapter 13 Lab 02 — Branch protection and code-owner review
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'implementations/13-software-supply-chain-security/labs/lab-02-branch-protection/**'
+      - '.github/workflows/ch13-lab02-branch-governance.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'implementations/13-software-supply-chain-security/labs/lab-02-branch-protection/**'
+      - '.github/workflows/ch13-lab02-branch-governance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-offline-policy:
+    name: Validate synthetic branch governance policy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out exact event commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up pinned Python 3.12.16
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12.16'
+
+      - name: Run positive and negative policy tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          LAB_DIR="implementations/13-software-supply-chain-security/labs/lab-02-branch-protection"
+          python -m py_compile "$LAB_DIR/audit_repository.py" "$LAB_DIR/tests/test_audit_repository.py"
+          PYTHONPATH="$LAB_DIR" python -m unittest discover -s "$LAB_DIR/tests" -p 'test_*.py' -v
+
+      - name: Evaluate synthetic healthy fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          LAB_DIR="implementations/13-software-supply-chain-security/labs/lab-02-branch-protection"
+          python "$LAB_DIR/audit_repository.py" --fixture "$LAB_DIR/fixtures/healthy-repository.json" --output /tmp/lab02-audit.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("/tmp/lab02-audit.json").read_text(encoding="utf-8"))
+          assert report["decision"] == "PASS", report
+          assert report["manual_enforcement_tests_required"] is True
+          print("Synthetic policy fixture passed; manual GitHub enforcement remains a separate exercise.")
+          PY
+
+      - name: Retain synthetic audit evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ch13-lab02-policy-evidence
+          path: /tmp/lab02-audit.json
+          if-no-files-found: error
+          retention-days: 14
