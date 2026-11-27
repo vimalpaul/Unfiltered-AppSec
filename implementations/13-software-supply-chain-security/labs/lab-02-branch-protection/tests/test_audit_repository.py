@@ -109,6 +109,10 @@ class CodeownersTests(unittest.TestCase):
         with self.assertRaises(AuditError):
             parse_codeowners("/release/** not-an-owner")
 
+    def test_email_owner_is_rejected(self):
+        with self.assertRaises(AuditError):
+            parse_codeowners("/release/** reviewer@example.invalid")
+
     def test_globstar_and_root_patterns(self):
         rules = parse_codeowners("/.github/workflows/** @northstar/security-engineering\n/package-lock.json @northstar/application-security\n")
         self.assertEqual(owners_for_path(".github/workflows/nested/ci.yml", rules), ["@northstar/security-engineering"])
