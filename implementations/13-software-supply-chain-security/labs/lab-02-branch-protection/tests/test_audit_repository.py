@@ -90,7 +90,7 @@ class CodeownersTests(unittest.TestCase):
 
     def test_empty_codeowners(self):
         findings, _ = evaluate_codeowners("# comments only\n", POLICY)
-        self.assertIn("CODEOWNERS_MISSING", {x["code"] for x in findings})
+        self.assertIn("CODEOWNERS_INVALID", {x["code"] for x in findings})
 
     def test_sensitive_path_without_owner(self):
         findings, result = evaluate_codeowners("/.github/workflows/** @northstar/platform-engineering\n/release/** @northstar/release-engineering\n", POLICY)
