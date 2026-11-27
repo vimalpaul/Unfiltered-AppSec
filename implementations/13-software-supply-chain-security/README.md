@@ -3,7 +3,7 @@
 | Field | Value |
 |---|---|
 | Document ID | UAPPSEC-SSC-IMPL-001 |
-| Version | 0.4 |
+| Version | 0.5 |
 | Last updated | 2026-11-26 |
 | Status | Executable synthetic prototype baseline; unified release assurance workflow passed; not production assurance |
 | Scope | Read-only CI, source integrity manifest, CycloneDX/SPDX SBOM generation, report-only SCA, OpenVEX validation, signed SLSA provenance, Cosign keyless artifact signing, unified release evidence manifest, Grype DB status integrity/freshness and fail-closed policy |
@@ -84,6 +84,7 @@ Treat all code in a pull request as untrusted. Do not add secrets, privileged se
 | Artifact signing / verification | Cosign v3.1.6 keyless blob signing, Sigstore bundle verification and four negative tests passed on a synthetic artifact | [Cosign run 45791994671](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45791994671); evidence artifact `15103446197` (expires 2026-12-10); production signing and release integration remain open |
 | Unified release assurance | End-to-end synthetic workflow passed: same artifact digest across SBOM, report-only SCA, GitHub-signed SLSA provenance and Cosign; separate read-only policy gate; Grype DB status integrity/freshness; 24 policy-engine unit tests | [Run 45812113513](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45812113513); artifact SHA-256 `e92d4105dee7765ff3a6ba48bf1f85809deeadd54677c3bb7f32a8cf9562e563`; evidence artifact [15113456957](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45812113513/artifacts/15113456957), digest `sha256:3442cfca22a3d63f6f9e2793358a91b4197488cc9fdb7ca381724add2c7fa5e0`; decision `DEMO_PASS_NOT_FOR_PRODUCTION`, promotion false |
 | Lab 01 — supply-chain inventory | Synthetic inventory fixture, schema contract, semantic validation, deterministic JSON/CSV/Mermaid/Markdown generation, 24 unit/negative tests, Python 3.12.16 and Ubuntu 24.04 pinned CI, SHA-256-verified retained evidence | [Run 45821145787](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45821145787); artifact [15117188140](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45821145787/artifacts/15117188140), digest `sha256:ba849ad477c11d6a9cc04c621bc4f2566a1b706e5f19e79bb965445ca1c7b231`; independent learner reproduction pending |
+| Lab 02 — branch protection and code-owner review | Offline policy auditor, read-only GitHub live auditor, synthetic branch-protection and CODEOWNERS fixtures, 28 unit/negative tests, pinned CI and retained evidence | [Run 45950352054](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45950352054); artifact [15176069405](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45950352054/artifacts/15176069405), digest `sha256:f478defeaebc0ff302a63c045ac615a538b14ebbf55f94ce21a27e1d0cca3c5e`; live disposable-repository enforcement pending |
 | Container hardening / scanning | Not implemented | Add actual image build, digest pinning, scanning and deployment verification |
 | Branch protection / rulesets | Not verified | Read effective repository rules and test enforcement with an authorized change |
 
@@ -151,7 +152,13 @@ Lab 01 is implemented at [labs/lab-01-supply-chain-inventory](labs/lab-01-supply
 
 The refined pull-request workflow passed in [run 45821145787](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45821145787) on commit `2a19f4649f76457358739454750d0fa9cde7e8ff`. Python 3.12.16 executed 24 tests successfully. The synthetic fixture contained 12 assets, 11 relationships, 8 trust-boundary crossings and 5 risk scenarios. Two independent generations were byte-identical and all generated-file checksums verified. Evidence artifact [15117188140](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45821145787/artifacts/15117188140), digest `sha256:ba849ad477c11d6a9cc04c621bc4f2566a1b706e5f19e79bb965445ca1c7b231`, expires 2026-12-10. The implementation remains synthetic; independent learner reproduction, Mermaid rendering and practitioner review are not complete.
 
-## 13. Revision history
+## 13. Lab 02 execution evidence
+
+Lab 02 is implemented at [labs/lab-02-branch-protection](labs/lab-02-branch-protection/README.md). The policy auditor evaluates two-approval review thresholds, stale-review dismissal, code-owner review, strict status checks, administrator enforcement, pull-request bypass allowances, force-push/deletion settings and effective ownership of seven sensitive paths. The live mode is read-only and uses GitHub CLI GET requests; it does not change repository settings.
+
+The refined workflow passed in [run 45950352054](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45950352054) on commit `93eb4b2458b900b10b37de3244426c03da913a11`. All 28 unit/negative tests passed and the synthetic healthy fixture returned PASS. Evidence artifact [15176069405](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45950352054/artifacts/15176069405), digest `sha256:f478defeaebc0ff302a63c045ac615a538b14ebbf55f94ce21a27e1d0cca3c5e`, expires 2026-12-11. The workflow uses Ubuntu 24.04, Python 3.12.16, SHA-pinned actions and contents:read. The result validates offline policy logic only; live repository audit, manual enforcement attempts, audit-log review and ruleset support remain outstanding.
+
+## 14. Revision history
 
 | Version | Date | Change | Evidence / status |
 |---|---|---|---|
@@ -160,3 +167,5 @@ The refined pull-request workflow passed in [run 45821145787](https://github.com
 | 0.3 | 2026-11-26 | Add unified release assurance, Grype database status evidence, 72-hour freshness policy and fail-closed release decision | Successful run 45812113513; decision DEMO_PASS_NOT_FOR_PRODUCTION |
 
 | 0.4 | 2026-11-26 | Add executable Lab 01 inventory implementation, pinned CI and retained evidence | Successful run 45821145787; 24 tests passed |
+
+| 0.5 | 2026-11-27 | Add Lab 02 branch-protection/CODEOWNERS auditor, 28 tests and pinned CI evidence | Successful run 45950352054; live enforcement pending |
