@@ -4,7 +4,7 @@
 |---|---|
 | Document ID | UAPPSEC-13-ENG-001 |
 | Status | Draft engineering baseline |
-| Version | 1.3 |
+| Version | 1.4 |
 | Owner | Unfiltered AppSec maintainers |
 | Created | 2026-11-19 |
 | Review due | 2027-02-19 |
@@ -846,8 +846,8 @@ The IDs below are internal project identifiers, not external standard control ID
 | Test ID | Test objective | Expected result |
 |---|---|---|
 | SSC-T-001 | Review repository identity and privileged access | No unauthorized or shared privileged identities |
-| SSC-T-002 | Attempt unauthorized protected-branch change in test repo | Change blocked and logged |
-| SSC-T-003 | Modify a workflow without required owner review | Merge blocked |
+| SSC-T-002 | Attempt unauthorized protected-branch change in a disposable test repository using a non-admin identity | Direct push is rejected by the protected default branch and the denial is retained as evidence |
+| SSC-T-003 | Modify a privileged workflow without CODEOWNERS approval; then update the pull request after approval | Merge remains blocked without code-owner approval; stale approvals are dismissed or made stale after new commits |
 | SSC-T-004 | Introduce an unpinned action in test workflow | Policy flags or blocks it |
 | SSC-T-005 | Resolve a private package name from an unapproved registry | Resolution blocked |
 | SSC-T-006 | Introduce a synthetic typo package in isolated registry | Detection/quarantine process activates |
@@ -886,6 +886,7 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-T-039 | Mix evidence from different workflow runs or attempts | Cross-run evidence is rejected |
 | SSC-T-040 | Represent an empty package inventory as vulnerability-free | Policy rejects false clean disposition; scan remains not evaluated |
 | SSC-T-041 | Verify Grype database status, schema, build-time freshness and status-file integrity | Invalid or older-than-72-hour database and modified status evidence are rejected |
+| SSC-T-043 | Audit branch-protection and CODEOWNERS evidence against the Chapter 13 repository governance policy | Missing protection, fewer than two approvals, stale approvals, absent owner review, weak status checks, bypass actors, force-push/deletion allowance and unowned sensitive paths are detected |
 | SSC-T-042 | Validate supply-chain asset inventory coverage, ownership, evidence references and relationship graph integrity | Duplicate IDs, missing ownership/evidence, invalid trust zones, inline secrets and dangling relationships are rejected; trust boundaries are represented deterministically |
 
 ## 30. Detection catalogue
@@ -923,6 +924,7 @@ The IDs below are internal project identifiers, not external standard control ID
 | SSC-D-029 | Artifact, SBOM, SCA, provenance or signature digest differs across release stages | Reject promotion, preserve all evidence and investigate evidence splicing or artifact substitution |
 | SSC-D-030 | Grype database is invalid/stale or its status evidence is missing, altered or inconsistent | Reject SCA evidence; refresh the vulnerability database, regenerate the report and retain the verified status record |
 | SSC-D-031 | Critical supply-chain asset has no accountable owner/evidence reference, or a declared dependency/build/artifact relationship is orphaned or points to an unknown asset | Treat the inventory as incomplete; identify the missing owner/source record, correct the graph and require security review before relying on the inventory |
+| SSC-D-032 | Protected branch lacks required review, CODEOWNERS, current status checks or safe bypass/force-push/deletion settings | Pause sensitive merges, verify effective branch rules and ownership coverage, investigate bypass events and retain configuration plus enforcement evidence |
 
 ## 31. Minimum release evidence package
 
@@ -1004,3 +1006,4 @@ For each production release retain:
 | 1.1 | 2026-11-26 | Record successful end-to-end synthetic release-assurance workflow, digest binding, cryptographic verification and negative-test evidence |
 | 1.2 | 2026-11-26 | Add Grype database validity, status-file digest and 72-hour freshness requirements; add SSC-T-041 and SSC-D-030 |
 | 1.3 | 2026-11-26 | Add Lab 01 executable supply-chain asset inventory implementation, SSC-T-042 and SSC-D-031 traceability |
+| 1.4 | 2026-11-27 | Add Lab 02 branch-protection/CODEOWNERS policy auditor, SSC-T-043 and SSC-D-032 traceability |
