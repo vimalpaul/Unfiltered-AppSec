@@ -4,7 +4,7 @@
 |---|---|
 | Document ID | UAPPSEC-13-LAB-001 |
 | Status | Draft specifications; Lab 01 executable synthetic baseline validated in CI; independent learner reproduction pending |
-| Version | 0.7 |
+| Version | 0.8 |
 | Owner | Unfiltered AppSec maintainers |
 | Created | 2026-11-19 |
 | Review due | 2027-02-19 |
@@ -135,6 +135,8 @@ For each lab capture:
 **Evidence:** Branch rules, CODEOWNERS, test identities and audit events.
 
 **Teardown:** Remove test collaborators and delete the repository if no longer needed.
+
+**Executable implementation:** [Lab 02 branch-protection and code-owner review](../../implementations/13-software-supply-chain-security/labs/lab-02-branch-protection/README.md). The implementation includes an offline policy evaluator, a read-only live GitHub auditor, synthetic branch-protection/CODEOWNERS fixtures and 28 positive/negative tests. [CI run 45950352054](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45950352054) passed all 28 tests and evaluated the synthetic healthy fixture as PASS. Evidence artifact [15176069405](https://github.com/vimalpaul/Unfiltered-AppSec/actions/runs/45950352054/artifacts/15176069405), digest `sha256:f478defeaebc0ff302a63c045ac615a538b14ebbf55f94ce21a27e1d0cca3c5e`, expires 2026-12-11. This is offline fixture evidence only. Live disposable-repository configuration audit and direct-push, code-owner, stale-approval, force-push, deletion and audit-log tests remain pending. Maps to SSC-C-003/004, SSC-T-002/003/043 and SSC-D-002/032.
 
 ## 7. Lab 03 — Workflow permission minimization
 
